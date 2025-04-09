@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from "react";
 import Counter from "@components/Counter";
+import Navbar from "@components/Navbar/Navbar";
+
 const Home = () => {
     return (
-        <div className="flex justify-center"><Counter /></div>
+        <div>
+            <Navbar/>
+        </div>
     )
 }
 
