@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+.Primary-Color{
+    background-color: #154195;
+}
+.Primary-Color:hover{
+    background-color: #0B275C;
+}
+
+.text-color {
+    color: #154195;
+}
+
+.text-color:hover{
+    color: #0B275C;
+}

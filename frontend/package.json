@@ -7,6 +7,8 @@
     "fix": "prettier --write . && eslint --fix --ext .jsx ."
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.1",
+    "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.0.12",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
