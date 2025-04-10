@@ -3,12 +3,14 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ButtonInscription from "@components/Button/ButtonInscription";
 import Logo from "@components/Image/Logo";
+import ButtonLogin from "@components/Button/ButtonLogin";
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
+    { name: 'A propos', href: '#', current: true },
+    { name: 'Produit', href: '#', current: false },
+    { name: 'Fournisseur', href: '#', current: false },
+    { name: 'Boutique', href: '#', current: false },
+    { name: 'Stockage', href: '#', current: false },
 ]
 
 function classNames(...classes) {
@@ -18,16 +20,19 @@ function classNames(...classes) {
 const navbar = () => {
     return (
         <Disclosure as="nav" className="bg-gray-800">
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-                <div className="relative flex h-16 items-center justify-between">
-                    <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
+                <div className="relative flex h-16 items-center justify-between ">
+                    <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="flex shrink-0 items-center">
                             <Logo/>
                         </div>
                     </div>
+                    <div className="min-[952px]:hidden p-2">
+                        <ButtonLogin />
+                    </div>
                     <div
-                        className=" absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-5 sm:pr-0">
-                        <div className="max-[831px]:hidden">
+                        className=" inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0 min-[1000px]:gap-10">
+                        <div className="max-[952px]:hidden">
                         <div className=" sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 {navigation.map((item) => (
@@ -47,13 +52,13 @@ const navbar = () => {
                         </div>
                         </div>
                         {/* Profile dropdown */}
-                        <Menu as="div" className="relative ml-3">
+                        <Menu as="div" className="relative">
                             <div>
-                                <div className="max-[831px]:hidden">
+                                <div className="max-[952px]:hidden">
                                 <ButtonConnexion/>
                                 <ButtonInscription/>
                                 </div>
-                                <div className="absolute inset-y-0 left-0 flex items-center min-[831px]:hidden">
+                                <div className=" inset-y-0 left-0 flex items-center min-[952px]:hidden">
                                     {/* Mobile menu button*/}
                                     <DisclosureButton
                                         className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
@@ -98,7 +103,7 @@ const navbar = () => {
                 </div>
             </div>
 
-            <DisclosurePanel className="md:hidden">
+            <DisclosurePanel className="min-[952px]:hidden">
                 <div className="space-y-1 px-2 pt-2 pb-3">
                     {navigation.map((item) => (
                         <DisclosureButton
