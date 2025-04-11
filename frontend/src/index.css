@@ -12,5 +12,18 @@
 }
 
 .text-color:hover{
-    color: #0B275C;
+    color: #081d47;
+
+}
+
+.text-color-picto {
+    color: #FF6F61;
+}
+
+.text-color-picto:hover {
+    color: #99433b;
+}
+
+.bg-color-gray:hover {
+    background-color: #D9D9D9;
 }

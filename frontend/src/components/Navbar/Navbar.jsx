@@ -19,7 +19,7 @@ function classNames(...classes) {
 
 const navbar = () => {
     return (
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-white">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
                 <div className="relative flex h-16 items-center justify-between ">
                     <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
@@ -41,7 +41,7 @@ const navbar = () => {
                                         href={item.href}
                                         aria-current={item.current ? 'page' : undefined}
                                         className={classNames(
-                                            item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            item.current ? ' text-color-picto' : 'text-color hover:text-white',
                                             'rounded-md px-3 py-2 text-sm font-medium',
                                         )}
                                     >
@@ -112,7 +112,7 @@ const navbar = () => {
                             href={item.href}
                             aria-current={item.current ? 'page' : undefined}
                             className={classNames(
-                                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                item.current ? 'text-color-picto bg-color-gray' : 'text-color bg-color-gray hover:text-white',
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
                         >

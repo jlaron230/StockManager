@@ -18,9 +18,13 @@ import Error404 from "@pages/Error404";
 import Contact from "@pages/Contact";
 import CGU from "@pages/CGU";
 import AdminProfil from "@pages/AdminProfil";
+import Navbar from "@components/Navbar/Navbar";
+import React from "react";
 
 function App() {
     return (
+        <div>
+        <Navbar/>
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/compte-utilisateur" element={<UserProfil />} />
@@ -39,6 +43,7 @@ function App() {
             <Route path="/condition-general-utilisation" element={<CGU />} />
             <Route path="/compte-admin" element={<AdminProfil />} />
         </Routes>
+        </div>
     );
 }
 
