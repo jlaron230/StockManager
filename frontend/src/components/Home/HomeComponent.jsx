@@ -1,6 +1,7 @@
 import React from "react";
 import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ServiceSection from "@components/Home/ServiceSection";
+import ProduitSection from "@components/Home/ProduitSection";
 
 const HomeComponent = () => {
     return (
@@ -35,6 +36,7 @@ const HomeComponent = () => {
         </header>
         <div>
             <ServiceSection />
+            <ProduitSection />
         </div>
         </>
     )
