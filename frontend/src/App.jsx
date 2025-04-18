@@ -20,6 +20,7 @@ import CGU from "@pages/CGU";
 import AdminProfil from "@pages/AdminProfil";
 import Navbar from "@components/Navbar/Navbar";
 import React from "react";
+import Footer from "@components/Footer/Footer";
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/condition-general-utilisation" element={<CGU />} />
             <Route path="/compte-admin" element={<AdminProfil />} />
         </Routes>
+           <Footer/>
         </div>
     );
 }
