@@ -1,19 +1,27 @@
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from 'yup';
+import Instagram from '@assets/image/Instagram.png';
+import Linkedin from '@assets/image/Linkedin.png';
+import X from '@assets/image/X.png';
+import Amazon from '@assets/image/Amazon.png';
+import Meta from '@assets/image/Meta.png';
+import Tesla from '@assets/image/Tesla.png';
+import {Link} from "react-router-dom";
+
 
 const SignupSchema = Yup.object().shape({
     firstName: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
+        .min(2, 'Trop court!')
+        .max(50, 'Trop long!')
+        .required('Requis'),
     lastName: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
+        .min(2, 'Trop court!')
+        .max(50, 'Trop long!')
+        .required('Requis'),
     phone: Yup.string()
         .matches(/^[0-9]{10}$/, 'le numéro doit contenir des caractères numérique')
-        .required('Phone number is required'),
-    email: Yup.string().email('Invalid email').required('Required'),
+        .required('Le numéro de téléphone est requis'),
+    email: Yup.string().email('Invalid email').required('Requis'),
     acceptTerms: Yup.boolean()
         .oneOf([true], 'Vous devez accepter les conditions')
         .required('Requis'),
@@ -24,9 +32,10 @@ const SignupSchema = Yup.object().shape({
 const Footer = () => {
     return (
         <>
-            <footer>
+            <footer id="footer">
+               <div className="flex max-[984px]:justify-evenly min-[984px]:justify-between w-full flex-wrap mt-20 max-sm:gap-25 sm:gap-10 p-10 border-t-1 border-t-black">
                 <Formik
-                    initialValues = {{
+                    initialValues={{
                         firstName: "",
                         lastName: "",
                         email: "",
@@ -36,92 +45,152 @@ const Footer = () => {
                     }}
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
-                            console.log(values)
+                        console.log(values)
                     }}
                 >
                     {({
                           isSubmitting
                           /* and other goodies */
                       }) => (
-                        <Form className="max-w-md mx-auto">
-                            <div className="flex flex-wrap gap-4">
-                                <div className="mb-5">
-                                    <label htmlFor="firstName"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Prénom</label>
-                                    <Field
-                                        type="text"
-                                        name="firstName"
-                                        id="firstName"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="john" required/>
+                        <Form className="max-w-md">
+                            <div>
+                                <h2 className="mb-5 text-2xl text-color-default-2">Formulaire de contact</h2>
+                                <div className="flex flex-wrap sm:gap-4">
+                                    <div className="mb-5 max-sm:w-full sm:max-w-44">
+                                        <label htmlFor="firstName"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Prénom</label>
+                                        <Field
+                                            type="text"
+                                            name="firstName"
+                                            id="firstName"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="john" required/>
+                                        <ErrorMessage name="firstName" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
+                                    </div>
+                                    <div className="mb-5 max-sm:w-full sm:max-w-44">
+                                        <label htmlFor="lastName"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Nom</label>
+                                        <Field
+                                            type="text"
+                                            name="lastName"
+                                            id="lastName"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="doe" required/>
+                                        <ErrorMessage name="lastName" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
+                                    </div>
                                 </div>
-                                <ErrorMessage name="firstName"/>
-                                <div className="mb-5">
-                                    <label htmlFor="lastName"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Nom</label>
-                                    <Field
-                                        type="text"
-                                        name="lastName"
-                                        id="lastName"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="doe" required/>
+                                <div className="flex flex-wrap sm:gap-4">
+                                    <div className="mb-5 max-sm:w-full sm:max-w-44">
+                                        <label htmlFor="email"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                                            email</label>
+                                        <Field
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="name@flowbite.com" required/>
+                                        <ErrorMessage name="email" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
+                                    </div>
+                                    <div className="mb-5 max-sm:w-full sm:max-w-44">
+                                        <label htmlFor="phone"
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Téléphone</label>
+                                        <Field
+                                            type="tel"
+                                            name="phone"
+                                            id="phone"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="+33 612500" required/>
+                                        <ErrorMessage name="phone" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
+                                    </div>
                                 </div>
-                                <ErrorMessage name="lastName"/>
+                                <div className="mb-5 max-sm:w-full sm:max-w-92">
+                                    <Field as="textarea"
+                                           name="message"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                           placeholder="Votre message" required/>
+                                    <ErrorMessage name="message" component="div" className="text-red-500 text-sm mt-1"/>
+                                </div>
+                                <div className="flex items-start mb-5 max-sm:w-full sm:max-w-44">
+                                    <div className="flex items-center h-5">
+                                        <Field name="acceptTerms" type="checkbox"
+                                               className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                                               required/>
+                                        <ErrorMessage name="acceptTerms" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
+                                    </div>
+                                    <label
+                                        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Accepter
+                                        la
+                                        politique de confidentialité</label>
+                                </div>
+                                <button type="submit" disabled={isSubmitting}
+                                        className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Envoyer
+                                </button>
                             </div>
-                            <div className="flex flex-wrap gap-4">
-                                <div className="mb-5">
-                                    <label htmlFor="email"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
-                                        email</label>
-                                    <Field
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="name@flowbite.com" required/>
-                                </div>
-                                <ErrorMessage name="email"/>
-                                <div className="mb-5 max-w-44">
-                                    <label htmlFor="phone"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Téléphone</label>
-                                    <Field
-                                        type="tel"
-                                        name="phone"
-                                        id="phone"
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="+33 612500" required/>
-                                    <ErrorMessage name="phone" component="div" className="text-red-500 text-sm mt-1"/>
-                                </div>
-                            </div>
-                            <div className="mb-5">
-                                <Field as="textarea"
-                                       name="message"
-
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="Votre message" required/>
-                            </div>
-                            <ErrorMessage name="message"/>
-                            <div className="flex items-start mb-5">
-                                <div className="flex items-center h-5">
-                                    <Field name="acceptTerms" type="checkbox"
-                                           className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                                           required/>
-                                    <ErrorMessage name="acceptTerms"/>
-                                </div>
-                                <label
-                                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Accepter la
-                                    politique de confidentialité</label>
-                            </div>
-                            <button type="submit" disabled={isSubmitting}
-                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit
-                            </button>
                         </Form>
                     )}
                 </Formik>
-
+                <div className="max-sm:text-center">
+                    <h2 className="mb-5 text-2xl text-color-default-2">Réseaux sociaux</h2>
+                    <div className="">
+                        <div className="flex justify-center items-center">
+                            <a href="#"><img className="m-5 w-10" src={X} alt="f"></img></a>
+                            <a href="#"><img className="w-20" src={Linkedin} alt="f"></img></a>
+                            <a href="#"> <img className="w-20" src={Instagram} alt="f"></img></a>
+                        </div>
+                        <div className="flex justify-center">
+                            <button type="submit"
+                                    className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">A
+                                propos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className="max-sm:text-center">
+                    <h2 className="mb-5 text-2xl text-color-default-2">Sponsors</h2>
+                    <div className="flex justify-center items-center">
+                        <a href="#"><img className="m-4 w-10" src={Tesla} alt="f"></img></a>
+                        <a href="#"><img className="m-4 w-10" src={Amazon} alt="f"></img></a>
+                        <a href="#"> <img className="m-4 w-10" src={Meta} alt="f"></img></a>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        <a href="#"><img className="m-4 w-10" src={Tesla} alt="f"></img></a>
+                        <a href="#"><img className="m-4 w-10" src={Amazon} alt="f"></img></a>
+                        <a href="#"> <img className="m-4 w-10" src={Meta} alt="f"></img></a>
+                    </div>
+                </div>
+                <div className="max-sm:text-center">
+                    <h2 className="mb-5 text-2xl text-color-default-2">Navigation</h2>
+                    <div className="flex gap-2 flex-col">
+                        <Link to="/politique-de-confidentialite">
+                            Politique de confidentialité
+                        </Link>
+                        <Link to="/condition-general-utilisation">
+                            Conditions générale d'utilisation
+                        </Link>
+                        <Link to="notice-utilisation">Mentions légales
+                        </Link>
+                        <a href="#">Plan du site</a>
+                    </div>
+                    <div className="flex gap-4 flex-col mt-5">
+                        <h3 className="mb-5 text-lg text-color-default-2">Notre application mobile</h3>
+                        <button type="submit"
+                                className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Voir plus
+                        </button>
+                    </div>
+                </div>
+               </div>
+                <div className="flex justify-center m-3 text-center">
+                    <p>Copyright 2025 © Gestock. tous droits réservés</p>
+                </div>
             </footer>
         </>
     )
