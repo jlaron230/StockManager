@@ -7,6 +7,14 @@
     background-color: #0B275C;
 }
 
+.text-color-default {
+    background-color: #154195;
+}
+
+.text-color-default-2 {
+    color: #154195;
+}
+
 .text-color {
     color: #154195;
 }

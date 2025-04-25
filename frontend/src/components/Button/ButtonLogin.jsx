@@ -4,7 +4,7 @@ const ButtonLogin = () => {
     return (
 <>
     <div>
-            <UserIcon aria-hidden="true" className="block size-6 group-data-open:hidden" />
+            <UserIcon aria-hidden="true" className="text-color block size-6 group-data-open:hidden" />
     </div>
 </>
     )
