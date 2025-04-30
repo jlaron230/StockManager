@@ -4,6 +4,7 @@ import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ButtonInscription from "@components/Button/ButtonInscription";
 import Logo from "@components/Image/Logo";
 import ButtonLogin from "@components/Button/ButtonLogin";
+import {Link} from "react-router-dom";
 
 const navigation = [
     { name: 'A propos', href: '#', current: true },
@@ -55,8 +56,12 @@ const navbar = () => {
                         <Menu as="div" className="relative">
                             <div>
                                 <div className="max-[952px]:hidden">
+                                    <Link to="/connexion">
                                 <ButtonConnexion/>
+                                    </Link>
+                                    <Link to="/Inscription">
                                 <ButtonInscription/>
+                                    </Link>
                                 </div>
                                 <div className=" inset-y-0 left-0 flex items-center min-[952px]:hidden">
                                     {/* Mobile menu button*/}

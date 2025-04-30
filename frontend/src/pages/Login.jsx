@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
-import Counter from "@components/Counter";
+import LoginUser from "@components/Login/LoginUser";
 const Login = () => {
     return (
-        <div><Counter /></div>
+        <div><LoginUser /></div>
     )
 }
 
