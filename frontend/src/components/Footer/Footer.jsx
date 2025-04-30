@@ -33,7 +33,7 @@ const Footer = () => {
     return (
         <>
             <footer id="footer">
-               <div className="flex max-[984px]:justify-evenly min-[984px]:justify-between w-full flex-wrap mt-20 max-sm:gap-25 sm:gap-10 p-10 border-t-1 border-t-black">
+               <div className="flex max-[984px]:justify-evenly min-[984px]:justify-between w-full flex-wrap mt-5 max-sm:gap-25 sm:gap-10 p-10 border-t-1 border-t-black">
                 <Formik
                     initialValues={{
                         firstName: "",
