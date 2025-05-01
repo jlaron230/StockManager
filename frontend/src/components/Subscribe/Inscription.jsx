@@ -1,5 +1,8 @@
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import {Link, useNavigate} from "react-router-dom";
+import {EyeIcon, EyeSlashIcon} from "@heroicons/react/16/solid";
+import {useState} from "react";
 
 const SignupSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -53,7 +56,7 @@ const countries = [
     "Allemagne", "Italie", "Espagne", "Mexique", "Inde"
 ];
 
-const InputField = ({ label, name, type = "text", placeholder }) => (
+const InputField = ({ label, name, type = "text", placeholder, handleTogglePassword, showPassword, showPasswordField }) => (
     <div className="flex flex-col mb-4 relative">
         <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
             {label} <span className="text-red-700">*</span>
@@ -67,11 +70,33 @@ const InputField = ({ label, name, type = "text", placeholder }) => (
                  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             required
         />
-        <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1" />
+        {showPasswordField ? (
+        <div
+            className="pt-3 pb-3 absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+            onClick={handleTogglePassword}
+        >
+
+            {showPassword ? ( // Toggle eye icon for password visibility
+                <EyeSlashIcon className="h-6 w-6"/>
+            ) : (
+                <EyeIcon className="h-6 w-6"/>
+            )}
+        </div>
+            ):(
+            <div></div>
+            )}
+        <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1"/>
     </div>
 );
 
 const Inscription = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleTogglePassword = () => {
+        setShowPassword(!showPassword);
+    };
     return (
         <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-6 py-8">
             <div className="w-full bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 max-w-2xl">
@@ -94,19 +119,25 @@ const Inscription = () => {
                             confirmPassword: ""
                         }}
                         validationSchema={SignupSchema}
-                        onSubmit={(values) => console.log(values)}
+                        onSubmit={(values, { setSubmitting }) => {
+                            console.log(values);
+                            setSubmitting(false);
+                            navigate('/');
+                        }}
                     >
-                        {({ isSubmitting }) => (
-                            <Form className="space-y-4">
+                        {({isSubmitting}) => (
+                            <Form className="space-y-4 mb-10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <InputField label="Prénom" name="firstName" placeholder="John" />
-                                    <InputField label="Nom" name="lastName" placeholder="Doe" />
-                                    <InputField label="Téléphone" name="phone" placeholder="0612345678" />
-                                    <InputField label="Email" name="email" type="email" placeholder="name@company.com" />
-                                    <InputField label="Nom de l'entreprise" name="nameEnterprise" placeholder="Ma Société" />
+                                    <InputField label="Prénom" name="firstName" placeholder="John"/>
+                                    <InputField label="Nom" name="lastName" placeholder="Doe"/>
+                                    <InputField label="Téléphone" name="phone" placeholder="0612345678"/>
+                                    <InputField label="Email" name="email" type="email" placeholder="name@company.com"/>
+                                    <InputField label="Nom de l'entreprise" name="nameEnterprise"
+                                                placeholder="Ma Société"/>
 
                                     <div className="flex flex-col mb-4 relative">
-                                        <label htmlFor="country" className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                                        <label htmlFor="country"
+                                               className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
                                             Pays <span className="text-red-700">*</span>
                                         </label>
                                         <Field
@@ -122,39 +153,54 @@ const Inscription = () => {
                                                 <option key={i} value={c}>{c}</option>
                                             ))}
                                         </Field>
-                                        <ErrorMessage name="country" component="div" className="text-red-500 text-sm mt-1" />
+                                        <ErrorMessage name="country" component="div"
+                                                      className="text-red-500 text-sm mt-1"/>
                                     </div>
 
-                                    <InputField label="Adresse" name="address" placeholder="8 rue de la paix" />
-                                    <InputField label="Ville" name="city" placeholder="Paris" />
-                                    <InputField label="Code postal" name="postalCode" type="number" placeholder="75000" />
+                                    <InputField label="Adresse" name="address" placeholder="8 rue de la paix"/>
+                                    <InputField label="Ville" name="city" placeholder="Paris"/>
+                                    <InputField label="Code postal" name="postalCode" type="number"
+                                                placeholder="75000"/>
                                 </div>
 
-                                <InputField label="Mot de passe" name="password" type="password" placeholder="••••••••" />
-                                <InputField label="Confirmation du mot de passe" name="confirmPassword" type="password" placeholder="••••••••" />
+                                <InputField label="Mot de passe" name="password" showPasswordField="true" showPassword={showPassword} handleTogglePassword={handleTogglePassword}
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Taper un mot de passe"/>
+                                <InputField label="Confirmation du mot de passe" showPasswordField="true" showPassword={showPassword} handleTogglePassword={handleTogglePassword} name="confirmPassword"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Retaper le mot de passe"/>
 
-                                <div className="flex items-center">
-                                    <Field type="checkbox" name="acceptTerms" id="acceptTerms" className="mr-2" />
-                                    <label htmlFor="acceptTerms" className="text-sm text-gray-900 dark:text-white">
-                                        J'accepte les conditions générales
+                                <div className="flex items-center justify-center m-7">
+                                    <Field type="checkbox" name="acceptTerms" id="acceptTerms" className="mr-2"/>
+                                    <label htmlFor="acceptTerms" className=" text-sm text-gray-900 dark:text-white">
+                                        <Link className="text-color underline" to="/condition-general-utilisation"  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                        >J'accepte les termes et conditions d'utilisation</Link> <span
+                                        className="text-red-700">*</span>
                                     </label>
                                 </div>
-                                <ErrorMessage name="acceptTerms" component="div" className="text-red-500 text-sm mt-1" />
+                                <ErrorMessage name="acceptTerms" component="div" className="flex items-center justify-center text-red-500 text-sm mt-1"/>
 
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full text-white Primary-Color hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700"
+                                    className="max-md:w-full md:w-1/2 flex justify-center m-auto text-white Primary-Color hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700"
                                 >
                                     {isSubmitting ? 'En cours...' : "S'inscrire"}
-                                        </button>
-                                        </Form>
-                                        )}
-                                </Formik>
-                            </div>
-                            </div>
-                            </section>
-                            );
-                        };
+                                </button>
+                            </Form>
+                        )}
+                    </Formik>
+                    <div className="border-b-4 text-gray-300 mr-auto ml-auto flex w-1/4 mb-10">
+                    </div>
+                    <div className="flex justify-center mb-3">
+                        <p>Vous avez déjà un compte ? <Link className="text-color"
+                                                                    to="/connexion"  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        >Se connecter</Link></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
 
-                        export default Inscription;
+export default Inscription;
