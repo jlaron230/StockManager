@@ -1,3 +1,5 @@
+require("dotenv").config(); // charge les variables d'environnement
+
 // import some node modules for later
 
 const fs = require("node:fs");
@@ -19,6 +21,23 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
     optionsSuccessStatus: 200,
+  })
+);
+
+const session = require("express-session");
+
+app.use(express.json()); 
+
+// Configuration de la session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, 
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, 
+      maxAge: 1000 * 60 * 60 * 24, 
+    },
   })
 );
 
@@ -58,3 +77,6 @@ if (fs.existsSync(reactIndexFile)) {
 // ready to export
 
 module.exports = app;
+
+
+
