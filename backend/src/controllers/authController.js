@@ -1,50 +1,21 @@
 const bcrypt = require("bcrypt");
 const client = require("../../database/client"); // adapte si besoin
 const SALT_ROUNDS = 10;
+const models = require("../models");
 
 async function registerUser(req, res) {
-  const {
-    prenom,
-    nom,
-    telephone,
-    email,
-    mot_de_passe,
-    entreprise,
-    pays,
-    adresse,
-    ville,
-    code_postal,
-  } = req.body;
-
-  if (
-    !prenom || !nom || !telephone || !email || !mot_de_passe ||
-    !entreprise || !pays || !adresse || !ville || !code_postal
-  ) {
-    return res.status(400).json({ message: "Tous les champs sont requis." });
-  }
 
   try {
-    const [existing] = await client.query("SELECT id_user FROM users WHERE email = ?", [email]);
-    if (existing.length > 0) {
-      return res.status(409).json({ message: "Cet email est déjà utilisé." });
-    }
-
-    const hashedPassword = await bcrypt.hash(mot_de_passe, SALT_ROUNDS);
-
-    await client.query(
-        `INSERT INTO users (prenom, nom, telephone, email, password, entreprise, pays, adresse, ville, postal)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [prenom, nom, telephone, email, hashedPassword, entreprise, pays, adresse, ville, code_postal]
-      );
+    const users = req.body;
+    const result = await models.user.insert(users)
    
-    res.status(201).json({ message: "Utilisateur inscrit avec succès." });
+    res.status(201).location(`/users/${result.insertId}`).json({ message: "Utilisateur inscrit avec succès." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Erreur serveur lors de l'inscription." });
+    res.status(500).location({ message: "Erreur serveur lors de l'inscription." });
   }
 }
 
-module.exports = { registerUser };
 
 
 async function loginUser(req, res) {
@@ -83,8 +54,6 @@ async function loginUser(req, res) {
   }
 }
 
-module.exports = { registerUser, loginUser };
-
 
 function checkSession(req, res) {
     if (req.session.user) {
@@ -97,12 +66,7 @@ function checkSession(req, res) {
     }
   }
   
-  module.exports = {
-    registerUser,
-    loginUser,
-    checkSession,
-  };
-  
+
   function logoutUser(req, res) {
     req.session.destroy((err) => {
       if (err) {
@@ -114,12 +78,7 @@ function checkSession(req, res) {
       res.json({ message: "Déconnexion réussie" });
     });
   }
-  module.exports = {
-    registerUser,
-    loginUser,
-    checkSession,
-    logoutUser,
-  };
+
   
 
   const crypto = require("crypto");
@@ -169,13 +128,7 @@ function checkSession(req, res) {
       res.status(500).json({ message: "Erreur serveur lors de la demande de réinitialisation." });
     }
   }
-  module.exports = {
-    registerUser,
-    loginUser,
-    checkSession,
-    logoutUser,
-    forgotPassword,
-  };
+
 
   async function resetPassword(req, res) {
     const { email, token, newPassword } = req.body;

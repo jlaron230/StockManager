@@ -3,17 +3,18 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import {Link, useNavigate} from "react-router-dom";
 import {EyeIcon, EyeSlashIcon} from "@heroicons/react/16/solid";
 import {useState} from "react";
+import axios from "axios"; // Import axios
 
 const SignupSchema = Yup.object().shape({
-    firstName: Yup.string()
+    prenom: Yup.string()
         .min(2, 'Trop court!')
         .max(50, 'Trop long!')
         .required('Requis'),
-    lastName: Yup.string()
+    nom: Yup.string()
         .min(2, 'Trop court!')
         .max(50, 'Trop long!')
         .required('Requis'),
-    phone: Yup.string()
+    telephone: Yup.string()
         .matches(/^[0-9]{10}$/, 'Le numéro doit contenir 10 chiffres')
         .required('Le numéro de téléphone est requis'),
     email: Yup.string()
@@ -22,21 +23,21 @@ const SignupSchema = Yup.object().shape({
     acceptTerms: Yup.boolean()
         .oneOf([true], 'Vous devez accepter les conditions')
         .required('Requis'),
-    nameEnterprise: Yup.string()
+    entreprise: Yup.string()
         .min(2, 'Nom trop court')
         .max(50, 'Nom trop long')
         .required('Requis'),
-    country: Yup.string()
+    pays: Yup.string()
         .required('Requis'),
-    address: Yup.string()
+    adresse: Yup.string()
         .min(2, 'Adresse trop courte')
         .max(50, 'Adresse trop longue')
         .required('Requis'),
-    city: Yup.string()
+    ville: Yup.string()
         .min(2, 'Nom trop court')
         .max(50, 'Nom trop long')
         .required('Requis'),
-    postalCode: Yup.number()
+    postal: Yup.number()
         .typeError('Le code postal doit être un nombre')
         .positive('Le code postal doit être un nombre positif')
         .integer('Le code postal doit être un entier')
@@ -105,34 +106,47 @@ const Inscription = () => {
 
                     <Formik
                         initialValues={{
-                            firstName: "",
-                            lastName: "",
-                            phone: "",
-                            email: "",
-                            acceptTerms: false,
-                            nameEnterprise: "",
-                            country: "",
-                            address: "",
-                            city: "",
-                            postalCode: "",
-                            password: "",
-                            confirmPassword: ""
+                            prenom: '',
+                            nom: '',
+                            telephone: '',
+                            email: '',
+                            password: '',
+                            confirmPassword: '',
+                            entreprise: '',
+                            pays: '',
+                            adresse: '',
+                            ville: '',
+                            postal: '',
                         }}
                         validationSchema={SignupSchema}
-                        onSubmit={(values, { setSubmitting }) => {
-                            console.log(values);
-                            setSubmitting(false);
-                            navigate('/');
+                        onSubmit={(values, { setSubmitting, setFieldError, resetForm }) => {
+                            axios.post(`${import.meta.env.VITE_BACKEND_URL}/register`, values, {  headers: {
+                                'Content-Type': 'application/json',
+                            }})
+                                .then((response) => {
+                                    console.log("inscription réussi", response.data);
+                                    setSubmitting(false);
+                                    resetForm();
+                                    navigate('/');
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de l\'inscription:', error, error.response?.data?.message);
+                                    // Handle specific errors
+                                    setFieldError('general',error.response?.data?.message || 'Échec de l\'inscription, veuillez réessayer');
+                                })
+                                .finally(() => {
+                                    setSubmitting(false); // Stop form submission
+                                });
                         }}
                     >
                         {({isSubmitting}) => (
                             <Form className="space-y-4 mb-10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <InputField label="Prénom" name="firstName" placeholder="John"/>
-                                    <InputField label="Nom" name="lastName" placeholder="Doe"/>
-                                    <InputField label="Téléphone" name="phone" placeholder="0612345678"/>
+                                    <InputField label="Prénom" name="prenom" placeholder="John"/>
+                                    <InputField label="Nom" name="nom" placeholder="Doe"/>
+                                    <InputField label="Téléphone" name="telephone" placeholder="0612345678"/>
                                     <InputField label="Email" name="email" type="email" placeholder="name@company.com"/>
-                                    <InputField label="Nom de l'entreprise" name="nameEnterprise"
+                                    <InputField label="Nom de l'entreprise" name="entreprise"
                                                 placeholder="Ma Société"/>
 
                                     <div className="flex flex-col mb-4 relative">
@@ -143,7 +157,7 @@ const Inscription = () => {
                                         <Field
                                             as="select"
                                             id="country"
-                                            name="country"
+                                            name="pays"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5
                                  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             required
@@ -153,13 +167,13 @@ const Inscription = () => {
                                                 <option key={i} value={c}>{c}</option>
                                             ))}
                                         </Field>
-                                        <ErrorMessage name="country" component="div"
+                                        <ErrorMessage name="pays" component="div"
                                                       className="text-red-500 text-sm mt-1"/>
                                     </div>
 
-                                    <InputField label="Adresse" name="address" placeholder="8 rue de la paix"/>
-                                    <InputField label="Ville" name="city" placeholder="Paris"/>
-                                    <InputField label="Code postal" name="postalCode" type="number"
+                                    <InputField label="Adresse" name="adresse" placeholder="8 rue de la paix"/>
+                                    <InputField label="Ville" name="ville" placeholder="Paris"/>
+                                    <InputField label="Code postal" name="postal" type="number"
                                                 placeholder="75000"/>
                                 </div>
 
