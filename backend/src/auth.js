@@ -1,14 +1,16 @@
 const argon2 = require("argon2"); // Import the argon2 library for password hashing
 const jwt = require("jsonwebtoken"); // Import the jsonwebtoken library for token generation and verification
 const models = require('./models'); // Assuming you have a models file to interact with your database
+const bcrypt = require("bcrypt");
+
+const SALT_ROUNDS = 10;
 
 // Middleware function to hash the user's password before storing it
 const hashPassword = async (req, res,next) => {
     console.log("Request body:", req.body);
     try {
         // Hash the password using argon2 library
-        const hashedPassword = await argon2.hash(req.body.password);
-        req.body.password = hashedPassword; // Replace the plain password with the hashed one in the request body
+        req.body.password = await bcrypt.hash(req.body.password, SALT_ROUNDS); // Replace the plain password with the hashed one in the request body
         next(); // Move to the next middleware
     } catch (err) {
         console.error('Error hashing password:', err);

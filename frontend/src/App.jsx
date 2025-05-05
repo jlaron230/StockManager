@@ -21,6 +21,9 @@ import AdminProfil from "@pages/AdminProfil";
 import Navbar from "@components/Navbar/Navbar";
 import React from "react";
 import Footer from "@components/Footer/Footer";
+import PasswordMissing from "@pages/PasswordMissing";
+import NewPassword from "@components/Login/NewPassword";
+import NewPasswordUser from "@pages/NewPasswordUser";
 
 function App() {
     return (
@@ -42,6 +45,8 @@ function App() {
             <Route path="/page-non-trouve" element={<Error404 />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/condition-general-utilisation" element={<CGU />} />
+            <Route path="/password-forgot" element={<PasswordMissing />} />
+            <Route path="/new-password" element={<NewPasswordUser />} />
             <Route path="/compte-admin" element={<AdminProfil />} />
             <Route path="*" element={<Error404 />} />
         </Routes>
