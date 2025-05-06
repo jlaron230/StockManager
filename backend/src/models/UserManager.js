@@ -23,6 +23,35 @@ class UserManager extends AbstractManager {
             ]
         );
     }
+
+    findById(id) {
+        return this.database.query(
+            `SELECT id_user, nom, prenom, email, role, entreprise, pays, adresse, ville, postal, telephone
+             FROM ${this.table} WHERE id_user = ?`,
+            [id]
+        );
+    }
+    
+    updateProfile(id, data) {
+        return this.database.query(
+            `UPDATE ${this.table}
+             SET nom = ?, prenom = ?, email = ?, entreprise = ?, pays = ?, adresse = ?, ville = ?, postal = ?, telephone = ?
+             WHERE id_user = ?`,
+            [
+                data.nom,
+                data.prenom,
+                data.email,
+                data.entreprise,
+                data.pays,
+                data.adresse,
+                data.ville,
+                data.postal,
+                data.telephone,
+                id
+            ]
+        );
+    }
+    
 }
 
 module.exports = UserManager;

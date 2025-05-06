@@ -5,16 +5,24 @@ const productControllers = require("./controllers/productControllers");
 const providerControllers = require("./controllers/providerControllers");
 const stockControllers = require("./controllers/stockControllers");
 const orderControllers = require("./controllers/orderControllers");
+const userControllers = require("./controllers/userControllers");
+
 
 
 
 
 //import middleware functions
 const {
-    verifyPassword,hashPassword,verifyToken,verifyId,
-} = require("./auth");
+    hashPassword,
+    requireLogin,
+    verifyPassword
+  } = require("./auth");
+  
+const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
-const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword} = require("../src/controllers/authController");
+
+router.get("/user/profile", requireLogin, userControllers.getProfile);
+router.put("/user/profile", requireLogin, userControllers.updateProfile);
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser);
