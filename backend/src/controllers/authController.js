@@ -17,42 +17,25 @@ async function registerUser(req, res) {
 }
 
 
-
-async function loginUser(req, res) {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email et mot de passe requis." });
-  }
-
+async function loginUser(req, res, next) {
+  const {email} = req.body;
   try {
-    const [rows] = await client.query("SELECT * FROM users WHERE email = ?", [email]);
+    const user = await models.user.findUserByEmail(email);
 
-    if (rows.length === 0) {
-      return res.status(401).json({ message: "Utilisateur non trouvé." });
+    if (user[0] != null) {
+      const [firstUser] = user;
+      req.user = firstUser; // Passe l'utilisateur au middleware suivant
+      console.log(req.user);
+      next(); // Passe au middleware suivant (ex: verifyPassword)
+    } else {
+      res.status(401).json({ message: "Utilisateur non trouvé." });
     }
-
-    const user = rows[0];
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Mot de passe incorrect." });
-    }
-
-    // Création de session
-    req.session.user = {
-      id: user.id_user,
-      email: user.email,
-      role: user.role,
-      nom: user.nom,
-    };
-
-    res.json({ message: "Connexion réussie", user: req.session.user });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Erreur serveur lors de la connexion :", error);
     res.status(500).json({ message: "Erreur serveur lors de la connexion." });
   }
 }
+
 
 
 function checkSession(req, res) {

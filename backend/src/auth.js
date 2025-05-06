@@ -21,26 +21,33 @@ const hashPassword = async (req, res,next) => {
 // Function to verify the user's password during login
 const verifyPassword = async (req, res, next) => {
     console.log(req.user, "req user avant verif pass");
+    console.log(req.user.id);
     try {
-        console.log("Request user:", req.user);
+        if (!req.body.password || !req.user?.password) {
+            return res.status(400).json({ message: "Mot de passe manquant." });
+        }
 
+
+        const isPasswordValid = await bcrypt.compare(req.body.password, req.user.password);
         // Verify the password using argon2 library
-        const isVerified = await argon2.verify(req.user.password, req.body.password);
 
-        if (isVerified) {
+        if (isPasswordValid) {
             console.log("Password verification succeeded");
 
             // Generate JWT token upon successful password verification
-            const payload = { sub: req.user.id };
-            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "99h" });
+            req.session.user = {
+                id: req.user.id,
+                email: req.user.email,
+                role: req.user.role,
+                nom: req.user.nom,
+            };
 
             // Remove sensitive information (password) from the user object before sending it back
             delete req.user.password;
-            res.send({ user: req.user, token: token });
+            next(); // Move to the next middleware only if password is valid
         } else {
             res.sendStatus(401);
         }
-        next(); // Move to the next middleware
     } catch (err) {
         console.error('Error verifying password:', err);
         res.sendStatus(500);

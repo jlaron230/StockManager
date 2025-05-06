@@ -23,6 +23,21 @@ class UserManager extends AbstractManager {
             ]
         );
     }
+
+    findUserByEmail(email) {
+        return this.database.query(
+            `SELECT * FROM ${this.table} WHERE email = ? `,
+            [email]
+        );
+    }
+
+    findById(id) {
+        // Execute an SQL query to select all fields from the table for the user with the specified ID
+        return this.database.query(
+            `SELECT * FROM ${this.table} WHERE id = ?`,
+            [id]
+        ).then(results => results[0]);
+    }
 }
 
 module.exports = UserManager;

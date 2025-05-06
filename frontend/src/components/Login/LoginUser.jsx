@@ -3,6 +3,7 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Link, useNavigate} from "react-router-dom";
 import {EyeIcon, EyeSlashIcon} from "@heroicons/react/16/solid";
 import {useState} from "react";
+import axios from "axios";
 
 const SignupSchema = Yup.object().shape({
     email: Yup.string()
@@ -64,10 +65,24 @@ const LoginUser = () => {
                             password: "",
                         }}
                         validationSchema={SignupSchema}
-                        onSubmit={(values, { setSubmitting }) => {
-                            console.log(values);
-                            setSubmitting(false);
-                            navigate('/');
+                        onSubmit={(values, { setSubmitting, setFieldError }) => {
+                            axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, values, {
+                                withCredentials: true,
+                            })
+                                .then(res => {
+                                    const data = res.data;
+                                    console.log(data);
+                                    setSubmitting(false);
+                                    navigate('/');
+                                })
+                                .catch(error => {
+                                    console.error('Erreur lors de la connexion:', error);
+                                    // Handle specific errors
+                                    setFieldError('general', 'Échec de la connexion, vérifiez vos identifiants');
+                                })
+                                .finally(() => {
+                                    setSubmitting(false); // Stop form submission
+                                });
                         }}
                     >
                         {({isSubmitting}) => (

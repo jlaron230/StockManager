@@ -10,7 +10,7 @@ const {
 const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword} = require("../src/controllers/authController");
 
 router.post("/register", hashPassword, registerUser);
-router.post("/login", loginUser);
+router.post("/login", loginUser, verifyPassword);
 router.get("/session", checkSession);
 router.get("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
