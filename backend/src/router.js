@@ -4,6 +4,9 @@ const itemControllers = require("./controllers/itemControllers");
 const productControllers = require("./controllers/productControllers");
 const providerControllers = require("./controllers/providerControllers");
 const stockControllers = require("./controllers/stockControllers");
+const orderControllers = require("./controllers/orderControllers");
+
+
 
 
 //import middleware functions
@@ -35,6 +38,14 @@ router.delete("/providers/:id", providerControllers.destroy);
 router.get("/stock", stockControllers.browse);
 router.get("/stock/low", stockControllers.getLowStock);
 router.get("/stock/:productId", stockControllers.read);
+
+router.post("/orders", orderControllers.add);
+router.get("/orders/:id/status", orderControllers.readStatus);
+router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
+router.get("/orders/:id", orderControllers.read);
+router.get("/orders/:id/full", orderControllers.getFullOrder);
+
+
 
 
 router.get("/items", itemControllers.browse);
