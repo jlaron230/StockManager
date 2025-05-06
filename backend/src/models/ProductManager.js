@@ -14,8 +14,7 @@ class ProductManager extends AbstractManager {
         product.nom,
         product.description,
         product.prix_unitaire,
-        product.quantité_en_stock,
-        product.seuil_minimal,
+        product.quantité_en_stock,        
         product.localisation,
         product.date_add,
         product.code_product,
@@ -25,7 +24,7 @@ class ProductManager extends AbstractManager {
         product.image,
         product.document,
         product.condition_achat,
-        
+        product.seuil_minimal,
       ]
     );
   }

@@ -45,6 +45,14 @@ const StockManager = require("./StockManager");
 models.stock = new StockManager();
 models.stock.setDatabase(pool);
 
+const OrderManager = require("./OrderManager");
+models.order = new OrderManager();
+models.order.setDatabase(pool);
+
+const OrderProductManager = require("./OrderProductManager");
+models.order_product = new OrderProductManager();
+models.order_product.setDatabase(pool);
+
 
 // Proxy pour erreurs personnalisées
 const handler = {
