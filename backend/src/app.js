@@ -19,7 +19,8 @@ const cors = require("cors");
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+    origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
+    credentials: true,
     optionsSuccessStatus: 200,
   })
 );
@@ -33,8 +34,9 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET, 
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
+      httpOnly: true,
       secure: false, 
       maxAge: 1000 * 60 * 60 * 24, 
     },
