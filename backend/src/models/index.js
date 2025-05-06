@@ -41,6 +41,11 @@ const ProviderManager = require("./ProviderManager");
 models.provider = new ProviderManager();
 models.provider.setDatabase(pool);
 
+const StockManager = require("./StockManager");
+models.stock = new StockManager();
+models.stock.setDatabase(pool);
+
+
 // Proxy pour erreurs personnalisées
 const handler = {
   get(obj, prop) {
