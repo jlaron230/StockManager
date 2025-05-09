@@ -25,7 +25,7 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 
 router.post("/register", hashPassword, registerUser);
-router.post("/login", loginUser);
+router.post("/login", loginUser, verifyPassword);
 router.get("/session", checkSession);
 router.get("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
