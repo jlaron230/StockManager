@@ -50,8 +50,18 @@ const verifyPassword = async (req, res, next) => {
     }
     next();
   };
+
+// Middleware de protection par session
+const requireLogin = (req, res, next) => {
+
+    if (!req.session?.user) {
+        return res.status(401).json({ message: "Non autorisé : veuillez vous connecter." });
+    }
+    next();
+};
   
 module.exports = {
   hashPassword,
   requireLogin,
+    verifyPassword,
 };
