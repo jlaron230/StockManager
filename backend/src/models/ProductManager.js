@@ -8,8 +8,8 @@ class ProductManager extends AbstractManager {
   insert(product) {
     return this.database.query(
       `INSERT INTO ${this.table} 
-        (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal, id_provider, id_category)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         product.nom,
         product.description,
@@ -25,6 +25,8 @@ class ProductManager extends AbstractManager {
         product.document,
         product.condition_achat,
         product.seuil_minimal,
+        product.id_provider,
+        product.id_category
       ]
     );
   }
@@ -32,7 +34,7 @@ class ProductManager extends AbstractManager {
   update(id, product) {
     return this.database.query(
       `UPDATE ${this.table} SET 
-       nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, id_admin = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?,
+       nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, id_admin = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?, id_provider = ?, id_category = ?
        WHERE id_product = ?`,
       [
         product.nom,
@@ -50,21 +52,77 @@ class ProductManager extends AbstractManager {
         product.condition_achat,
         product.seuil_minimal,
         id,
+        id_provider,
+        id_category
       ]
     );
   }
   readAll() {
-    return this.database.query(`SELECT * FROM ${this.table}`);
+    return this.database.query(
+      `SELECT 
+        p.id_product,
+        p.nom,
+        p.description,
+        p.prix_unitaire,
+        p.quantité_en_stock,
+        p.localisation,
+        p.date_add,
+        p.code_product,
+        p.date_peremption,
+        p.last_updated,
+        p.id_admin,
+        p.image,
+        p.document,
+        p.condition_achat,
+        p.seuil_minimal,
+        p.id_category,
+        p.id_provider,
+        pr.nom AS nom_fournisseur
+       FROM product p
+       LEFT JOIN provider pr ON p.id_provider = pr.id_provider`
+    );
   }
+  
 
   read(id) {
-    return this.database.query(`SELECT * FROM ${this.table} WHERE id_product = ?`, [id]);
+    return this.database.query(
+      `SELECT 
+        p.id_product,
+        p.nom,
+        p.description,
+        p.prix_unitaire,
+        p.quantité_en_stock,
+        p.localisation,
+        p.date_add,
+        p.code_product,
+        p.date_peremption,
+        p.last_updated,
+        p.id_admin,
+        p.image,
+        p.document,
+        p.condition_achat,
+        p.seuil_minimal,
+        p.id_category,
+        p.id_provider,
+        pr.nom AS nom_fournisseur
+       FROM product p
+       LEFT JOIN provider pr ON p.id_provider = pr.id_provider
+       WHERE p.id_product = ?`,
+      [id]
+    );
   }
+  
   
   delete(id) {
     return this.database.query(`DELETE FROM ${this.table} WHERE id_product = ?`, [id]);
   }
   
+  getProvidersByIds(ids) {
+    return this.database.query(
+      `SELECT id_product, id_provider FROM product WHERE id_product IN (?)`,
+      [ids]
+    );
+  }
   
 }
 

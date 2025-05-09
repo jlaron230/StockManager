@@ -4,30 +4,42 @@ const add = async (req, res) => {
   const order = req.body;
 
   try {
+    const productIds = order.products.map((p) => p.id_product);
+    const [products] = await tables.product.getProvidersByIds(productIds);
+
+    const produitsInvalides = products.filter(
+      (p) => p.id_provider !== order.id_provider
+    );
+
+    if (produitsInvalides.length > 0) {
+      return res.status(400).json({
+        message: "Tous les produits doivent appartenir au même fournisseur.",
+        produitsInvalides,
+      });
+    }
+
     const [orderResult] = await tables.order.insert({
       ...order,
-      total_ammount: 0 // temporairement
+      total_ammount: 0,
     });
 
     const id_order = orderResult.insertId;
 
-    
     const insertPromises = order.products.map((p) =>
       tables.order_product.insert({
         id_order,
         id_product: p.id_product,
-        quantité_commandée: p.quantité
+        quantité_commandée: p.quantité,
       })
     );
     await Promise.all(insertPromises);
 
     const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(id_order);
+    const total = detailedProducts.reduce(
+      (sum, product) => sum + product.prix_unitaire * product.quantité_commandée,
+      0
+    );
 
-    const total = detailedProducts.reduce((sum, product) => {
-      return sum + product.prix_unitaire * product.quantité_commandée;
-    }, 0);
-
-    
     await tables.order.updateTotal(id_order, total);
 
     res.status(201).json({
@@ -40,6 +52,59 @@ const add = async (req, res) => {
     res.sendStatus(500);
   }
 };
+
+const update = async (req, res) => {
+  const orderId = req.params.id;
+  const updatedOrder = req.body;
+
+  try {
+    const productIds = updatedOrder.products.map((p) => p.id_product);
+    const [products] = await tables.product.getProvidersByIds(productIds);
+
+    const produitsInvalides = products.filter(
+      (p) => p.id_provider !== updatedOrder.id_provider
+    );
+
+    if (produitsInvalides.length > 0) {
+      return res.status(400).json({
+        message: "Certains produits ne correspondent pas au fournisseur sélectionné.",
+        produitsInvalides,
+      });
+    }
+
+    // 1. Mettre à jour la commande
+    await tables.order.update(orderId, updatedOrder);
+
+    // 2. Supprimer les produits existants de la commande
+    await tables.order_product.deleteByOrderId(orderId);
+
+    // 3. Réinsérer les nouveaux produits
+    const insertPromises = updatedOrder.products.map((p) =>
+      tables.order_product.insert({
+        id_order: orderId,
+        id_product: p.id_product,
+        quantité_commandée: p.quantité,
+      })
+    );
+    await Promise.all(insertPromises);
+
+    // 4. Recalculer le total
+    const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(orderId);
+    const total = detailedProducts.reduce(
+      (sum, product) => sum + product.prix_unitaire * product.quantité_commandée,
+      0
+    );
+
+    await tables.order.updateTotal(orderId, total);
+
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("Erreur dans orderControllers.update :", err);
+    res.sendStatus(500);
+  }
+};
+
+
 
 
 
@@ -101,6 +166,7 @@ const getFullOrder = async (req, res) => {
 
 module.exports = {
   add,
+  update,
   read,
   readStatus,
   getProductsFromOrder,

@@ -38,7 +38,15 @@ class OrderProductManager extends AbstractManager {
       [orderId]
     );
   }
+
+  deleteByOrderId(orderId) {
+    return this.database.query(
+      `DELETE FROM order_product WHERE id_order = ?`,
+      [orderId]
+    );
+  }
 }
+
 
 
   
