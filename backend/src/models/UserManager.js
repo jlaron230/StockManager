@@ -32,12 +32,33 @@ class UserManager extends AbstractManager {
     }
 
     findById(id) {
-        // Execute an SQL query to select all fields from the table for the user with the specified ID
         return this.database.query(
-            `SELECT * FROM ${this.table} WHERE id = ?`,
+            `SELECT id_user, nom, prenom, email, role, entreprise, pays, adresse, ville, postal, telephone
+             FROM ${this.table} WHERE id_user = ?`,
             [id]
-        ).then(results => results[0]);
+        );
     }
+    
+    updateProfile(id, data) {
+        return this.database.query(
+            `UPDATE ${this.table}
+             SET nom = ?, prenom = ?, email = ?, entreprise = ?, pays = ?, adresse = ?, ville = ?, postal = ?, telephone = ?
+             WHERE id_user = ?`,
+            [
+                data.nom,
+                data.prenom,
+                data.email,
+                data.entreprise,
+                data.pays,
+                data.adresse,
+                data.ville,
+                data.postal,
+                data.telephone,
+                id
+            ]
+        );
+    }
+    
 }
 
 module.exports = UserManager;
