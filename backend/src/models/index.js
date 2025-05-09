@@ -53,6 +53,11 @@ const OrderProductManager = require("./OrderProductManager");
 models.order_product = new OrderProductManager();
 models.order_product.setDatabase(pool);
 
+const CategoryManager = require("./CategoryManager");
+models.category = new CategoryManager();
+models.category.setDatabase(pool);
+
+
 
 // Proxy pour erreurs personnalisées
 const handler = {
