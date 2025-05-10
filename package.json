@@ -30,6 +30,7 @@
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "express-session": "^1.18.1",
+    "firebase-admin": "^13.3.0",
     "formik": "^2.4.6",
     "nodemailer": "^6.10.1",
     "postcss": "^8.5.3",
