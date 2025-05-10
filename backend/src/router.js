@@ -8,9 +8,6 @@ const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
 
 
-
-
-
 //import middleware functions
 const {
     hashPassword,
