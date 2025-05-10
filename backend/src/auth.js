@@ -55,5 +55,5 @@ const requireLogin = (req, res, next) => {
 module.exports = {
   hashPassword,
   requireLogin,
-    verifyPassword,
+  verifyPassword,
 };

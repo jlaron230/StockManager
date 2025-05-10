@@ -26,27 +26,52 @@ const read = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const [result] = await tables.product.insert(req.body);
-    res.status(201).json({ id_product: result.insertId, ...req.body });
+    const product = req.body;
+
+    // Si un provider est spécifié, récupérer sa catégorie
+    if (product.id_provider) {
+      const [[provider]] = await tables.provider.findCategoryId(product.id_provider);
+      if (provider?.id_category) {
+        product.id_category = provider.id_category;
+      }
+    }
+
+    const [result] = await tables.product.insert(product);
+
+    res.status(201).json({
+      id_product: result.insertId,
+      ...product,
+    });
   } catch (err) {
-    console.error(err);
+    console.error("Erreur dans productControllers.add :", err);
     res.sendStatus(500);
   }
 };
 
+
 const edit = async (req, res) => {
   try {
     const [result] = await tables.product.update(req.params.id, req.body);
+
     if (result.affectedRows === 0) {
       res.sendStatus(404);
     } else {
-      res.status(200).json({ id_product: req.params.id, ...req.body });
+      res.sendStatus(204);
     }
+
+    if (product.id_provider) {
+      const [[provider]] = await tables.provider.findCategoryId(product.id_provider);
+      if (provider?.id_category) {
+        product.id_category = provider.id_category;
+      }
+    }
+    
   } catch (err) {
-    console.error(err);
+    console.error("Erreur dans productControllers.edit :", err);
     res.sendStatus(500);
   }
 };
+
 
 const destroy = async (req, res) => {
   try {

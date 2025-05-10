@@ -6,7 +6,7 @@ const providerControllers = require("./controllers/providerControllers");
 const stockControllers = require("./controllers/stockControllers");
 const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
-
+const categoryControllers = require("./controllers/categoryControllers");
 
 //import middleware functions
 const {
@@ -22,7 +22,7 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 
 router.post("/register", hashPassword, registerUser);
-router.post("/login", loginUser, verifyPassword);
+router.post("/login", loginUser);
 router.get("/session", checkSession);
 router.get("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
@@ -37,7 +37,7 @@ router.delete("/products/:id", productControllers.destroy);
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
 router.post("/providers", providerControllers.add);
-router.put("/providers/:id", providerControllers.edit);
+router.put("/providers/:id", requireLogin, providerControllers.edit);
 router.delete("/providers/:id", providerControllers.destroy);
 
 router.get("/stock", stockControllers.browse);
@@ -48,7 +48,15 @@ router.post("/orders", orderControllers.add);
 router.get("/orders/:id/status", orderControllers.readStatus);
 router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
 router.get("/orders/:id", orderControllers.read);
+router.put("/orders/:id", requireLogin, orderControllers.update);
 router.get("/orders/:id/full", orderControllers.getFullOrder);
+
+router.get("/categories", categoryControllers.browse);
+router.get("/categories/:id", categoryControllers.read);
+router.get("/categories/:id/providers", categoryControllers.getProvidersByCategory);
+router.post("/categories", categoryControllers.add);
+router.put("/categories/:id", requireLogin, categoryControllers.edit);
+router.delete("/categories/:id", requireLogin, categoryControllers.destroy);
 
 
 

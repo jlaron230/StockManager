@@ -33,6 +33,7 @@ class OrderManager extends AbstractManager {
       [total, id_order]
     );
   }
+  
 }
 
 module.exports = OrderManager;
