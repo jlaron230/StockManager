@@ -66,13 +66,13 @@ const LoginUser = () => {
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting, setFieldError }) => {
+                            console.log("Valeurs soumises :", values);
                             axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, values, {
                                 withCredentials: true,
                             })
                                 .then(res => {
                                     const data = res.data;
                                     console.log(data);
-                                    setSubmitting(false);
                                     navigate('/');
                                 })
                                 .catch(error => {
@@ -92,7 +92,7 @@ const LoginUser = () => {
                                 </div>
 
                                 <div className=" grid-cols-1 md:grid-cols-2 gap-4 mb-7">
-                                    <InputField label="Mot de passe" name="password" showPasswordField="true" showPassword={showPassword} handleTogglePassword={handleTogglePassword}
+                                    <InputField label="Mot de passe" name="password" showPasswordField={true} showPassword={showPassword} handleTogglePassword={handleTogglePassword}
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="Taper un mot de passe"/>
                                     <div className="flex justify-start mb-3">
@@ -100,6 +100,7 @@ const LoginUser = () => {
                                              top: 0, behavior: 'smooth'
                                               })}
                                         >Mot de passe oublié ?</Link>
+                                        <ErrorMessage name="general" component="div" className="text-red-500 text-sm mt-1 text-center" />
                                     </div>
                                 </div>
                                 <button

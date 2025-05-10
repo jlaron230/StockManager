@@ -24,11 +24,14 @@ class UserManager extends AbstractManager {
         );
     }
 
-    findUserByEmail(email) {
-        return this.database.query(
-            `SELECT * FROM ${this.table} WHERE email = ? `,
+    async findUserByEmail(email) {
+        console.log("Recherche utilisateur avec l'email :", email);
+        const [rows] = await this.database.query(
+            `SELECT * FROM ${this.table} WHERE email = ?`,
             [email]
         );
+        console.log("Résultat de la requête :", rows);
+        return rows;
     }
 
     findById(id) {
