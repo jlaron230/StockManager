@@ -8,11 +8,13 @@ const testNotif = async (req, res) => {
   }
 
   try {
+    // Envoie du token unique dans un tableau
     await sendNotification(
-      [token],
-      "🚨 Test FCM",
+      [token], // on l’envoie sous forme de tableau pour correspondre à la fonction
+      "📣 Test FCM",
       "Ceci est une notification test depuis le backend."
     );
+
     res.status(200).json({ message: "Notification envoyée avec succès" });
   } catch (err) {
     console.error("Erreur envoi testNotif :", err);
