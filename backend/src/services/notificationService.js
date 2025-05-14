@@ -7,7 +7,7 @@ const sendNotification = async (tokens, title, body) => {
     for (const token of tokens) {
       const message = {
         notification: { title, body },
-        token, // attention ici, c'est `token` et non `tokens`
+        token, 
       };
 
       const response = await admin.messaging().send(message);
