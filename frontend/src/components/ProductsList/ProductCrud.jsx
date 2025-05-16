@@ -18,10 +18,10 @@ const ProductCrud = () => {
     const [provider, setProvider] = useState([]);
     const [category, setCategory] = useState(null);
     const [dateArray, setDateArray] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState({
         threshold: false,
         description: false,
-        thresholdMax: false,
         category: false,
         quantityNow: false,
         maxPrice: false,
@@ -30,7 +30,6 @@ const ProductCrud = () => {
     const [categoryList, setCategoryList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [value, setValue] = useState(10);
-    const [valueMax, setValueMax] = useState(50);
     const [QuantityNow, setQuantityNow] = useState(50);
     const [MaxPrice, setMaxPrice] = useState(10);
     const [desc, setDesc] = useState("");
@@ -42,6 +41,11 @@ const ProductCrud = () => {
                 const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`);
                 setProduct(productRes.data);
                 setSelectedCategory(productRes.data.id_category);
+                setValue(productRes.data.seuil_minimal);
+                setDesc(productRes.data.description);
+                setQuantityNow(productRes.data.quantité_en_stock);
+                setMaxPrice(productRes.data.prix_unitaire);
+                setSale(productRes.data.condition_achat);
 
                 const providerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`);
                 const foundProv = providerRes.data.find(prov => prov.id_provider === productRes.data.id_provider);
@@ -66,6 +70,43 @@ const ProductCrud = () => {
         fetchProduct();
     }, [id]);
 
+    const handlePut = async (field) => {
+        try {
+            setLoading(true);
+            const updatedData = {...product};
+
+            switch (field) {
+                case "threshold":
+                    updatedData.seuil_minimal = value;
+                    break;
+                case "description":
+                    updatedData.description = desc;
+                    break;
+                case "category":
+                    updatedData.id_category = selectedCategory;
+                    break;
+                case "quantityNow":
+                    updatedData.quantité_en_stock = QuantityNow;
+                    break;
+                case "MaxPrice":
+                    updatedData.prix_unitaire = MaxPrice;
+                    break;
+                case "SaleOption":
+                    updatedData.condition_achat = sale;
+                    break;
+                default:
+                    setLoading(false);
+                    return;
+            }
+            const productPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, updatedData)
+
+            console.log(productPut.data);
+        } catch (error) {
+        console.error("Erreur lors de la modification du produit :", error);
+    } finally {
+            setLoading(false);
+        }
+    }
 
     const handleEdit = (field) => {
         setEditMode((prev) => ({ ...prev, [field]: true }));
@@ -109,29 +150,15 @@ const ProductCrud = () => {
                                     isEditing={editMode.threshold}
                                     onClick={() => handleEdit("threshold")}
                                     onChange={(e) => setValue(Number(e.target.value))}
-                                    onValidate={() => handleValidate("threshold")}
+                                    onValidate={() => {
+                                        handlePut("threshold");
+                                        handleValidate("threshold");
+                                    }}
                                 />
                             </>
                         ) : (
                             <span>{value}</span>
                         )}
-                        <div>
-                            <p>Seuil maximum</p>
-                            {isAdmin ? (
-                                <>
-                                    <InputEdit
-                                        type="number"
-                                        value={valueMax}
-                                        isEditing={editMode.thresholdMax}
-                                        onClick={() => handleEdit("thresholdMax")}
-                                        onChange={(e) => setValueMax(Number(e.target.value))}
-                                        onValidate={() => handleValidate("thresholdMax")}
-                                    />
-                                </>
-                            ) : (
-                                <span>{valueMax}</span>
-                            )}
-                        </div>
                         <div>
                             <p>Date d'ajout au stock :<span> {dateArray[0]}</span></p>
                         </div>
@@ -144,7 +171,10 @@ const ProductCrud = () => {
                                               isEditing={editMode.description}
                                               onClick={() => handleEdit("description")}
                                               onChange={(e) => setDesc(e.target.value)}
-                                              onValidate={() => handleValidate("description")}/>
+                                              onValidate={() => {
+                                                  handlePut("description");
+                                                  handleValidate("description");
+                                              }}/>
                                 </>
                             ) : (
                                 <span>{desc}</span>
@@ -166,6 +196,7 @@ const ProductCrud = () => {
                                                 onClick={() => handleEdit("category")}
                                                 onChange={(e) => setSelectedCategory(Number(e.target.value))}
                                                 onValidate={() => {
+                                                    handlePut("category");
                                                     handleValidate("category");
                                                 }}/>
                             </>
@@ -197,11 +228,14 @@ const ProductCrud = () => {
                                     isEditing={editMode.quantityNow}
                                     onClick={() => handleEdit("quantityNow")}
                                     onChange={(e) => setQuantityNow(Number(e.target.value))}
-                                    onValidate={() => handleValidate("quantityNow")}
+                                    onValidate={() => {
+                                        handlePut("quantityNow");
+                                        handleValidate("quantityNow");
+                                    }}
                                 />
                             </>
                         ) : (
-                            <span>{valueMax}</span>
+                            <span>{QuantityNow}</span>
                         )}
                     </div>
                     <div>
@@ -214,7 +248,10 @@ const ProductCrud = () => {
                                     isEditing={editMode.MaxPrice}
                                     onClick={() => handleEdit("MaxPrice")}
                                     onChange={(e) => setMaxPrice(Number(e.target.value))}
-                                    onValidate={() => handleValidate("MaxPrice")}
+                                    onValidate={() => {
+                                        handlePut("MaxPrice");
+                                        handleValidate("MaxPrice");
+                                    }}
                                 />
                                 {!editMode.MaxPrice && <span>€</span>}
                             </>
@@ -236,7 +273,10 @@ const ProductCrud = () => {
                                     isEditing={editMode.SaleOption}
                                     onClick={() => handleEdit("SaleOption")}
                                     onChange={(e) => setSale(e.target.value)}
-                                    onValidate={() => handleValidate("SaleOption")}
+                                    onValidate={() => {
+                                        handlePut("SaleOption");
+                                        handleValidate("SaleOption");
+                                    }}
                                 />
                             </>
                         ) : (
@@ -245,9 +285,13 @@ const ProductCrud = () => {
                     </div>
 
                 </div>
+                {isAdmin ? (
                 <div className="max-w-3xl p-6">
                     <ButtonSupp />
                 </div>
+                    ) : (
+                        <></>
+                    )}
             </main>
         </div>
     );

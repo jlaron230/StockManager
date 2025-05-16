@@ -5,8 +5,10 @@ import product from "@pages/Product";
 import axios from "axios";
 import {set} from "husky";
 import {Link} from "react-router-dom";
+import ButtonAddProduct from "@components/Button/ButtonAddProduct";
 
 const ProductList = () => {
+    const [isAdmin, setIsAdmin] = useState(true);
     const [products, setProducts] = useState([])
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [filteredDate, setfilteredDate] = useState(true);
@@ -153,7 +155,8 @@ const ProductList = () => {
                             <input onChange={(e) => {
                                 const value = e.target.value;
                                 setMinPrice(value);
-                                filteredPrice(Number(maxPrice), Number(value));
+                                filteredPrice(Number(value), Number(maxPrice));
+                                filteredPrice(Number(minPrice), Number(value));
                             }} type="number" placeholder="minimum"
                                    className="w-full p-2 border rounded-md text-sm"/>
 
@@ -194,6 +197,13 @@ const ProductList = () => {
                 <main className=" space-y-6">
                     {/* Recherche */}
                     <div className="flex justify-center">
+                        {isAdmin ? (
+                            <Link to="/ajout-produit">
+                            <ButtonAddProduct />
+                            </Link>
+                        ) : (
+                            <></>
+                        )}
                         <div className="relative w-1/2">
                             <input
                                 type="text"
