@@ -8,8 +8,8 @@ class ProductManager extends AbstractManager {
   insert(product) {
     return this.database.query(
       `INSERT INTO ${this.table} 
-        (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal, id_provider, id_category)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal, id_provider, id_category, created_at, image_prev, image_prev_two)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         product.nom,
         product.description,
@@ -26,7 +26,10 @@ class ProductManager extends AbstractManager {
         product.condition_achat,
         product.seuil_minimal,
         product.id_provider,
-        product.id_category
+        product.id_category,
+          product.created_at,
+          product.image_prev,
+          product.image_prev_two
       ]
     );
   }
@@ -34,7 +37,8 @@ class ProductManager extends AbstractManager {
   update(id, product) {
     return this.database.query(
       `UPDATE ${this.table} SET 
-       nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, id_admin = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?, id_provider = ?, id_category = ?
+       nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, id_admin = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?, id_provider = ?, id_category = ?, image_prev = ?,
+       image_prev_two = ?,
        WHERE id_product = ?`,
       [
         product.nom,
@@ -51,6 +55,8 @@ class ProductManager extends AbstractManager {
         product.document,
         product.condition_achat,
         product.seuil_minimal,
+          product.image_prev,
+          product.image_prev_two,
         id,
         id_provider,
         id_category
@@ -77,6 +83,9 @@ class ProductManager extends AbstractManager {
         p.seuil_minimal,
         p.id_category,
         p.id_provider,
+        p.created_at,
+        p.image_prev,
+        p.image_prev_two,
         pr.nom AS nom_fournisseur
        FROM product p
        LEFT JOIN provider pr ON p.id_provider = pr.id_provider`
@@ -104,6 +113,9 @@ class ProductManager extends AbstractManager {
         p.seuil_minimal,
         p.id_category,
         p.id_provider,
+        p.created_at,
+        p.image_prev,
+        p.image_prev_two,
         pr.nom AS nom_fournisseur
        FROM product p
        LEFT JOIN provider pr ON p.id_provider = pr.id_provider

@@ -4,6 +4,7 @@ import {date} from "yup";
 import product from "@pages/Product";
 import axios from "axios";
 import {set} from "husky";
+import {Link} from "react-router-dom";
 
 const ProductList = () => {
     const [products, setProducts] = useState([])
@@ -225,6 +226,7 @@ const ProductList = () => {
                                             productDesc={product.description}
                                             productImage={product.image}
                                             productCategory={category ? category.nom : "Non renseigné"}
+                                            productId={product.id_product}
                                         />
                                     )
                                 })
@@ -275,7 +277,7 @@ const ProductList = () => {
     )
 }
 
-const ProductFiche = ({productName, productImage, productDesc, productCategory }) => {
+const ProductFiche = ({productName, productImage, productDesc, productCategory, productId }) => {
     return (
         <>
             {/* Liste produits */}
@@ -292,9 +294,11 @@ const ProductFiche = ({productName, productImage, productDesc, productCategory }
                             {productDesc}
                         </p>
                         <p className="text-gray-400 text-xs italic">Catégorie : {productCategory}</p>
+                        <Link to={`/produit/${productId}`}>
                         <button className="mt-2 bg-blue-700 text-white text-sm px-3 py-1 rounded">
                             voir produit
                         </button>
+                        </Link>
                     </div>
                 </div>
             </div>

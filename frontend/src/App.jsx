@@ -24,6 +24,7 @@ import Footer from "@components/Footer/Footer";
 import PasswordMissing from "@pages/PasswordMissing";
 import NewPassword from "@components/Login/NewPassword";
 import NewPasswordUser from "@pages/NewPasswordUser";
+import ProductCrud from "@components/ProductsList/ProductCrud";
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="/fournisseur-manage" element={<ProviderManage />} />
             <Route path="/fournisseur" element={<Provider />} />
             <Route path="/produit" element={<Product />} />
+            <Route path="/produit/:id" element={<ProductCrud />} />
             <Route path="/politique-de-confidentialite" element={<PrivacyPolicy />} />
             <Route path="/commande" element={<Order />} />
             <Route path="/connexion" element={<Login />} />
