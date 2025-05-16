@@ -61,6 +61,21 @@ class UserManager extends AbstractManager {
             ]
         );
     }
+
+    updateFcmToken(id, token) {
+        return this.database.query(
+          `UPDATE ${this.table} SET fcm_token = ? WHERE id_user = ?`,
+          [token, id]
+        );
+    }
+
+    getAllWithFcmToken() {
+        return this.database.query(
+         `SELECT id_user, fcm_token FROM ${this.table}
+          WHERE fcm_token IS NOT NULL AND fcm_token != ''`
+        );
+    }
+
     
 }
 
