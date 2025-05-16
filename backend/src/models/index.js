@@ -57,13 +57,7 @@ const CategoryManager = require("./CategoryManager");
 models.category = new CategoryManager();
 models.category.setDatabase(pool);
 
-const NotificationManager = require("./NotificationManager");
-models.notification = new NotificationManager();
-models.notification.setDatabase(pool);
 
-const Notification_productManager = require("./Notification_productManager");
-models.notification_product = new Notification_productManager();
-models.notification_product.setDatabase(pool);
 
 // Proxy pour erreurs personnalisées
 const handler = {

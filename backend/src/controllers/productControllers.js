@@ -51,20 +51,21 @@ const add = async (req, res) => {
 
 const edit = async (req, res) => {
   try {
-    const [result] = await tables.product.update(req.params.id, req.body);
-
-    if (result.affectedRows === 0) {
-      res.sendStatus(404);
-    } else {
-      res.sendStatus(204);
-    }
-
+    const product = req.body;
     if (product.id_provider) {
       const [[provider]] = await tables.provider.findCategoryId(product.id_provider);
       if (provider?.id_category) {
         product.id_category = provider.id_category;
       }
     }
+
+    const [result] = await tables.product.update(req.params.id, product);
+    console.log(result);
+    if (result.affectedRows === 0) {
+      return res.sendStatus(404);
+    }
+
+    res.sendStatus(204);
     
   } catch (err) {
     console.error("Erreur dans productControllers.edit :", err);

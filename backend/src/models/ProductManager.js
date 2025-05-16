@@ -22,44 +22,43 @@ class ProductManager extends AbstractManager {
         product.last_updated,
         product.id_admin,
         product.image,
-        product.document,
+        product.document || null,
         product.condition_achat,
         product.seuil_minimal,
         product.id_provider,
         product.id_category,
           product.created_at,
-          product.image_prev,
-          product.image_prev_two
+          product.image_prev || null,
+          product.image_prev_two || null
       ]
     );
   }
 
   update(id, product) {
     return this.database.query(
-      `UPDATE ${this.table} SET 
-       nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, id_admin = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?, id_provider = ?, id_category = ?, image_prev = ?,
-       image_prev_two = ?,
+      `UPDATE ${this.table} SET
+         nom = ?, description = ?, prix_unitaire = ?, quantité_en_stock = ?, localisation = ?, date_add = ?, code_product = ?, date_peremption = ?, last_updated = ?, image = ?, document = ?, condition_achat = ?, seuil_minimal = ?, id_provider = ?, id_category = ?, image_prev = ?, image_prev_two = ?
        WHERE id_product = ?`,
-      [
-        product.nom,
-        product.description,
-        product.prix_unitaire,
-        product.quantité_en_stock,
-        product.localisation,
-        product.date_add,
-        product.code_product,
-        product.date_peremption,
-        product.last_updated,
-        product.id_admin,
-        product.image,
-        product.document,
-        product.condition_achat,
-        product.seuil_minimal,
-          product.image_prev,
-          product.image_prev_two,
-        id,
-        id_provider,
-        id_category
+        [
+            product.nom,
+            product.description,
+            product.prix_unitaire,
+            product.quantité_en_stock,
+            product.localisation,
+            product.date_add,
+            product.code_product,
+            product.date_peremption,
+            product.last_updated,
+            //product.id_admin,
+            product.image,
+            product.document,
+            product.condition_achat,
+            product.seuil_minimal,
+            product.id_provider,
+            product.id_category,
+            product.image_prev,
+            product.image_prev_two,
+            id,
       ]
     );
   }
