@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Link, useParams} from 'react-router-dom';
+import {Link, redirect, useNavigate, useParams} from 'react-router-dom';
 import InputEdit from "@components/Button/InputEdit";
 import TextEdit from "@components/Button/TextEdit";
 import ImageEffect from "@components/Button/ImageEffect";
@@ -10,8 +10,10 @@ import { BellIcon } from "@heroicons/react/24/outline";
 import ButtonSupp from "@components/Button/ButtonSupp";
 import ButtonReturn from "@components/Button/ButtonReturn";
 import formatDate from "@services/FormatDate";
+import ModalProduct from "@components/ProductsList/ModalProduct";
 
 const ProductCrud = () => {
+    let navigate = useNavigate();
     const {id} = useParams();
     const [isAdmin, setIsAdmin] = useState(true);
     const [product, setProduct] = useState(null);
@@ -34,6 +36,21 @@ const ProductCrud = () => {
     const [MaxPrice, setMaxPrice] = useState(10);
     const [desc, setDesc] = useState("");
     const [sale, setSale] = useState("");
+    const [IsClicked, setIsClicked] = useState(true);
+
+    const HandleClick = () => {
+        setIsClicked(!IsClicked);
+    }
+
+    const HandleSupp = async (e) => {
+        try {
+            const productRes = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`);
+            console.log(productRes);
+            navigate('/produit');
+        }catch(err) {
+            console.log(err);
+        }
+    }
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -287,7 +304,16 @@ const ProductCrud = () => {
                 </div>
                 {isAdmin ? (
                 <div className="max-w-3xl p-6">
-                    <ButtonSupp />
+                    <ButtonSupp onClick={HandleClick}/>
+                    <>
+                    {!IsClicked ? (
+                        <div>
+                            <ModalProduct supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked} />
+                        </div>
+                        ) : (
+                           <></>
+                        )}
+                    </>
                 </div>
                     ) : (
                         <></>
