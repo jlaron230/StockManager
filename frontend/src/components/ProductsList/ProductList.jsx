@@ -19,7 +19,6 @@ const ProductList = () => {
     const [error, setError] = useState(null);
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('')
-    const [searchResults, setSearchResults] = useState([])
 
     const currentItems = filteredProduct.slice(
         (currentPage - 1) * itemsPerPage,
@@ -197,13 +196,6 @@ const ProductList = () => {
                 <main className=" space-y-6">
                     {/* Recherche */}
                     <div className="flex justify-center">
-                        {isAdmin ? (
-                            <Link to="/ajout-produit">
-                            <ButtonAddProduct />
-                            </Link>
-                        ) : (
-                            <></>
-                        )}
                         <div className="relative w-1/2">
                             <input
                                 type="text"
@@ -249,7 +241,17 @@ const ProductList = () => {
                     )}
 
                     {/* Pagination */}
-                    <div className="flex justify-center space-x-1 mt-4">
+                    <div className="flex justify-center space-x-1 mt-4 flex-wrap flex-col items-center gap-8">
+                        {isAdmin ? (
+                                <div>
+                            <Link to="/ajout-produit">
+                                <ButtonAddProduct />
+                            </Link>
+                                </div>
+                        ) : (
+                            <></>
+                        )}
+                        <div>
                         <button
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === 1}
@@ -279,6 +281,7 @@ const ProductList = () => {
                         >
                             {">"}
                         </button>
+                        </div>
                     </div>
                 </main>
             </div>
