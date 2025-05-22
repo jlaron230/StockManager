@@ -27,6 +27,8 @@ import NewPasswordUser from "@pages/NewPasswordUser";
 import ProductCrud from "@components/ProductsList/ProductCrud";
 import AddProduct from "@components/ProductsList/AddProduct";
 import ProductAdd from "@pages/ProductAdd";
+import ProviderAdd from "@components/ProviderList/ProviderAdd";
+import AddProvider from "@pages/AddProvider";
 
 function App() {
     return (
@@ -38,8 +40,9 @@ function App() {
             <Route path="/inscription" element={<Subscribe />} />
             <Route path="/boutique-manage" element={<StoreManage />} />
             <Route path="/stock-manage" element={<StockManage />} />
-            <Route path="/fournisseur-manage" element={<ProviderManage />} />
+            <Route path="/fournisseur/:id" element={<ProviderManage />} />
             <Route path="/fournisseur" element={<Provider />} />
+            <Route path="/ajout-provider" element={<AddProvider />} />
             <Route path="/produit" element={<Product />} />
             <Route path="/ajout-produit" element={<ProductAdd />} />
             <Route path="/produit/:id" element={<ProductCrud />} />

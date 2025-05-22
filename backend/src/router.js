@@ -37,7 +37,7 @@ router.delete("/products/:id", productControllers.destroy);
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
 router.post("/providers", providerControllers.add);
-router.put("/providers/:id", requireLogin, providerControllers.edit);
+router.put("/providers/:id",  providerControllers.edit); //requireLogin a ajouté
 router.delete("/providers/:id", providerControllers.destroy);
 
 router.get("/stock", stockControllers.browse);

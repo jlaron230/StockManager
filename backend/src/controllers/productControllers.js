@@ -28,14 +28,6 @@ const add = async (req, res) => {
   try {
     const product = req.body;
 
-    // Si un provider est spécifié, récupérer sa catégorie
-    if (product.id_provider) {
-      const [[provider]] = await tables.provider.findCategoryId(product.id_provider);
-      if (provider?.id_category) {
-        product.id_category = provider.id_category;
-      }
-    }
-
     const [result] = await tables.product.insert(product);
 
     res.status(201).json({

@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
-import Counter from "@components/Counter";
+import ProviderCrud from "@components/ProviderList/ProviderCrud";
+
 const ProviderManage = () => {
     return (
-        <div><Counter /></div>
+        <div><ProviderCrud /></div>
     )
 }
 
