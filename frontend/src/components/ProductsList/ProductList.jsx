@@ -4,8 +4,11 @@ import {date} from "yup";
 import product from "@pages/Product";
 import axios from "axios";
 import {set} from "husky";
+import {Link} from "react-router-dom";
+import ButtonAddProduct from "@components/Button/ButtonAddProduct";
 
 const ProductList = () => {
+    const [isAdmin, setIsAdmin] = useState(true);
     const [products, setProducts] = useState([])
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [filteredDate, setfilteredDate] = useState(true);
@@ -16,7 +19,6 @@ const ProductList = () => {
     const [error, setError] = useState(null);
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('')
-    const [searchResults, setSearchResults] = useState([])
 
     const currentItems = filteredProduct.slice(
         (currentPage - 1) * itemsPerPage,
@@ -152,7 +154,8 @@ const ProductList = () => {
                             <input onChange={(e) => {
                                 const value = e.target.value;
                                 setMinPrice(value);
-                                filteredPrice(Number(maxPrice), Number(value));
+                                filteredPrice(Number(value), Number(maxPrice));
+                                filteredPrice(Number(minPrice), Number(value));
                             }} type="number" placeholder="minimum"
                                    className="w-full p-2 border rounded-md text-sm"/>
 
@@ -225,6 +228,7 @@ const ProductList = () => {
                                             productDesc={product.description}
                                             productImage={product.image}
                                             productCategory={category ? category.nom : "Non renseigné"}
+                                            productId={product.id_product}
                                         />
                                     )
                                 })
@@ -237,7 +241,17 @@ const ProductList = () => {
                     )}
 
                     {/* Pagination */}
-                    <div className="flex justify-center space-x-1 mt-4">
+                    <div className="flex justify-center space-x-1 mt-4 flex-wrap flex-col items-center gap-8">
+                        {isAdmin ? (
+                                <div>
+                            <Link to="/ajout-produit">
+                                <ButtonAddProduct />
+                            </Link>
+                                </div>
+                        ) : (
+                            <></>
+                        )}
+                        <div>
                         <button
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === 1}
@@ -267,6 +281,7 @@ const ProductList = () => {
                         >
                             {">"}
                         </button>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -275,7 +290,7 @@ const ProductList = () => {
     )
 }
 
-const ProductFiche = ({productName, productImage, productDesc, productCategory }) => {
+const ProductFiche = ({productName, productImage, productDesc, productCategory, productId }) => {
     return (
         <>
             {/* Liste produits */}
@@ -292,9 +307,11 @@ const ProductFiche = ({productName, productImage, productDesc, productCategory }
                             {productDesc}
                         </p>
                         <p className="text-gray-400 text-xs italic">Catégorie : {productCategory}</p>
+                        <Link to={`/produit/${productId}`}>
                         <button className="mt-2 bg-blue-700 text-white text-sm px-3 py-1 rounded">
                             voir produit
                         </button>
+                        </Link>
                     </div>
                 </div>
             </div>

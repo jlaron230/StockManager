@@ -30,24 +30,7 @@ const updateProfile = async (req, res) => {
     }
   };
 
-  const updateFcmToken = async (req, res) => {
-    try {
-      const userId = req.session.user?.id;
-      if (!userId) return res.sendStatus(401);
-  
-      const { fcm_token } = req.body;
-      if (!fcm_token) return res.status(400).json({ message: "Token manquant" });
-  
-      await tables.user.updateFcmToken(userId, fcm_token);
-      res.sendStatus(204);
-    } catch (err) {
-      console.error("Erreur updateFcmToken :", err);
-      res.sendStatus(500);
-    }
-  };
-  
 module.exports = {
   getProfile,
   updateProfile,
-  updateFcmToken,
 };

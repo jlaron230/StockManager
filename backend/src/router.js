@@ -8,8 +8,6 @@ const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 
-const { testNotif } = require("./controllers/notificationTestController");
-
 //import middleware functions
 const {
     hashPassword,
@@ -20,13 +18,8 @@ const {
 const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
 
-
-router.post("/notify", testNotif);
-
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
-router.put("/user/token", requireLogin, userControllers.updateFcmToken);
-
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);
@@ -44,7 +37,7 @@ router.delete("/products/:id", productControllers.destroy);
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
 router.post("/providers", providerControllers.add);
-router.put("/providers/:id", requireLogin, providerControllers.edit);
+router.put("/providers/:id",  providerControllers.edit); //requireLogin a ajouté
 router.delete("/providers/:id", providerControllers.destroy);
 
 router.get("/stock", stockControllers.browse);
