@@ -18,8 +18,12 @@ const {
 const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
 
+router.get("/users", userControllers.getAllUsers);
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
+router.delete("/user/:id", userControllers.deleteUser);
+router.put("/user/:id", userControllers.updateUser);
+
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);

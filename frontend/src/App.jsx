@@ -30,6 +30,7 @@ import ProductAdd from "@pages/ProductAdd";
 import ProviderAdd from "@components/ProviderList/ProviderAdd";
 import AddProvider from "@pages/AddProvider";
 import ResetPassword from "@pages/ResetPassword";
+import Dashboard from "@pages/Dashboard"; 
 
 function App() {
     return (
@@ -59,6 +60,7 @@ function App() {
             <Route path="/compte-admin" element={<AdminProfil />} />
             <Route path="*" element={<Error404 />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/Dashboard" element={<Dashboard />} />
         </Routes>
            <Footer/>
        </>
