@@ -29,6 +29,7 @@ import AddProduct from "@components/ProductsList/AddProduct";
 import ProductAdd from "@pages/ProductAdd";
 import ProviderAdd from "@components/ProviderList/ProviderAdd";
 import AddProvider from "@pages/AddProvider";
+import ResetPassword from "@pages/ResetPassword";
 
 function App() {
     return (
@@ -57,6 +58,7 @@ function App() {
             <Route path="/new-password" element={<NewPasswordUser />} />
             <Route path="/compte-admin" element={<AdminProfil />} />
             <Route path="*" element={<Error404 />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
            <Footer/>
        </>
