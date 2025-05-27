@@ -8,6 +8,8 @@ const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 
+const { testNotif } = require("./controllers/notificationTestController");
+
 //import middleware functions
 const {
     hashPassword,
@@ -17,13 +19,14 @@ const {
   
 const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
-
+router.post("/notify", testNotif);
 router.get("/users", userControllers.getAllUsers);
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
 router.post("/user", userControllers.createUser);
+router.put("/user/token", requireLogin, userControllers.updateFcmToken);
 
 
 router.post("/register", hashPassword, registerUser);
