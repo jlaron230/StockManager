@@ -120,6 +120,6 @@ module.exports = {
   getAllUsers,
   deleteUser,
   updateUser,
-  createUser
+  createUser,
   updateFcmToken,
 };
