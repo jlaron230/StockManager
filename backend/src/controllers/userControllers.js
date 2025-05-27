@@ -30,7 +30,21 @@ const updateProfile = async (req, res) => {
     }
   };
 
+// Function to get all users
+const browse = (req, res) => {
+  tables.user
+      .findAll()
+      .then(([rows]) => {
+        res.send(rows); // Send the retrieved rows as the response
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500); // Send a 500 status on error
+      });
+};
+
 module.exports = {
   getProfile,
   updateProfile,
+  browse,
 };

@@ -24,6 +24,7 @@ const read = async (req, res) => {
   }
 };
 
+
 const getLowStock = async (req, res) => {
     try {
       const [rows] = await tables.stock.getLowStockProducts();

@@ -11,7 +11,6 @@ import ProviderManage from "@pages/ProviderManage";
 import Provider from "@pages/Provider";
 import Product from "@pages/Product";
 import PrivacyPolicy from "@pages/PrivacyPolicy";
-import Order from "@pages/Order";
 import Login from "@pages/Login";
 import LegalNotice from "@pages/LegalNotice";
 import Error404 from "@pages/Error404";
@@ -29,6 +28,7 @@ import AddProduct from "@components/ProductsList/AddProduct";
 import ProductAdd from "@pages/ProductAdd";
 import ProviderAdd from "@components/ProviderList/ProviderAdd";
 import AddProvider from "@pages/AddProvider";
+import OrderManagement from "@pages/OrderManagement";
 
 function App() {
     return (
@@ -47,7 +47,7 @@ function App() {
             <Route path="/ajout-produit" element={<ProductAdd />} />
             <Route path="/produit/:id" element={<ProductCrud />} />
             <Route path="/politique-de-confidentialite" element={<PrivacyPolicy />} />
-            <Route path="/commande" element={<Order />} />
+            <Route path="/commande-gestion" element={<OrderManagement />} />
             <Route path="/connexion" element={<Login />} />
             <Route path="/notice-utilisation" element={<LegalNotice />} />
             <Route path="/page-non-trouve" element={<Error404 />} />

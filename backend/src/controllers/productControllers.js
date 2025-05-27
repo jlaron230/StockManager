@@ -44,12 +44,6 @@ const add = async (req, res) => {
 const edit = async (req, res) => {
   try {
     const product = req.body;
-    if (product.id_provider) {
-      const [[provider]] = await tables.provider.findCategoryId(product.id_provider);
-      if (provider?.id_category) {
-        product.id_category = provider.id_category;
-      }
-    }
 
     const [result] = await tables.product.update(req.params.id, product);
     console.log(result);
