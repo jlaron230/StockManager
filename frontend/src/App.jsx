@@ -32,7 +32,75 @@ import AddProvider from "@pages/AddProvider";
 import ResetPassword from "@pages/ResetPassword";
 import Dashboard from "@pages/Dashboard"; 
 
+//firebase
+import { useEffect, useState } from "react";
+import { messaging, getToken } from "./firebase";
+
 function App() {
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 1. Vérifie la session à l'ouverture
+  useEffect(() => {
+    fetch("http://localhost:5000/session", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user) {
+          console.log("🔐 Session active :", data.user);
+          setIsLoggedIn(true);
+        }
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      });
+  }, []);
+
+  // 2. Récupère et stocke le token FCM localement
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BEdkve1KYu7rlujHqphLkZBmIZ8q3ou46FXu2SiJkmnhNflZUwuZpx7O6WLg9xZZa5aYpeZ4ONo2yD2U6488pD8",
+        });
+        if (token) {
+          console.log("✅ Token FCM récupéré :", token);
+          localStorage.setItem("fcm_token", token);
+        }
+      } catch (err) {
+        console.error("❌ Erreur récupération FCM token :", err);
+      }
+    };
+
+    fetchFcmToken();
+  }, []);
+
+  // 3. Si connecté → envoie le token au backend
+  useEffect(() => {
+    const token = localStorage.getItem("fcm_token");
+
+    if (isLoggedIn && token) {
+      fetch("http://localhost:5000/user/token", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ fcm_token: token }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            console.log("📤 Token FCM envoyé au backend");
+            localStorage.removeItem("fcm_token");
+          }
+        })
+        .catch((err) => {
+          console.error("❌ Envoi du token FCM échoué :", err);
+        });
+    }
+  }, [isLoggedIn]);
+
     return (
         <>
         <Navbar/>
