@@ -94,6 +94,13 @@ class UserManager extends AbstractManager {
         );
     }
 
+    updateTokenMobil(id_user, token) {
+        return this.database.query(
+        `UPDATE user SET fcm_token_mobil = ? WHERE id_user = ?`,
+        [token, id_user]
+        );
+    }
+
 }
 
 module.exports = UserManager;

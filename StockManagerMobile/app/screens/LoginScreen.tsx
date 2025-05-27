@@ -5,6 +5,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useEffect } from 'react';
 
+import { useRegisterPushToken } from '../hooks/useRegisterPushToken';
+
+
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { useNavigation } from '@react-navigation/native';
@@ -25,6 +28,8 @@ export default function LoginScreen() {
 
 const handleLogin = async () => {
   console.log("Tentative de connexion...");
+
+  useRegisterPushToken(user?.id_user);
 
   try {
     const response = await axios.post('http://192.168.1.121:5000/login', {
@@ -53,6 +58,7 @@ const handleLogin = async () => {
     }
     }, [user]);
 
+  
 
   
 

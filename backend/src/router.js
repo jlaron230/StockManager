@@ -24,6 +24,7 @@ router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
 router.post("/user", userControllers.createUser);
+router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
 
 
 router.post("/register", hashPassword, registerUser);
