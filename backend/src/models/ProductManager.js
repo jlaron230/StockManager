@@ -134,6 +134,14 @@ class ProductManager extends AbstractManager {
       [ids]
     );
   }
+
+ findByCategory(id_category) {
+  return this.database.query(
+    `SELECT * FROM ${this.table} WHERE id_category = ?`,
+    [id_category]
+  ).then(([rows]) => rows);
+}
+
   
 }
 

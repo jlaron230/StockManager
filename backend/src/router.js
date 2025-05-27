@@ -38,6 +38,8 @@ router.get("/products/:id", productControllers.read);
 router.post("/products", productControllers.add);
 router.put("/products/:id", productControllers.edit);
 router.delete("/products/:id", productControllers.destroy);
+router.get("/products/category/:id", productControllers.getByCategory);
+
 
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
