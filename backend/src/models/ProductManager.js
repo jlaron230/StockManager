@@ -16,7 +16,7 @@ class ProductManager extends AbstractManager {
         product.prix_unitaire,
         product.quantité_en_stock,        
         product.localisation,
-        product.date_add,
+        product.date_add || null,
         product.code_product,
         product.date_peremption,
         product.last_updated,
