@@ -1,5 +1,7 @@
 import AdminInfoSection from "@components/Dashboard/AdminInfoSection";
 import UserSection from "@components/Dashboard/UserSection";
+import StockAlertSection from "../components/Dashboard/StockAlertSection";
+import StockChartSection from "../components/Dashboard/StockChartSection";
 
 const Dashboard = () => {
   return (
@@ -8,6 +10,8 @@ const Dashboard = () => {
 
     <AdminInfoSection />
     <UserSection />
+    <StockAlertSection />
+    <StockChartSection />
     </div>
   );
 };

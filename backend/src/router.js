@@ -23,6 +23,7 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
+router.post("/user", userControllers.createUser);
 
 
 router.post("/register", hashPassword, registerUser);
@@ -41,12 +42,15 @@ router.delete("/products/:id", productControllers.destroy);
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
 router.post("/providers", providerControllers.add);
-router.put("/providers/:id",  providerControllers.edit); //requireLogin a ajouté
+router.put("/providers/:id",  providerControllers.edit);
 router.delete("/providers/:id", providerControllers.destroy);
 
 router.get("/stock", stockControllers.browse);
+router.get("/stock/categorie", stockControllers.getStockByCategory);
 router.get("/stock/low", stockControllers.getLowStock);
 router.get("/stock/:productId", stockControllers.read);
+
+
 
 router.post("/orders", orderControllers.add);
 router.get("/orders/:id/status", orderControllers.readStatus);
