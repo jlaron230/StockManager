@@ -61,7 +61,47 @@ class UserManager extends AbstractManager {
             ]
         );
     }
+
+    updateFcmToken(id, token) {
+        return this.database.query(
+          `UPDATE ${this.table} SET fcm_token = ? WHERE id_user = ?`,
+          [token, id]
+        );
+    }
     
+        getAllWithFcmToken() {
+        return this.database.query(
+         `SELECT id_user, fcm_token FROM ${this.table}
+          WHERE fcm_token IS NOT NULL AND fcm_token != ''`
+        );
+    }
+
+     
+    findAll() {
+        return this.database.query(
+            `SELECT id_user, nom, prenom, email, role
+             FROM ${this.table}`
+        );  
+    }
+
+    delete(id) {
+        return this.database.query(`DELETE FROM ${this.table} WHERE id_user = ?`, [id]);
+    }
+
+    update(id, data) {
+        return this.database.query(
+        `UPDATE ${this.table} SET nom = ?, prenom = ?, email = ?, role = ? WHERE id_user = ?`,
+        [data.nom, data.prenom, data.email, data.role, id]
+        );
+    }
+
+    create(user) {
+        return this.database.query(
+        `INSERT INTO ${this.table} (nom, prenom, email, password, role) VALUES (?, ?, ?, ?, ?)`,
+        [user.nom, user.prenom, user.email, user.password, user.role]
+        );
+    }
+
 }
 
 module.exports = UserManager;
