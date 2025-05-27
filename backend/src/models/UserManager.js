@@ -68,6 +68,14 @@ class UserManager extends AbstractManager {
           [token, id]
         );
     }
+    
+        getAllWithFcmToken() {
+        return this.database.query(
+         `SELECT id_user, fcm_token FROM ${this.table}
+          WHERE fcm_token IS NOT NULL AND fcm_token != ''`
+        );
+    }
+
      
     findAll() {
         return this.database.query(
