@@ -1,4 +1,5 @@
 const tables = require("../models");
+const {tr} = require("@faker-js/faker");
 
 const add = async (req, res) => {
   const order = req.body;
@@ -18,10 +19,17 @@ const add = async (req, res) => {
       });
     }
 
-    const [orderResult] = await tables.order.insert({
+    const orderResult = await tables.order.insert({
       ...order,
       total_ammount: 0,
     });
+
+    const stockUpdatePromises = order.products
+        .filter(p => p.id_product && p.quantité != null)
+        .map(p =>
+            tables.product.incrementStock(p.id_product, p.quantité)
+        );
+    await Promise.all(stockUpdatePromises);
 
     const id_order = orderResult.insertId;
 
@@ -33,6 +41,7 @@ const add = async (req, res) => {
       })
     );
     await Promise.all(insertPromises);
+
 
     const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(id_order);
     const total = detailedProducts.reduce(
@@ -49,64 +58,88 @@ const add = async (req, res) => {
     });
   } catch (err) {
     console.error("Erreur dans orderControllers.add :", err);
+    if (err.stack) console.error(err.stack);
     res.sendStatus(500);
   }
 };
 
 const update = async (req, res) => {
-  const orderId = req.params.id;
-  const updatedOrder = req.body;
+  const order = req.body;
+  const id_order = req.params.id;
+
+  // Ne traiter que les commandes "terminées"
+  if (order.statut !== "terminée") {
+    return res.sendStatus(204);
+  }
 
   try {
-    const productIds = updatedOrder.products.map((p) => p.id_product);
+    // Vérifier que la commande existe et n'est pas déjà validée
+    const [existingOrder] = await tables.order.read(id_order);
+    if (!existingOrder) {
+      return res.status(404).json({ message: "Commande introuvable." });
+    }
+
+    if (existingOrder.is_validated) {
+      return res.status(400).json({ message: "La commande est déjà validée." });
+    }
+
+    // Vérification de la cohérence des fournisseurs
+    const productIds = order.products.map(p => p.id_product);
     const [products] = await tables.product.getProvidersByIds(productIds);
 
     const produitsInvalides = products.filter(
-      (p) => p.id_provider !== updatedOrder.id_provider
+        (p) => String(p.id_provider) !== String(order.id_provider)
     );
 
     if (produitsInvalides.length > 0) {
       return res.status(400).json({
         message: "Certains produits ne correspondent pas au fournisseur sélectionné.",
-        produitsInvalides,
+        invalidProducts: produitsInvalides,
       });
     }
 
-    // 1. Mettre à jour la commande
-    await tables.order.update(orderId, updatedOrder);
+    // Mise à jour des infos de base de la commande
+    await tables.order.update(id_order, order);
 
-    // 2. Supprimer les produits existants de la commande
-    await tables.order_product.deleteByOrderId(orderId);
+    // Suppression des anciens produits liés à la commande
+    await tables.order_product.deleteByOrderId(id_order);
 
-    // 3. Réinsérer les nouveaux produits
-    const insertPromises = updatedOrder.products.map((p) =>
-      tables.order_product.insert({
-        id_order: orderId,
-        id_product: p.id_product,
-        quantité_commandée: p.quantité,
-      })
+    // Insertion des nouveaux produits liés à la commande
+    const insertions = order.products.map((p) =>
+        tables.order_product.insert({
+          id_order,
+          id_product: p.id_product,
+          quantité_commandée: p.quantité,
+        })
     );
-    await Promise.all(insertPromises);
+    await Promise.all(insertions);
 
-    // 4. Recalculer le total
-    const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(orderId);
-    const total = detailedProducts.reduce(
-      (sum, product) => sum + product.prix_unitaire * product.quantité_commandée,
-      0
-    );
+    // Récupération des prix unitaires pour calcul du total
+    const [productDetails] = await tables.product.getDetailsByIds(productIds); // méthode à implémenter
 
-    await tables.order.updateTotal(orderId, total);
+    // Calcul du total
+    let totalAmount = 0;
+    order.products.forEach((p) => {
+      const product = productDetails.find((pd) => pd.id_product === p.id_product);
+      if (product) {
+        totalAmount += product.prix_unitaire * p.quantité;
+      }
+    });
 
-    res.sendStatus(204);
+    // Mise à jour du total dans la commande
+    await tables.order.update(id_order, {
+      ...order,
+      total_ammount: totalAmount,
+    });
+
+    return res.sendStatus(204);
   } catch (err) {
     console.error("Erreur dans orderControllers.update :", err);
-    res.sendStatus(500);
+    return res.status(500).json({
+      message: "Erreur serveur lors de la mise à jour de la commande.",
+    });
   }
 };
-
-
-
-
 
 const read = async (req, res) => {
   try {
@@ -118,6 +151,16 @@ const read = async (req, res) => {
     }
   } catch (err) {
     console.error("Erreur dans orderControllers.read :", err);
+    res.sendStatus(500);
+  }
+};
+
+const readAll = async (req, res) => {
+  try {
+    const [rows] = await tables.order.readAll();
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
     res.sendStatus(500);
   }
 };
@@ -136,6 +179,8 @@ const readStatus = async (req, res) => {
   }
 
 };
+
+
 
 const getProductsFromOrder = async (req, res) => {
   try {
@@ -164,6 +209,30 @@ const getFullOrder = async (req, res) => {
   }
 };
 
+const getOrderTotals = async (req, res) => {
+  try {
+    const [rows] = await tables.order_product.findAllWithDetails();
+    res.json(rows);
+  } catch (err) {
+    console.error("Erreur dans getOrderTotals :", err);
+    res.sendStatus(500);
+  }
+};
+
+const destroy = async (req, res) => {
+  try {
+    const [result] = await tables.order.delete(req.params.id);
+    if (result.affectedRows === 0) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+};
+
 module.exports = {
   add,
   update,
@@ -171,4 +240,7 @@ module.exports = {
   readStatus,
   getProductsFromOrder,
   getFullOrder,
+  readAll,
+  destroy,
+  getOrderTotals,
 };

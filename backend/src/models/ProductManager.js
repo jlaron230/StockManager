@@ -90,6 +90,13 @@ class ProductManager extends AbstractManager {
        LEFT JOIN provider pr ON p.id_provider = pr.id_provider`
     );
   }
+
+    incrementStock(id_product, quantity) {
+        return this.database.query(
+            `UPDATE ${this.table} SET quantité_en_stock = quantité_en_stock + ? WHERE id_product = ?`,
+            [quantity, id_product]
+        );
+    }
   
 
   read(id) {
@@ -122,16 +129,33 @@ class ProductManager extends AbstractManager {
       [id]
     );
   }
+
+    decrementStock(id_product, quantity) {
+        return this.database.query(
+            `UPDATE ${this.table} SET quantité_en_stock = quantité_en_stock - ? WHERE id_product = ?`,
+            [quantity, id_product]
+        );
+    }
+
+    getDetailsByIds(productIds) {
+        const placeholders = productIds.map(() => "?").join(",");
+        const sql = `
+            SELECT id_product, prix_unitaire
+            FROM ${this.table}
+            WHERE id_product IN (${placeholders})
+        `;
+        return this.database.query(sql, productIds);
+    }
   
   
   delete(id) {
     return this.database.query(`DELETE FROM ${this.table} WHERE id_product = ?`, [id]);
   }
-  
-  getProvidersByIds(ids) {
+
+  getProvidersByIds(id) {
     return this.database.query(
       `SELECT id_product, id_provider FROM product WHERE id_product IN (?)`,
-      [ids]
+      [id]
     );
   }
   

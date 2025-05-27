@@ -12,6 +12,7 @@ class OrderProductManager extends AbstractManager {
       [orderProduct.id_order, orderProduct.id_product, orderProduct.quantité_commandée]
     );
   }
+
   
 
   findByOrderId(orderId) {
@@ -36,6 +37,23 @@ class OrderProductManager extends AbstractManager {
        JOIN product p ON op.id_product = p.id_product
        WHERE op.id_order = ?`,
       [orderId]
+    );
+  }
+
+  findAllWithDetails() {
+    return this.database.query(
+        `SELECT
+           p.id_product,
+           p.nom,
+           p.prix_unitaire AS unit_price,
+           op.quantité_commandée,
+           o.id_order
+         FROM order_product op
+                JOIN product p ON op.id_product = p.id_product
+                JOIN \`order\` o ON o.id_order = op.id_order
+         WHERE o.statut = 'terminée'
+         ORDER BY o.id_order DESC
+           LIMIT 5`
     );
   }
 

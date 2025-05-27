@@ -28,7 +28,6 @@ router.put("/user/:id", userControllers.updateUser);
 router.post("/user", userControllers.createUser);
 router.put("/user/token", requireLogin, userControllers.updateFcmToken);
 
-
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);
 router.get("/session", checkSession);
@@ -58,9 +57,12 @@ router.get("/stock/:productId", stockControllers.read);
 router.post("/orders", orderControllers.add);
 router.get("/orders/:id/status", orderControllers.readStatus);
 router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
+router.get("/orders-total", orderControllers.getOrderTotals);
 router.get("/orders/:id", orderControllers.read);
-router.put("/orders/:id", requireLogin, orderControllers.update);
+router.get("/orders", orderControllers.readAll);
+router.put("/orders/:id",  orderControllers.update); //requireLogin a ajouté
 router.get("/orders/:id/full", orderControllers.getFullOrder);
+router.delete("/orders/:id", orderControllers.destroy);
 
 router.get("/categories", categoryControllers.browse);
 router.get("/categories/:id", categoryControllers.read);

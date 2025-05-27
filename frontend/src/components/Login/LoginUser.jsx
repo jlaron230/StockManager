@@ -63,6 +63,7 @@ const LoginUser = () => {
                         initialValues={{
                             email: "",
                             password: "",
+                            last_login: "",
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting, setFieldError }) => {
