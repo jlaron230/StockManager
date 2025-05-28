@@ -15,7 +15,7 @@ import ModalProduct from "@components/ProductsList/ModalProduct";
 const ProductCrud = () => {
     let navigate = useNavigate();
     const {id} = useParams();
-    const [isAdmin, setIsAdmin] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [product, setProduct] = useState(null);
     const [provider, setProvider] = useState([]);
     const [category, setCategory] = useState(null);
@@ -144,22 +144,32 @@ const ProductCrud = () => {
 
     return (
         <div className="flex justify-center">
-            <aside className="max-w-3xl p-6">
-                <Link to="/produit">
-                    <ButtonReturn className="flex flex-wrap"/>
-                </Link>
+            <main className="flex flex-wrap m-8">
                 <div>
-                    <p>Date de création :<span> {dateArray[2]}</span></p>
+                <div>
+                    <Link to="/produit">
+                        <ButtonReturn className="flex flex-wrap"/>
+                    </Link>
                 </div>
-                <ImageEffect image={images} nom={product.nom}/>
-            </aside>
-            <main className="flex flex-wrap">
-                <div className="max-w-3xl mx-auto p-6">
+                <div className="flex flex-wrap">
+                    <div className="max-w-3xl mx-auto p-6">
+                        <div>
+                            <p>Date de création :<span className="text-blue-500 font-bold"> {dateArray[2]}</span></p>
+                        </div>
+                        <ImageEffect image={images} nom={product.nom}/>
+                        <div className="flex justify-center mt-6">
+                            <p className="gap-1 flex items-center"><BellIcon className="size-10 text-color-picto" /> être alerter <a href="#" className="text-color">(produit en rupture de stock)</a></p>
+                        </div>
+                        <div className="mt-8 flex justify-center">
+                            <ButtonSupp onClick={HandleClick}/>
+                        </div>
+                    </div>
+                <div className="max-w-3xl mx-auto p-6 flex flex-col gap-2.5">
                     <h1 className="text-2xl font-bold">{product.nom}</h1>
-                    <div>
-                        <p>Seuil minimum</p>
-
+                    <div className="">
+                        <p className="text-base">Seuil minimum</p>
                         {isAdmin ? (
+                            <div className="flex gap-2">
                             <>
                                 <InputEdit
                                     type="number"
@@ -173,15 +183,19 @@ const ProductCrud = () => {
                                     }}
                                 />
                             </>
+                            </div>
                         ) : (
-                            <span>{value}</span>
+                            <span className="text-blue-500 font-bold">{value}</span>
                         )}
+                    </div>
                         <div>
-                            <p>Date d'ajout au stock :<span> {dateArray[0]}</span></p>
+                            <p className="text-base">Date d'ajout au stock</p>
+                            <span className="text-blue-500 font-bold"> {dateArray[0]}</span>
                         </div>
                         <div>
-                            <p>Description</p>
+                            <p className="text-base">Description</p>
                             {isAdmin ? (
+                                <div className="flex gap-2 items-start">
                                 <>
                                     <TextEdit type="text"
                                               value={desc}
@@ -193,20 +207,17 @@ const ProductCrud = () => {
                                                   handleValidate("description");
                                               }}/>
                                 </>
+                                </div>
                             ) : (
-                                <span>{desc}</span>
+                                <div className="text-blue-500 font-bold whitespace-pre-line break-words max-w-full">
+                                    {desc}
+                                </div>
                             )}
                         </div>
-                    </div>
                     <div>
-                        <p className="gap-1 flex items-center"><BellIcon className="size-10 text-color-picto" /> être alerter <a href="#" className="text-color">(produit en rupture de stock)</a></p>
-                    </div>
-                </div>
-                <div className="max-w-3xl mx-auto p-6">
-                    <div>
-                        <p>Catégorie</p>
+                        <p className="text-base">Catégorie</p>
                         {isAdmin ? (
-                            <>
+                                <div className="flex items-center gap-2">
                                 <OptionCategory value={selectedCategory}
                                                 isEditing={editMode.category}
                                                 options={categoryList}
@@ -216,29 +227,29 @@ const ProductCrud = () => {
                                                     handlePut("category");
                                                     handleValidate("category");
                                                 }}/>
-                            </>
+                                </div>
                         ) : (
-                            <span>{category?.nom}</span>
+                            <span className="text-blue-500 font-bold">{category?.nom}</span>
                         )}
                     </div>
                     <div>
-                        <p>Fournisseur</p>
-                        <p>{provider.nom}</p>
+                        <p className="text-base">Fournisseur</p>
+                        <p className="text-blue-500 font-bold">{provider.nom}</p>
                     </div>
                     <div>
-                        <p>Localisation</p>
-                        <p>{product.localisation}</p>
+                        <p className="text-base">Localisation</p>
+                        <p className="text-blue-500 font-bold">{product.localisation}</p>
                     </div>
                 </div>
-                <div className="max-w-3xl mx-auto p-6">
+                <div className="max-w-3xl mx-auto p-6 flex flex-col gap-2.5 mt-10.5">
                     <div>
-                        <p>Code produit</p>
-                        <p>{product.code_product}</p>
+                        <p className="text-base">Code produit</p>
+                        <p className="text-blue-500 font-bold">{product.code_product}</p>
                     </div>
                     <div>
-                        <p>Quantité actuelle</p>
+                        <p className="text-base">Quantité actuelle</p>
                         {isAdmin ? (
-                            <>
+                            <div className="flex gap-2">
                                 <InputEdit
                                     type="number"
                                     value={QuantityNow}
@@ -250,15 +261,15 @@ const ProductCrud = () => {
                                         handleValidate("quantityNow");
                                     }}
                                 />
-                            </>
+                            </div>
                         ) : (
-                            <span>{QuantityNow}</span>
+                            <span className="text-blue-500 font-bold">{QuantityNow}</span>
                         )}
                     </div>
                     <div>
-                        <p>Prix unitaire</p>
+                        <p className="text-base">Prix unitaire</p>
                         {isAdmin ? (
-                            <>
+                            <div className="flex gap-2">
                                 <InputEdit
                                     type="number"
                                     value={MaxPrice}
@@ -271,19 +282,19 @@ const ProductCrud = () => {
                                     }}
                                 />
                                 {!editMode.MaxPrice && <span>€</span>}
-                            </>
+                            </div>
                         ) : (
-                            <span>{MaxPrice} €</span>
+                            <span className="text-blue-500 font-bold">{MaxPrice} €</span>
                         )}
                     </div>
                     <div>
-                        <p>Date de péremption</p>
-                        <p>{dateArray[1]}</p>
+                        <p className="text-base">Date de péremption</p>
+                        <p className="text-blue-500 font-bold">{dateArray[1]}</p>
                     </div>
                     <div>
-                        <p>Condition d'achat</p>
+                        <p className="text-base">Condition d'achat</p>
                         {isAdmin ? (
-                            <>
+                            <div className="flex gap-2">
                                 <OptionText
                                     type="text"
                                     value={sale}
@@ -295,16 +306,13 @@ const ProductCrud = () => {
                                         handleValidate("SaleOption");
                                     }}
                                 />
-                            </>
+                            </div>
                         ) : (
-                            <span>{sale}</span>
+                            <span className="text-blue-500 font-bold">{sale}</span>
                         )}
                     </div>
-
                 </div>
                 {isAdmin ? (
-                <div className="max-w-3xl p-6">
-                    <ButtonSupp onClick={HandleClick}/>
                     <>
                     {!IsClicked ? (
                         <div>
@@ -314,10 +322,11 @@ const ProductCrud = () => {
                            <></>
                         )}
                     </>
-                </div>
                     ) : (
                         <></>
                     )}
+                </div>
+                </div>
             </main>
         </div>
     );
