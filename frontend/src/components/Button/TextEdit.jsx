@@ -5,7 +5,7 @@ const TextEdit = ({value, isEditing, onClick, onChange, onValidate}) => {
     return (
         <>
             <textarea
-                rows="3" cols="33"
+                rows="2" cols="33"
                 value={value}
                 readOnly={!isEditing}
                 onClick={onClick}
