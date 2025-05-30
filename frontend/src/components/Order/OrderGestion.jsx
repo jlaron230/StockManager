@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import OrdersTable from "@components/Order/OrdersTable";
 import OrderCrud from "@components/Order/OrderCrud";
@@ -17,6 +17,7 @@ const EnumStatut = [
 ]
 
 const OrderGestion = () => {
+    const [isAdmin, setIsAdmin] = useState(true);
     const { id } = useParams();
     const [navigation, setNavigation] = useState(initialNavigation);
     const [ordersAll, setOrdersAll] = useState([]);
@@ -109,7 +110,9 @@ const OrderGestion = () => {
 
             await axios.put(
                 `${import.meta.env.VITE_BACKEND_URL}/orders/${editedOrder.id_order}`,
-                payload,
+                payload, {
+                    withCredentials: true
+                }
             );
 
             await fetchAllData();
@@ -189,7 +192,9 @@ const OrderGestion = () => {
 
     const deleteOrder = async (id) => {
         try {
-            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/orders/${id}`);
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/orders/${id}`,{
+                withCredentials: true
+            });
             setOrdersAll((prev) => prev.filter((o) => o.id_order !== id));
         } catch (err) {
             console.error("Erreur lors de la suppression :", err);
@@ -197,9 +202,38 @@ const OrderGestion = () => {
         }
     };
 
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    navigate("/")
+                    // Si non connecté, on redirige vers l'accueil
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user?.user?.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    setIsAdmin(false);
+                    navigate("/")
+                } else {
+                    setIsAdmin(true);
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
+
     const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
     return (
+        <>
+        {isAdmin ? (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
             <aside className="w-64 bg-white border-r shadow-sm p-4">
@@ -250,6 +284,12 @@ const OrderGestion = () => {
                 {navigation[2].current && <OrderTotals ordersAll={ordersAll} />}
             </main>
         </div>
+            ) : (
+                <div>
+                    <p>Chargement</p>
+                </div>
+            )}
+        </>
     );
 };
 

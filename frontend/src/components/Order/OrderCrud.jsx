@@ -2,13 +2,42 @@ import { useEffect, useState } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import axios from "axios";
 import ButtonOrder from "@components/Button/ButtonOrder";
+import {useNavigate} from "react-router-dom";
 
 const OrderCrud = () => {
+    const [isAdmin, setIsAdmin] = useState(true);
     const [providers, setProviders] = useState([]);
     const [user, setUser] = useState(null);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [total, setTotal] = useState(0);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    navigate("/")
+                    // Si non connecté, on redirige vers l'accueil
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user?.user?.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    setIsAdmin(false);
+                    navigate("/")
+                } else {
+                    setIsAdmin(true);
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
 
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`).then((res) => setProviders(res.data));
@@ -18,6 +47,8 @@ const OrderCrud = () => {
     }, []);
 
     return (
+        <>
+        {isAdmin ? (
         <div className="max-w-3xl mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Créer une commande</h1>
 
@@ -57,7 +88,9 @@ const OrderCrud = () => {
                             })),
                         };
 
-                        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/orders`, payload);
+                        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/orders`, payload, {
+                            withCredentials: true
+                        });
                         alert("Commande créée avec succès !");
                         resetForm();
                         setTotal(0);
@@ -165,6 +198,12 @@ const OrderCrud = () => {
                 }}
             </Formik>
         </div>
+            ) : (
+                <div>
+                    <p>Chargement</p>
+                </div>
+            )}
+            </>
     );
 };
 

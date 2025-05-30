@@ -26,6 +26,13 @@ async function loginUser(req, res, next) {
       const [firstUser] = user;
       req.user = firstUser; // Passe l'utilisateur au middleware suivant
       console.log(req.user);
+
+      req.session.user = {
+        id_user: firstUser.id_user,
+        role: firstUser.role,
+        nom: firstUser.nom,
+      };
+      req.user = firstUser;
       next(); // Passe au middleware suivant (ex: verifyPassword)
     } else {
       res.status(401).json({ message: "Utilisateur non trouvé." });

@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 import ButtonAddProduct from "@components/Button/ButtonAddProduct";
 
 const ProductList = () => {
-    const [isAdmin, setIsAdmin] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [products, setProducts] = useState([])
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [filteredDate, setfilteredDate] = useState(true);
@@ -85,6 +85,29 @@ const ProductList = () => {
     useEffect(() => {
         setFilteredProduct(products);
     }, [products]);
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    // Si non connecté, on redirige vers l'accueil
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user?.user?.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    setIsAdmin(false);
+                } else {
+                    setIsAdmin(true);
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
 
     useEffect(() => {
         const FetchProductData = async () => {
