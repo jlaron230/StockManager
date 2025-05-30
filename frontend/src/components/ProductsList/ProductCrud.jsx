@@ -38,13 +38,39 @@ const ProductCrud = () => {
     const [sale, setSale] = useState("");
     const [IsClicked, setIsClicked] = useState(true);
 
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    // Si non connecté, on redirige vers l'accueil
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user?.user?.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    setIsAdmin(false);
+                } else {
+                    setIsAdmin(true);
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
+
     const HandleClick = () => {
         setIsClicked(!IsClicked);
     }
 
     const HandleSupp = async (e) => {
         try {
-            const productRes = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`);
+            const productRes = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, {
+                withCredentials: true,
+            });
             console.log(productRes);
             navigate('/produit');
         }catch(err) {
@@ -115,7 +141,9 @@ const ProductCrud = () => {
                     setLoading(false);
                     return;
             }
-            const productPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, updatedData)
+            const productPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, updatedData, {
+                withCredentials: true,
+            })
 
             console.log(productPut.data);
         } catch (error) {
@@ -312,19 +340,15 @@ const ProductCrud = () => {
                         )}
                     </div>
                 </div>
-                {isAdmin ? (
+                {isAdmin && !IsClicked ? (
                     <>
-                    {!IsClicked ? (
                         <div>
                             <ModalProduct supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked} />
                         </div>
-                        ) : (
-                           <></>
-                        )}
                     </>
-                    ) : (
-                        <></>
-                    )}
+                ) : (
+                    <></>
+                )}
                 </div>
                 </div>
             </main>

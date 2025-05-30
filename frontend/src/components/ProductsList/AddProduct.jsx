@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {useNavigate} from "react-router-dom";
 
 const AddProduct = () => {
+    const [admin, setAdmin] = useState(false);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
     const [providers, setProviders] = useState([]);
@@ -16,6 +18,30 @@ const AddProduct = () => {
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`)
             .then(res => setProviders(res.data))
             .catch(console.error);
+    }, []);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    // Si non connecté, on redirige vers l'accueil
+                    navigate("/");
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user.user.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    navigate("/");
+                }
+                // Sinon, laisser l'accès à la page
+            })
     }, []);
 
     const initialValues = {
@@ -77,6 +103,7 @@ const AddProduct = () => {
             };
 
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/products`, productData, {
+                withCredentials: true,
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -225,7 +252,6 @@ const AddProduct = () => {
                                 <button
                                     type="submit"
                                     className="btn btn-primary mt-6"
-                                    disabled={images.length === 0}
                                 >
                                     Ajouter le produit
                                 </button>

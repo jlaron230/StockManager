@@ -45,9 +45,18 @@ const verifyPassword = async (req, res, next) => {
 
 // Middleware de protection par session
 const requireLogin = (req, res, next) => {
-
+console.log(req.session?.user)
+    console.log("USER:", req.user);
     if (!req.session?.user) {
         return res.status(401).json({ message: "Non autorisé : veuillez vous connecter." });
+    }
+    next();
+};
+
+// Middleware de protection par session
+const requireAdmin = (req, res, next) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.status(403).json({ message: "Accès refusé : administrateur uniquement." });
     }
     next();
 };
@@ -56,4 +65,5 @@ module.exports = {
   hashPassword,
   requireLogin,
   verifyPassword,
+    requireAdmin,
 };
