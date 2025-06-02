@@ -1,71 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import axios from 'axios';
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { RootStackParamList } from '../navigation';
+import { AuthContext } from '../context/AuthContext';
 import { useRegisterPushToken } from '../hooks/useRegisterPushToken';
 
-
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
-import { useNavigation } from '@react-navigation/native';
-
-
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
-
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
   const { login, user } = useContext(AuthContext);
-  
 
-
-
-const handleLogin = async () => {
-  console.log("Tentative de connexion...");
-
+  // ✅ Enregistrement du token Expo (sûr : ne fait rien si user null)
   useRegisterPushToken(user?.id_user);
 
-  try {
-    const response = await axios.post('http://192.168.1.121:5000/login', {
-      email,
-      password,
-    });
+  const handleLogin = async () => {
+    console.log("Tentative de connexion...");
 
-    console.log("Réponse backend :", response.data);
+    try {
+      const response = await axios.post('http://192.168.1.121:5000/login', {
+        email,
+        password,
+      });
 
-    if (response.data) {
-      await login(response.data,'token');
-      navigation.navigate('Dashboard');
-    } else {
-      setError("Utilisateur introuvable");
-    }
-  } catch (err) {
-    console.log("Erreur lors de la connexion :", err);
-    setError('Échec de connexion');
-  }
-};
-    useEffect(() => {
-    if (user) {
+      console.log("Réponse backend :", response.data);
+
+      if (response.data) {
+        await login(response.data, 'token'); // Le backend ne renvoie pas de JWT ici
         navigation.navigate('Dashboard');
-    }     else {
-        navigation.navigate('Login');
+      } else {
+        setError("Utilisateur introuvable");
+      }
+    } catch (err) {
+      console.log("Erreur lors de la connexion :", err);
+      setError('Échec de connexion');
     }
-    }, [user]);
+  };
 
-  
-
-  
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('Dashboard');
+    }
+  }, [user]);
 
   return (
     <View style={styles.container}>
-      <TextInput placeholder="Email" onChangeText={setEmail} style={styles.input} />
-      <TextInput placeholder="Mot de passe" secureTextEntry onChangeText={setPassword} style={styles.input} />
+      <TextInput
+        placeholder="Email"
+        onChangeText={setEmail}
+        style={styles.input}
+        autoCapitalize="none"
+      />
+      <TextInput
+        placeholder="Mot de passe"
+        secureTextEntry
+        onChangeText={setPassword}
+        style={styles.input}
+      />
       <Button title="Connexion" onPress={handleLogin} />
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
@@ -77,5 +75,3 @@ const styles = StyleSheet.create({
   input: { height: 40, borderBottomWidth: 1, marginBottom: 20 },
   error: { color: 'red', marginTop: 10 },
 });
-
-

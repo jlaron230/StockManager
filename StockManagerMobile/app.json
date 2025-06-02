@@ -17,13 +17,19 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.StockManagerMobile"
+      "package": "com.anonymous.StockManagerMobile",
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a3fed6b1-9b14-47b8-8360-d61ce44fb243"
+      }
     }
   }
 }

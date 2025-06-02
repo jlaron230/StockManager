@@ -68,7 +68,14 @@ class UserManager extends AbstractManager {
           [token, id]
         );
     }
-     
+
+     updateTokenMobil(id_user, token) {
+        return this.database.query(
+        `UPDATE user SET fcm_token_mobil = ? WHERE id_user = ?`,
+        [token, id_user]
+        );
+    } 
+
     findAll() {
         return this.database.query(
             `SELECT id_user, nom, prenom, email, role
@@ -94,12 +101,14 @@ class UserManager extends AbstractManager {
         );
     }
 
-    updateTokenMobil(id_user, token) {
-        return this.database.query(
-        `UPDATE user SET fcm_token_mobil = ? WHERE id_user = ?`,
-        [token, id_user]
-        );
+    getAllWithFcmToken() {
+        return this.database.query(`
+        SELECT id_user, fcm_token, fcm_token_mobil
+        FROM user
+        WHERE fcm_token IS NOT NULL OR fcm_token_mobil IS NOT NULL
+        `);
     }
+
 
 }
 

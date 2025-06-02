@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 import axios from 'axios';
 
 /**
@@ -26,17 +25,18 @@ export function useRegisterPushToken(userId?: number) {
           return;
         }
 
-        const tokenData = await Notifications.getExpoPushTokenAsync({
-          projectId: Constants.expoConfig?.extra?.eas?.projectId,
-        });
-
+        // ✅ Sans projectId ici (Expo le gère)
+        const tokenData = await Notifications.getExpoPushTokenAsync();
         const token = tokenData.data;
 
+        console.log("📲 Expo Push Token récupéré :", token);
+
+        // ✅ Envoie au backend
         await axios.put(`http://192.168.1.121:5000/users/${userId}/token-mobil`, {
           fcm_token_mobil: token,
         });
 
-        console.log("✅ Token mobile enregistré :", token);
+        console.log("✅ Token mobile enregistré dans la BDD");
       } catch (error) {
         console.error("Erreur d'enregistrement du token mobile :", error);
       }
@@ -45,4 +45,3 @@ export function useRegisterPushToken(userId?: number) {
     register();
   }, [userId]);
 }
-
