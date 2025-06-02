@@ -6,20 +6,17 @@ const { sendNotification } = require("../services/notificationService");
 const checkLowStockAndNotify = async () => {
   try {
     const [lowStockProducts] = await tables.stock.getLowStockProducts();
-
     if (lowStockProducts.length === 0) return;
 
     // Générer le message
     const productNames = lowStockProducts.map((p) => p.nom).join(", ");
     const message = `Stock critique pour : ${productNames}`;
 
-    // Vérifier si une notification identique a déjà été envoyée aujourd'hui
+    // Vérifie si une notif identique a déjà été envoyée aujourd'hui
     const [alreadySent] = await tables.notification.checkIfAlreadySentToday(message);
-    
     if (alreadySent.length > 0) return;
 
-
-    // Créer une nouvelle notification
+    // Crée une nouvelle notification
     const [notifResult] = await tables.notification.insert({
       message,
       statut: "envoyé",
@@ -27,7 +24,7 @@ const checkLowStockAndNotify = async () => {
     });
     const id_notification = notifResult.insertId;
 
-    // Lier les produits concernés
+    // Lie les produits concernés
     const linkPromises = lowStockProducts.map((p) =>
       tables.notification_product.insert({
         id_notification,
@@ -36,15 +33,22 @@ const checkLowStockAndNotify = async () => {
     );
     await Promise.all(linkPromises);
 
-    // Récupérer tous les tokens
-    const [users] = await tables.user.getAllWithFcmToken();
-    const tokens = users.map((u) => u.fcm_token);
+    // 🔥 Récupérer tous les tokens web ET mobile
+    const [users] = await tables.user.getAllWithFcmToken(); // récupère tous les users avec fcm_token et/ou fcm_token_mobil
+    const allTokens = [
+      ...users
+        .filter((u) => u.fcm_token)
+        .map((u) => u.fcm_token),
+      ...users
+        .filter((u) => u.fcm_token_mobil)
+        .map((u) => u.fcm_token_mobil),
+    ];
 
-    if (tokens.length > 0) {
-      await sendNotification(tokens, "📦 Alerte stock", message);
+    if (allTokens.length > 0) {
+      await sendNotification(allTokens, "📦 Alerte stock", message);
     }
   } catch (err) {
-    console.error("Erreur tâche stock critique:", err);
+    console.error("❌ Erreur tâche stock critique:", err);
   }
 };
 

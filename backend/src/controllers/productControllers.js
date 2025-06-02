@@ -1,5 +1,6 @@
 const tables = require("../models");
 
+
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.product.readAll();
@@ -74,11 +75,26 @@ const destroy = async (req, res) => {
   }
 };
 
+const getByCategory = async (req, res) => {
+  try {
+    const categoryId = parseInt(req.params.id, 10);
+    const products = await tables.product.findByCategory(categoryId);
+
+
+    res.json(products);
+  } catch (err) {
+    console.error('Erreur getByCategory:', err);
+    res.sendStatus(500);
+  }
+};
+
+
 module.exports = {
   browse,
   read,
   add,
   edit,
   destroy,
+  getByCategory
 };
 

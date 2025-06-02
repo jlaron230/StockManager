@@ -16,7 +16,7 @@ class ProductManager extends AbstractManager {
         product.prix_unitaire,
         product.quantité_en_stock,        
         product.localisation,
-        product.date_add,
+        product.date_add || null,
         product.code_product,
         product.date_peremption,
         product.last_updated,
@@ -158,6 +158,14 @@ class ProductManager extends AbstractManager {
       [id]
     );
   }
+
+ findByCategory(id_category) {
+  return this.database.query(
+    `SELECT * FROM ${this.table} WHERE id_category = ?`,
+    [id_category]
+  ).then(([rows]) => rows);
+}
+
   
 }
 

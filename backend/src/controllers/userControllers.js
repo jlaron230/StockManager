@@ -113,6 +113,22 @@ const createUser = async (req, res) => {
   }
 };
 
+const updateMobileToken = async (req, res) => {
+  try {
+    const { fcm_token_mobil } = req.body;
+
+    if (!fcm_token_mobil) {
+      return res.status(400).send("Token manquant");
+    }
+
+    await tables.user.updateTokenMobil(req.params.id, fcm_token_mobil);
+    res.sendStatus(204); // No Content
+  } catch (err) {
+    console.error("Erreur lors de l'enregistrement du token mobile :", err);
+    res.sendStatus(500);
+  }
+};
+
 
 module.exports = {
   getProfile,
@@ -122,4 +138,5 @@ module.exports = {
   updateUser,
   createUser,
   updateFcmToken,
+  updateMobileToken
 };
