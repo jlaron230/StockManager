@@ -57,6 +57,11 @@ const CategoryManager = require("./CategoryManager");
 models.category = new CategoryManager();
 models.category.setDatabase(pool);
 
+const StoreManager = require("./StoreManager");
+models.store = new StoreManager();
+models.store.setDatabase(pool);
+
+
 const NotificationManager = require("./NotificationManager");
 models.notification = new NotificationManager();
 models.notification.setDatabase(pool);

@@ -4,13 +4,15 @@ import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ButtonInscription from "@components/Button/ButtonInscription";
 import Logo from "@components/Image/Logo";
 import ButtonLogin from "@components/Button/ButtonLogin";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 const navigation = [
     { name: 'A propos', href: '#', current: true },
     { name: 'Produit', href: '/produit', current: false },
     { name: 'Fournisseur', href: '/fournisseur', current: false },
-    { name: 'Boutique', href: '#', current: false },
+    { name: 'Boutique', href: '/boutique-manage', current: false },
     { name: 'Stockage', href: '/commande-gestion', current: false },
 ]
 
@@ -19,6 +21,45 @@ function classNames(...classes) {
 }
 
 const navbar = () => {
+    const location = useLocation();
+    const [isAdmin, setIsAdmin] = useState(true);
+    const [isConnect, setIsConnect] = useState(false);
+
+    const fetchAllData = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+                method: "GET",
+                credentials: "include", // important pour envoyer le cookie
+            });
+
+            if (!res.ok) {
+                setIsConnect(false);
+                setIsAdmin(false);
+                return;
+            }
+
+            const user = await res.json();
+
+            if (user?.user) {
+                setIsConnect(true);
+            } else {
+                setIsConnect(false);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération de la session :", error);
+            setIsConnect(false);
+            setIsAdmin(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllData(); // au premier chargement
+    }, []);
+
+    useEffect(() => {
+        fetchAllData();
+    }, [location.pathname]);
+
     return (
         <Disclosure as="nav" className="bg-white">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
@@ -58,12 +99,20 @@ const navbar = () => {
                         <Menu as="div" className="relative">
                             <div>
                                 <div className="max-[952px]:hidden">
+                                    {isConnect ? (
+                                        <Link to="/dashboard">
+                                            <ButtonLogin />
+                                        </Link>
+                                        ) : (
+                                            <>
                                     <Link to="/connexion">
                                 <ButtonConnexion/>
                                     </Link>
                                     <Link to="/Inscription">
                                 <ButtonInscription/>
                                     </Link>
+                                            </>
+                                        )}
                                 </div>
                                 <div className=" inset-y-0 left-0 flex items-center min-[952px]:hidden">
                                     {/* Mobile menu button*/}

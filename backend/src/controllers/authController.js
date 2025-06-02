@@ -58,6 +58,10 @@ function checkSession(req, res) {
   
 
   function logoutUser(req, res) {
+    if (!req.session.user) {
+      return res.status(400).json({ message: "Aucun utilisateur connecté." });
+    }
+
     req.session.destroy((err) => {
       if (err) {
         console.error("Erreur lors de la déconnexion :", err);

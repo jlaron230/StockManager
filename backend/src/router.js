@@ -7,6 +7,7 @@ const stockControllers = require("./controllers/stockControllers");
 const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
+const storeControllers = require("./controllers/storeControllers");
 
 const { testNotif } = require("./controllers/notificationTestController");
 
@@ -25,19 +26,22 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
-router.post("/user", userControllers.createUser);
 
+router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
 
 router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
+
 router.put("/user/token", requireLogin, userControllers.updateFcmToken);
 
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);
 router.get("/session", requireLogin, checkSession);
-router.get("/logout", logoutUser);
+router.post("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+
+router.get("/store", requireLogin, storeControllers.browse);
 
 router.get("/products", productControllers.browse);
 router.get("/products/:id", productControllers.read);
