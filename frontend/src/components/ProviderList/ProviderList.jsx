@@ -47,6 +47,29 @@ const ProviderList = () => {
         }
     }
 
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    // Si non connecté, on redirige vers l'accueil
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user?.user?.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    setIsAdmin(false);
+                } else {
+                    setIsAdmin(true);
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
+
 
     useEffect(() => {
         setFilteredProvider(providers);

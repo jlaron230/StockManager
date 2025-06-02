@@ -3,10 +3,11 @@ import axios from "axios";
 import {number} from "yup";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import {useNavigate} from "react-router-dom";
 
 const ProviderAdd = () => {
     const [images, setImages] = useState([]);
-
+    const [admin, setAdmin] = useState(false);
     const [nom, setNom] = useState("");
     const [email, setEmail] = useState("");
     const [telephone, setTelephone] = useState("");
@@ -28,6 +29,30 @@ const ProviderAdd = () => {
         e.target.value = null;
     };
     console.log(images);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+            method: "GET",
+            credentials: "include", // important pour envoyer le cookie
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    // Si non connecté, on redirige vers l'accueil
+                    navigate("/");
+                } else {
+                    return res.json();
+                }
+            })
+            .then((user) => {
+                if (user.user.role !== "admin") {
+                    // Si connecté mais pas admin, on redirige aussi
+                    navigate("/");
+                }
+                // Sinon, laisser l'accès à la page
+            })
+    }, []);
 
     useEffect(() => {
 
@@ -77,6 +102,7 @@ const ProviderAdd = () => {
 
                 const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/providers`, payload, {
                     headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
                 });
 
                 if (response.status === 200 || response.status === 201) {

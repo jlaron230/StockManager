@@ -8,45 +8,51 @@ const orderControllers = require("./controllers/orderControllers");
 const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 
+const { testNotif } = require("./controllers/notificationTestController");
+
 //import middleware functions
 const {
     hashPassword,
     requireLogin,
-    verifyPassword
-  } = require("./auth");
+    verifyPassword, requireAdmin
+} = require("./auth");
   
 const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
-
+router.post("/notify", testNotif);
 router.get("/users", userControllers.getAllUsers);
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
 router.post("/user", userControllers.createUser);
+
+
 router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
+router.put("/user/token", requireLogin, userControllers.updateFcmToken);
 
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);
-router.get("/session", checkSession);
+router.get("/session", requireLogin, checkSession);
 router.get("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
 router.get("/products", productControllers.browse);
 router.get("/products/:id", productControllers.read);
+
+
 router.post("/products", productControllers.add);
 router.put("/products/:id", productControllers.edit);
 router.delete("/products/:id", productControllers.destroy);
 router.get("/products/category/:id", productControllers.getByCategory);
 
-
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
-router.post("/providers", providerControllers.add);
-router.put("/providers/:id",  providerControllers.edit);
-router.delete("/providers/:id", providerControllers.destroy);
+router.post("/providers", requireAdmin, providerControllers.add);
+router.put("/providers/:id", requireAdmin, providerControllers.edit);
+router.delete("/providers/:id", requireAdmin, providerControllers.destroy);
 
 router.get("/stock", stockControllers.browse);
 router.get("/stock/categorie", stockControllers.getStockByCategory);
@@ -55,12 +61,15 @@ router.get("/stock/:productId", stockControllers.read);
 
 
 
-router.post("/orders", orderControllers.add);
+router.post("/orders",requireAdmin, orderControllers.add);
 router.get("/orders/:id/status", orderControllers.readStatus);
 router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
+router.get("/orders-total", orderControllers.getOrderTotals);
 router.get("/orders/:id", orderControllers.read);
-router.put("/orders/:id", requireLogin, orderControllers.update);
+router.get("/orders", orderControllers.readAll);
+router.put("/orders/:id", requireAdmin, orderControllers.update); //requireLogin a ajouté
 router.get("/orders/:id/full", orderControllers.getFullOrder);
+router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
 
 router.get("/categories", categoryControllers.browse);
 router.get("/categories/:id", categoryControllers.read);

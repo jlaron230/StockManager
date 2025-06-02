@@ -11,7 +11,7 @@ const navigation = [
     { name: 'Produit', href: '/produit', current: false },
     { name: 'Fournisseur', href: '/fournisseur', current: false },
     { name: 'Boutique', href: '#', current: false },
-    { name: 'Stockage', href: '#', current: false },
+    { name: 'Stockage', href: '/commande-gestion', current: false },
 ]
 
 function classNames(...classes) {

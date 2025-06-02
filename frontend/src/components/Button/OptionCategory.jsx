@@ -14,7 +14,7 @@ const OptionCategory = ({
     return (
         <div className="mb-4">
             {isEditing ? (
-                <div className="flex gap-2 items-center">
+                <div className="mb-4 flex items-center gap-2">
                     <select
                         value={value}
                         onChange={onChange}
@@ -29,7 +29,7 @@ const OptionCategory = ({
                     <ButtonValidate onClick={onValidate} />
                 </div>
             ) : (
-                <div>
+                <div className="flex flex-wrap gap-2">
                 <div
                     className="cursor-pointer px-3 py-1 border border-gray-300 rounded hover:bg-gray-100"
                     onClick={onClick}
