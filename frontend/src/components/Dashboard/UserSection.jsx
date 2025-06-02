@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const UserSection = () => {
   const [users, setUsers] = useState([]);
@@ -8,6 +9,9 @@ const UserSection = () => {
   const [newUser, setNewUser] = useState(null);
   const [creationError, setCreationError] = useState("");
   const [isOpen, setIsOpen] = useState(true);
+  const [isConnect, setIsConnect] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
@@ -25,6 +29,47 @@ const UserSection = () => {
       setError("Erreur lors du chargement des utilisateurs.");
     }
   };
+
+  const fetchAllData = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+        method: "GET",
+        credentials: "include", // important pour envoyer le cookie
+      });
+
+      if (!res.ok) {
+        setIsConnect(false);
+        navigate("/connexion")
+        return;
+      }
+
+      const user = await res.json();
+
+      if (user?.user) {
+        setIsConnect(true);
+      } else {
+        setIsConnect(false);
+      }
+
+      if (user?.user?.role !== "admin") {
+        setIsAdmin(false);
+      } else {
+        setIsAdmin(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la session :", error);
+      setIsConnect(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllData(); // au premier chargement
+  }, []);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [location.pathname]);
+
 
   useEffect(() => {
     fetchUsers();
@@ -60,6 +105,8 @@ const UserSection = () => {
 
   return (
     <>
+      {isConnect ? (
+          <>
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
@@ -76,6 +123,7 @@ const UserSection = () => {
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
             <div className="overflow-x-auto mt-4">
+              {isAdmin && (
               <button
                 onClick={() => {
                   setCreationError("");
@@ -91,6 +139,7 @@ const UserSection = () => {
               >
                 + Ajouter un utilisateur
               </button>
+              )}
 
               <table className="min-w-full text-sm text-left text-gray-500 dark:text-gray-300">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
@@ -98,7 +147,9 @@ const UserSection = () => {
                     <th className="px-4 py-3">Nom</th>
                     <th className="px-4 py-3">Email</th>
                     <th className="px-4 py-3">Rôle</th>
+                    {isAdmin && (
                     <th className="px-4 py-3 text-center">Actions</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -110,6 +161,7 @@ const UserSection = () => {
                       <td className="px-4 py-3">{u.nom} {u.prenom}</td>
                       <td className="px-4 py-3">{u.email}</td>
                       <td className="px-4 py-3 capitalize">{u.role}</td>
+                      {isAdmin && (
                       <td className="px-4 py-3 text-center space-x-2">
                         <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
                           Modifier
@@ -118,6 +170,7 @@ const UserSection = () => {
                           Supprimer
                         </button>
                       </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -287,6 +340,10 @@ const UserSection = () => {
             </div>
           </form>
         </div>
+      )}
+          </>
+      ) : (
+          <></>
       )}
     </>
   );

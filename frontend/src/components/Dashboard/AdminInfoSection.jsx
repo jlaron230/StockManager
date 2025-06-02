@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const AdminInfoSection = () => {
   const [admin, setAdmin] = useState(null);
   const [error, setError] = useState("");
+  const [isConnect, setIsConnect] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdminInfo = async () => {
@@ -20,11 +23,47 @@ const AdminInfoSection = () => {
     fetchAdminInfo();
   }, []);
 
+  const fetchAllData = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+        method: "GET",
+        credentials: "include", // important pour envoyer le cookie
+      });
+
+      if (!res.ok) {
+        setIsConnect(false);
+        navigate("/connexion")
+        return;
+      }
+
+      const user = await res.json();
+
+      if (user?.user) {
+        setIsConnect(true);
+      } else {
+        setIsConnect(false);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la session :", error);
+      setIsConnect(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllData(); // au premier chargement
+  }, []);
+
+  useEffect(() => {
+    fetchAllData();
+  }, [location.pathname]);
+
 if (error) return <p className="text-red-500">{error}</p>;
 if (!admin) return <p className="text-white">Chargement...</p>;
 
 return (
   <div className="bg-gray-800 p-6 rounded-lg shadow text-white">
+    {isConnect ? (
+        <>
     <h2 className="text-xl font-semibold mb-4">Mes informations</h2>
     <ul className="space-y-2">
       <li>
@@ -50,10 +89,15 @@ return (
         <strong>Téléphone :</strong> {admin.telephone || "—"}
       </li>
     </ul>
+        </>
+      ) : (
+          <div>
+          </div>
+      )}
   </div>
 );
 
-  
+
 };
 
 export default AdminInfoSection;
