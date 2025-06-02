@@ -26,8 +26,13 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
+
 router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
+
+router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
+
 router.put("/user/token", requireLogin, userControllers.updateFcmToken);
+
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);
@@ -40,9 +45,12 @@ router.get("/store", requireLogin, storeControllers.browse);
 
 router.get("/products", productControllers.browse);
 router.get("/products/:id", productControllers.read);
-router.post("/products", requireAdmin, productControllers.add);
-router.put("/products/:id",requireAdmin, productControllers.edit);
-router.delete("/products/:id", requireAdmin, productControllers.destroy);
+
+
+router.post("/products", productControllers.add);
+router.put("/products/:id", productControllers.edit);
+router.delete("/products/:id", productControllers.destroy);
+router.get("/products/category/:id", productControllers.getByCategory);
 
 router.get("/providers", providerControllers.browse);
 router.get("/providers/:id", providerControllers.read);
