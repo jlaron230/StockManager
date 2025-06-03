@@ -1,11 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProvider from "@components/Button/ButtonAddProvider";
 
 const ProviderList = () => {
-
+    let navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState(true);
+    const [isConnect, setIsConnect] = useState(true);
     const [providers, setProviders] = useState([])
     const [filteredProvider, setFilteredProvider] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -54,8 +55,11 @@ const ProviderList = () => {
         })
             .then((res) => {
                 if (!res.ok) {
+                    setIsConnect(false);
+                    navigate("/connexion")
                     // Si non connecté, on redirige vers l'accueil
                 } else {
+                    setIsConnect(true);
                     return res.json();
                 }
             })
@@ -78,7 +82,7 @@ const ProviderList = () => {
     useEffect(() => {
         const FetchProviderData = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 console.log(response)
                 setProviders(response.data);
                 setFilteredProvider(response.data);
@@ -125,6 +129,7 @@ const ProviderList = () => {
 
     return (
         <>
+            {isConnect && (
             <section className="flex justify-center items-start py-10">
                 <div className="gap-8 flex flex-wrap justify-center mx-auto max-w-screen-xl m-5">
                     {/* Filtres */}
@@ -243,6 +248,7 @@ const ProviderList = () => {
                     </main>
                 </div>
             </section>
+            )}
         </>
     )
 }

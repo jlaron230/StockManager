@@ -52,7 +52,10 @@ function checkSession(req, res) {
         user: req.session.user,
       });
     } else {
-      res.status(401).json({ message: "Aucune session active" });
+      res.status(401).json({
+        status: "unauthorized",
+        message: "Session expirée ou non authentifié"
+      });
     }
   }
   

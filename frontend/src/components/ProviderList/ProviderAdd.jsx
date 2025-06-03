@@ -4,19 +4,11 @@ import {number} from "yup";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
+import ButtonOrder from "@components/Button/ButtonOrder";
 
 const ProviderAdd = () => {
     const [images, setImages] = useState([]);
-    const [admin, setAdmin] = useState(false);
-    const [nom, setNom] = useState("");
-    const [email, setEmail] = useState("");
-    const [telephone, setTelephone] = useState("");
-    const [type, setType] = useState([]);
     const [provider, setprovider] = useState([]);
-    const [adresse, setAdresse] = useState("");
-    const [codePostal, setCodePostal] = useState("");
-    const [commentaire, setCommentaire] = useState("");
-    const [idAdmin, setIdAdmin] = useState(1);
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
@@ -58,7 +50,7 @@ const ProviderAdd = () => {
 
         const getProvider = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`)
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 setprovider(res.data);
             }
             catch (error) {
@@ -248,10 +240,7 @@ const ProviderAdd = () => {
 
                         {/* Submit */}
                         <div className="mt-6">
-                            <button type="submit"
-                                    className="btn btn-primary px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">
-                                Ajouter le fournisseur
-                            </button>
+                            <ButtonOrder  ButtonName="Ajouter le fournisseur" buttonType="submit"/>
                         </div>
                     </div>
                 </form>
