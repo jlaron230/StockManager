@@ -18,6 +18,7 @@ import InputEditText from "@components/Button/InputEditText";
 const ProviderCrud = () => {
     let navigate = useNavigate();
     const {id} = useParams();
+    const [isConnect, setIsConnect] = useState(true);
     const [isAdmin, setIsAdmin] = useState(true);
     const [provider, setProvider] = useState([]);
     const [providerTypeList, setProviderTypeList] = useState([]);
@@ -58,7 +59,7 @@ const ProviderCrud = () => {
     useEffect(() => {
         const fetchProvider = async () => {
             try {
-                const providerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers/${id}`);
+                const providerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers/${id}`, {withCredentials: true});
                 setProvider(providerRes.data);
                 setName(providerRes.data.nom);
                 setEmail(providerRes.data.email);
@@ -71,7 +72,7 @@ const ProviderCrud = () => {
                 setSelectedProvider(providerRes.data.type || "");
                 console.log(providerRes.data)
 
-                const providerTypeListRes =  await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`);
+                const providerTypeListRes =  await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 setCategoryList(providerTypeListRes.data);
 
             } catch (error) {
@@ -89,8 +90,11 @@ const ProviderCrud = () => {
         })
             .then((res) => {
                 if (!res.ok) {
+                    setIsConnect(false);
+                    navigate("/connexion");
                     // Si non connecté, on redirige vers l'accueil
                 } else {
+                    setIsConnect(true);
                     return res.json();
                 }
             })
@@ -152,6 +156,7 @@ const ProviderCrud = () => {
 
     return (
         <div className="flex justify-center">
+            {isConnect && (
             <main className="">
                 <div className="flex justify-start flex-col items-center">
                 <Link to="/fournisseur">
@@ -296,6 +301,7 @@ const ProviderCrud = () => {
                     <></>
                 )}
             </main>
+            )}
         </div>
     );
 };

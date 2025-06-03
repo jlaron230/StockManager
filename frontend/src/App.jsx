@@ -32,6 +32,7 @@ import OrderManagement from "@pages/OrderManagement";
 import ResetPassword from "@pages/ResetPassword";
 import Dashboard from "@pages/Dashboard";
 import { messaging, getToken } from "./firebase";
+import About from "@pages/About";
 
 function App() {
 const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -103,6 +104,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
         <Navbar/>
         <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/a-propos" element={<About />} />
             <Route path="/compte-utilisateur" element={<UserProfil />} />
             <Route path="/inscription" element={<Subscribe />} />
             <Route path="/boutique-manage" element={<StoreManage />} />

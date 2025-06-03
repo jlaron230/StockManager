@@ -29,9 +29,9 @@ const OrderGestion = () => {
     const fetchAllData = async () => {
         try {
             const [ordersRes, usersRes, productsRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_BACKEND_URL}/orders`),
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/orders`, { withCredentials: true }),
                 axios.get(`${import.meta.env.VITE_BACKEND_URL}/users`),
-                axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`),
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, { withCredentials: true }),
             ]);
 
 
@@ -39,8 +39,8 @@ const OrderGestion = () => {
                 ordersRes.data.map(async (order) => {
                     try {
                         const productsRes = await axios.get(
-                            `${import.meta.env.VITE_BACKEND_URL}/orders/${order.id_order}/products`
-                        );
+                            `${import.meta.env.VITE_BACKEND_URL}/orders/${order.id_order}/products`,
+                        { withCredentials: true });
                         return { ...order, products: productsRes.data };
                     } catch {
                         return { ...order, products: [] };
@@ -162,7 +162,7 @@ const OrderGestion = () => {
         if(order.is_validated === 0) {
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_BACKEND_URL}/orders/${order.id_order}/products`
+                `${import.meta.env.VITE_BACKEND_URL}/orders/${order.id_order}/products`, { withCredentials: true }
             );
             setEditedOrder({ ...order, products: res.data });
         } catch {

@@ -9,11 +9,11 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 const navigation = [
-    { name: 'A propos', href: '#', current: true },
+    { name: 'A propos', href: '/a-propos', current: true },
     { name: 'Produit', href: '/produit', current: false },
     { name: 'Fournisseur', href: '/fournisseur', current: false },
     { name: 'Boutique', href: '/boutique-manage', current: false },
-    { name: 'Stockage', href: '/commande-gestion', current: false },
+    { name: 'Commande', href: '/commande-gestion', current: false },
 ]
 
 function classNames(...classes) {

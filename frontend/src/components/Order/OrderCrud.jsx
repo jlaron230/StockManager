@@ -40,8 +40,8 @@ const OrderCrud = () => {
     }, []);
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`).then((res) => setProviders(res.data));
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`).then((res) => setProducts(res.data));
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, { withCredentials: true }).then((res) => setProviders(res.data));
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, { withCredentials: true }).then((res) => setProducts(res.data));
         axios.get(`${import.meta.env.VITE_BACKEND_URL}/session`, { withCredentials: true })
             .then((res) => setUser(res.data.user.id));
     }, []);

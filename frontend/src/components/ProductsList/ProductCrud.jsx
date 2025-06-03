@@ -16,6 +16,7 @@ const ProductCrud = () => {
     let navigate = useNavigate();
     const {id} = useParams();
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isConnect, setIsConnect] = useState(false);
     const [product, setProduct] = useState(null);
     const [provider, setProvider] = useState([]);
     const [category, setCategory] = useState(null);
@@ -46,14 +47,16 @@ const ProductCrud = () => {
         })
             .then((res) => {
                 if (!res.ok) {
-                    // Si non connecté, on redirige vers l'accueil
+                    setIsConnect(false);
+                    // Si non connecté, on redirige vers la page de connexion
+                    navigate("/connexion");
                 } else {
+                    setIsConnect(true);
                     return res.json();
                 }
             })
             .then((user) => {
                 if (user?.user?.role !== "admin") {
-                    // Si connecté mais pas admin, on redirige aussi
                     setIsAdmin(false);
                 } else {
                     setIsAdmin(true);
@@ -81,7 +84,7 @@ const ProductCrud = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`);
+                const productRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, {withCredentials: true});
                 setProduct(productRes.data);
                 setSelectedCategory(productRes.data.id_category);
                 setValue(productRes.data.seuil_minimal);
@@ -90,7 +93,7 @@ const ProductCrud = () => {
                 setMaxPrice(productRes.data.prix_unitaire);
                 setSale(productRes.data.condition_achat);
 
-                const providerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`);
+                const providerRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 const foundProv = providerRes.data.find(prov => prov.id_provider === productRes.data.id_provider);
                 setProvider(foundProv);
 
@@ -100,7 +103,7 @@ const ProductCrud = () => {
                 setDateArray([formatArray, formatArrayPer, formatArrayCreated]);
 
                 console.log(productRes.data)
-                const categoryRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`);
+                const categoryRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true});
                 setCategoryList(categoryRes.data);
                 const foundCat = categoryRes.data.find(cat => cat.id_category === productRes.data.id_category);
                 setCategory(foundCat);
@@ -172,6 +175,7 @@ const ProductCrud = () => {
 
     return (
         <div className="flex justify-center">
+            {isConnect && (
             <main className="flex flex-wrap m-8">
                 <div>
                 <div>
@@ -358,6 +362,7 @@ const ProductCrud = () => {
                 </div>
                 </div>
             </main>
+            )}
         </div>
     );
 };

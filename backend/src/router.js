@@ -43,17 +43,17 @@ router.post("/reset-password", resetPassword);
 
 router.get("/store", requireLogin, storeControllers.browse);
 
-router.get("/products", productControllers.browse);
-router.get("/products/:id", productControllers.read);
+router.get("/products", requireLogin, productControllers.browse);
+router.get("/products/:id", requireLogin, productControllers.read);
 
 
-router.post("/products", productControllers.add);
-router.put("/products/:id", productControllers.edit);
-router.delete("/products/:id", productControllers.destroy);
-router.get("/products/category/:id", productControllers.getByCategory);
+router.post("/products", requireAdmin,productControllers.add);
+router.put("/products/:id", requireAdmin,productControllers.edit);
+router.delete("/products/:id", requireAdmin,productControllers.destroy);
+router.get("/products/category/:id", requireLogin, productControllers.getByCategory);
 
-router.get("/providers", providerControllers.browse);
-router.get("/providers/:id", providerControllers.read);
+router.get("/providers", requireLogin, providerControllers.browse);
+router.get("/providers/:id", requireLogin, providerControllers.read);
 router.post("/providers", requireAdmin, providerControllers.add);
 router.put("/providers/:id", requireAdmin, providerControllers.edit);
 router.delete("/providers/:id", requireAdmin, providerControllers.destroy);

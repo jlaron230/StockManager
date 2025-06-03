@@ -3,6 +3,7 @@ import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
+import ButtonOrder from "@components/Button/ButtonOrder";
 
 const AddProduct = () => {
     const [admin, setAdmin] = useState(false);
@@ -15,7 +16,7 @@ const AddProduct = () => {
             .then(res => setCategories(res.data))
             .catch(console.error);
 
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true})
             .then(res => setProviders(res.data))
             .catch(console.error);
     }, []);
@@ -30,7 +31,7 @@ const AddProduct = () => {
             .then((res) => {
                 if (!res.ok) {
                     // Si non connecté, on redirige vers l'accueil
-                    navigate("/");
+                    navigate("/connexion");
                 } else {
                     return res.json();
                 }
@@ -248,13 +249,7 @@ const AddProduct = () => {
                                         ))}
                                     </div>
                                 )}
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary mt-6"
-                                >
-                                    Ajouter le produit
-                                </button>
+                                <ButtonOrder ButtonName="Ajouter le produit" buttonType="submit"/>
                             </div>
                         </Form>
                     )}

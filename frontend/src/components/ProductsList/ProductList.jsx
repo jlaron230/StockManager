@@ -4,11 +4,13 @@ import {date} from "yup";
 import product from "@pages/Product";
 import axios from "axios";
 import {set} from "husky";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProduct from "@components/Button/ButtonAddProduct";
 
 const ProductList = () => {
+    let navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isConnect, setIsConnect] = useState(false);
     const [products, setProducts] = useState([])
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [filteredDate, setfilteredDate] = useState(true);
@@ -93,8 +95,11 @@ const ProductList = () => {
         })
             .then((res) => {
                 if (!res.ok) {
+                    navigate("/connexion");
+                    setIsConnect(false);
                     // Si non connecté, on redirige vers l'accueil
                 } else {
+                    setIsConnect(true);
                     return res.json();
                 }
             })
@@ -110,9 +115,12 @@ const ProductList = () => {
     }, []);
 
     useEffect(() => {
+        //si l'utilisateur est connecté
         const FetchProductData = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+                    withCredentials: true,
+                })
                 console.log(response)
                 setProducts(response.data);
                 setFilteredProduct(response.data);
@@ -126,7 +134,6 @@ const ProductList = () => {
 
         const FetchCategory = async () => {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`)
-            console.log(response.data)
             setCategories(response.data);
         }
         FetchCategory();
@@ -166,6 +173,7 @@ const ProductList = () => {
 
     return (
         <>
+            {isConnect && (
         <section className="flex justify-center items-start py-10">
             <div className="gap-8 flex flex-wrap justify-center mx-auto max-w-screen-xl m-5">
                 {/* Filtres */}
@@ -309,6 +317,7 @@ const ProductList = () => {
                 </main>
             </div>
         </section>
+            )}
         </>
     )
 }
