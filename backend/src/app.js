@@ -4,14 +4,9 @@ require("dotenv").config(); // charge les variables d'environnement
 
 const fs = require("node:fs");
 const path = require("node:path");
-
-// create express app
-
 const express = require("express");
-
 const app = express();
-
-// use some application-level middlewares
+const session = require("express-session");
 
 app.use(express.json());
 
@@ -21,11 +16,10 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
     optionsSuccessStatus: 200,
-      credentials: true,
+    credentials: true,
   })
 );
 
-const session = require("express-session");
 
 app.use(express.json()); 
 
@@ -38,6 +32,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false, 
+      sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24, 
     },
   })

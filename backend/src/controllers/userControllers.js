@@ -33,11 +33,15 @@ const updateProfile = async (req, res) => {
 
 const updateFcmToken = async (req, res) => {
   try {
+    console.log("🛬 updateFcmToken appelée"); //temporaire
+
     const userId = req.session.user?.id;
     if (!userId) return res.sendStatus(401);
 
     const { fcm_token } = req.body;
     if (!fcm_token) return res.status(400).json({ message: "Token manquant" });
+
+    console.log("🔍 Mise à jour du token pour l'utilisateur :", userId, fcm_token);
 
     await tables.user.updateFcmToken(userId, fcm_token);
     res.sendStatus(204);
@@ -128,6 +132,8 @@ const updateMobileToken = async (req, res) => {
     res.sendStatus(500);
   }
 };
+
+console.log("🎯 userControllers.js chargé");   //temporaire
 
 
 module.exports = {

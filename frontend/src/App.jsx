@@ -74,29 +74,43 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
   }, []);
 
   // 3. Si connecté → envoie le token au backend
-  useEffect(() => {
-    const token = localStorage.getItem("fcm_token");
+useEffect(() => {
+  const token = localStorage.getItem("fcm_token");
 
+  const sendFcmToken = async () => {
     if (isLoggedIn && token) {
-      fetch("http://localhost:5000/user/token", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ fcm_token: token }),
-      })
-        .then((res) => {
-          if (res.ok) {
-            console.log("📤 Token FCM envoyé au backend");
-            localStorage.removeItem("fcm_token");
-          }
-        })
-        .catch((err) => {
-          console.error("❌ Envoi du token FCM échoué :", err);
+      try {
+        // 1. Réveil de la session
+        await fetch("http://localhost:5000/session", {
+          method: "GET",
+          credentials: "include",
         });
+
+        // 2. Envoi du token
+        const res = await fetch("http://localhost:5000/user/token", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          witchcredentials: "true",
+          body: JSON.stringify({ fcm_token: token }),
+        });
+
+        if (res.ok) {
+          console.log("✅ Token FCM envoyé au backend");
+          localStorage.removeItem("fcm_token");
+        } else {
+          console.error("❌ Échec lors de l'envoi du token FCM");
+        }
+      } catch (err) {
+        console.error("❌ Erreur fetch FCM token :", err);
+      }
     }
-  }, [isLoggedIn]);
+  };
+
+  sendFcmToken();
+}, [isLoggedIn]);
+
 
     return (
         <>
