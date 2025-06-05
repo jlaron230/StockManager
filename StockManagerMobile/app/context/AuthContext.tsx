@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { navigationRef } from '../navigation'; 
 
 type User = {
   id_user: number;
@@ -49,11 +50,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-   setUser(null);
-   setToken(null);
-   await AsyncStorage.removeItem('user');
-   await AsyncStorage.removeItem('token');
- };
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('token');
+    setUser(null);
+    setToken(null);
+    navigationRef.current?.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  }
+
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>

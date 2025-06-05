@@ -166,6 +166,20 @@ class ProductManager extends AbstractManager {
   ).then(([rows]) => rows);
 }
 
+async updatePartial(id, fields) {
+  const keys = Object.keys(fields);
+  const values = Object.values(fields);
+
+  if (keys.length === 0) return;
+
+  const setClause = keys.map((key, index) => `${key} = ?`).join(', ');
+
+  return this.database.query(
+    `UPDATE product SET ${setClause} WHERE id_product = ?`,
+    [...values, id]
+  );
+}
+
   
 }
 

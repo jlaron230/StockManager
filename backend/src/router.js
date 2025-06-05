@@ -9,8 +9,6 @@ const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 const storeControllers = require("./controllers/storeControllers");
 
-console.log("🧭 Routeurs utilisateurs chargés :", userControllers.updateFcmToken?.toString());//temporaire
-
 const { testNotif } = require("./controllers/notificationTestController");
 
 router.use((req, res, next) => {
@@ -57,8 +55,10 @@ router.get("/products/:id", requireLogin, productControllers.read);
 
 router.post("/products", requireAdmin,productControllers.add);
 router.put("/products/:id", requireAdmin,productControllers.edit);
+router.patch("/products/:id", productControllers.partialUpdate);
 router.delete("/products/:id", requireAdmin,productControllers.destroy);
 router.get("/products/category/:id", requireLogin, productControllers.getByCategory);
+
 
 router.get("/providers", requireLogin, providerControllers.browse);
 router.get("/providers/:id", requireLogin, providerControllers.read);
@@ -79,7 +79,7 @@ router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
 router.get("/orders-total", orderControllers.getOrderTotals);
 router.get("/orders/:id", orderControllers.read);
 router.get("/orders", orderControllers.readAll);
-router.put("/orders/:id", requireAdmin, orderControllers.update); //requireLogin a ajouté
+router.put("/orders/:id", requireAdmin, orderControllers.update);
 router.get("/orders/:id/full", orderControllers.getFullOrder);
 router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
 

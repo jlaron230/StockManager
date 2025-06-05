@@ -9,6 +9,9 @@ import DrawerNavigator from './DrawerNavigator';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import AjouterProduitScreen from '../screens/AjouterProduitScreen';
 
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+export const navigationRef = createNavigationContainerRef();
 
 
 
@@ -36,7 +39,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Acceuil" component={DrawerNavigator}
