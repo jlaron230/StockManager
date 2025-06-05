@@ -11,7 +11,7 @@ import { useRegisterPushToken } from '../hooks/useRegisterPushToken';
 
 import { Image } from 'react-native';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'login'>;
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();

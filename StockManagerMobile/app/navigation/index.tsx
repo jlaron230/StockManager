@@ -8,7 +8,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import DrawerNavigator from './DrawerNavigator';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import AjouterProduitScreen from '../screens/AjouterProduitScreen';
-
+import PasswordResetRequestScreen from '../screens/PasswordResetRequestScreen';
 import { createNavigationContainerRef } from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef();
@@ -26,10 +26,11 @@ type Product = {
 };
 
 export type RootStackParamList = {
-  Login: undefined;
+  login: undefined;
   Acceuil: undefined;
   DétailProduit: { product: Product };
   AjouterProduit: undefined;
+  PasswordResetRequest: undefined;
 
 
 };
@@ -40,13 +41,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Acceuil" component={DrawerNavigator}
-  options={{ headerShown: false }}
-/>
+      <Stack.Navigator initialRouteName="login">
+        <Stack.Screen name="login" component={LoginScreen} />
+        <Stack.Screen name="Acceuil" component={DrawerNavigator}  options={{ headerShown: false }}/>
         <Stack.Screen name="DétailProduit" component={ProductDetailScreen} />
         <Stack.Screen name="AjouterProduit" component={AjouterProduitScreen} />
+        <Stack.Screen name="PasswordResetRequest" component={PasswordResetRequestScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

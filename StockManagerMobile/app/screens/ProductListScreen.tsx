@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,11 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { AuthContext } from '../context/AuthContext';
 
-// Types
 type Category = {
   id_category: number;
   nom: string;
@@ -30,7 +29,6 @@ type Product = {
   seuil_minimal: number;
 };
 
-// Navigation typée
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'DétailProduit'>;
 
 export default function ProductListScreen() {
@@ -43,21 +41,27 @@ export default function ProductListScreen() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    axios.get('http://192.168.1.121:5000/categories')
-      .then(res => {
-        setCategories(res.data);
-        setSelectedCategory(res.data[0]?.id_category?.toString() || null);
-      });
-  }, []);
+ 
+  useFocusEffect(
+    useCallback(() => {
+      axios.get('http://192.168.1.121:5000/categories')
+        .then(res => {
+          setCategories(res.data);
+          setSelectedCategory(res.data[0]?.id_category?.toString() || null);
+        });
+    }, [])
+  );
 
-  useEffect(() => {
-    const url = selectedCategory
-      ? `http://192.168.1.121:5000/products/category/${selectedCategory}`
-      : 'http://192.168.1.121:5000/products';
 
-    axios.get(url).then(res => setProducts(res.data));
-  }, [selectedCategory]);
+  useFocusEffect(
+    useCallback(() => {
+      const url = selectedCategory
+        ? `http://192.168.1.121:5000/products/category/${selectedCategory}`
+        : 'http://192.168.1.121:5000/products';
+
+      axios.get(url).then(res => setProducts(res.data));
+    }, [selectedCategory])
+  );
 
   const filteredProducts = products.filter(product =>
     product.nom.toLowerCase().includes(searchQuery.toLowerCase())
