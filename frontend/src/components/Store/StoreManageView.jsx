@@ -94,7 +94,7 @@ const StoreManageView = () => {
         })
             .then((res) => {
                 if (!res.ok) {
-                    navigate("/")
+                    navigate("/connexion")
                     // Si non connecté, on redirige vers l'accueil
                 } else {
                     return res.json();

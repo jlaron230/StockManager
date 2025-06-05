@@ -224,7 +224,7 @@ const OrderGestion = () => {
                 if (user?.user?.role !== "admin") {
                     // Si connecté mais pas admin, on redirige aussi
                     setIsAdmin(false);
-                    navigate("/")
+                    navigate("/connexion")
                 } else {
                     setIsAdmin(true);
                 }

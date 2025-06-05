@@ -77,13 +77,19 @@ const ProviderAdd = () => {
             commentaire: "",
         },
         validationSchema: Yup.object({
-            nom: Yup.string().required("Nom requis"),
-            email: Yup.string().email("Email invalide").required("Email requis"),
-            telephone: Yup.string().required("Téléphone requis"),
+            nom: Yup.string().required("Nom requis").min(3, "3 Caractères minimum"),
+            email: Yup.string()
+                .required("Email requis")
+                .matches(
+                    /^[^\s@]+@[^\s@]{3,}\.[^\s@]{2,}$/,
+                    "Format d'email invalide : au moins 3 caractères après @ et 2 pour l'extension"
+                ),
+            telephone: Yup.string().required("Téléphone requis") .matches(/^\d{10}$/, "Le téléphone doit contenir exactement 10 chiffres"),
             type: Yup.string().required("Type requis"),
-            adresse: Yup.string().required("Adresse requise"),
-            codePostal: Yup.string().required("Code postal requis"),
-            commentaire: Yup.string().required("Commentaire requis"),
+            adresse: Yup.string().required("Adresse requise").min(5, "5 Caractères minimum"),
+            codePostal: Yup.string()
+                .required("Code postal requis")
+                .matches(/^\d{4}$/, "Le code postal doit contenir exactement 5 chiffres"),
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
@@ -159,7 +165,10 @@ const ProviderAdd = () => {
                         <div className="mb-4">
                             <label htmlFor="telephone" className="block font-medium">Téléphone</label>
                             <input
+                                type="number"
                                 id="telephone"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
                                 className="input w-full border border-gray-300 rounded p-2"
                                 {...formik.getFieldProps("telephone")}
                             />
@@ -206,6 +215,7 @@ const ProviderAdd = () => {
                         <div className="mb-4">
                             <label htmlFor="codePostal" className="block font-medium">Code postal</label>
                             <input
+                                type="number"
                                 id="codePostal"
                                 className="input w-full border border-gray-300 rounded p-2"
                                 {...formik.getFieldProps("codePostal")}
