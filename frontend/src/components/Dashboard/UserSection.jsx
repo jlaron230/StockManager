@@ -34,7 +34,7 @@ const UserSection = () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
         method: "GET",
-        credentials: "include", // important pour envoyer le cookie
+        credentials: "include", 
       });
 
       if (!res.ok) {
@@ -63,7 +63,7 @@ const UserSection = () => {
   };
 
   useEffect(() => {
-    fetchAllData(); // au premier chargement
+    fetchAllData(); 
   }, []);
 
   useEffect(() => {
@@ -91,8 +91,7 @@ const UserSection = () => {
     e.preventDefault();
     try {
       const { id_user, nom, prenom, email, role } = editingUser;
-      await axios.put(
-        `http://localhost:5000/user/${id_user}`,
+      await axios.patch(`http://localhost:5000/user/${id_user}`,
         { nom, prenom, email, role },
         { withCredentials: true }
       );

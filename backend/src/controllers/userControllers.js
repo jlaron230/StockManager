@@ -73,7 +73,7 @@ const deleteUser = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const newData = req.body;
+  const fieldsToUpdate = req.body;
 
   try {
     const [existingUser] = await tables.user.findById(id);
@@ -81,27 +81,18 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      return res.status(400).json({ message: "Aucune donnée à mettre à jour" });
+    }
 
-    const updatedUser = {
-      nom: newData.nom ?? existingUser.nom,
-      prenom: newData.prenom ?? existingUser.prenom,
-      email: newData.email ?? existingUser.email,
-      role: newData.role ?? existingUser.role,
-      entreprise: newData.entreprise ?? existingUser.entreprise,
-      pays: newData.pays ?? existingUser.pays,
-      adresse: newData.adresse ?? existingUser.adresse,
-      ville: newData.ville ?? existingUser.ville,
-      postal: newData.postal ?? existingUser.postal,
-      telephone: newData.telephone ?? existingUser.telephone,
-    };
-
-    await tables.user.updateProfile(id, updatedUser);
+    await tables.user.updateUser(id, fieldsToUpdate);
     res.sendStatus(204);
   } catch (err) {
     console.error("Erreur updateUser :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
 
 
 const createUser = async (req, res) => {

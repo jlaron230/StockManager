@@ -97,12 +97,23 @@ class UserManager extends AbstractManager {
         return this.database.query(`DELETE FROM ${this.table} WHERE id_user = ?`, [id]);
     }
 
-    update(id, data) {
+    updateUser(id, data) {
+        const keys = Object.keys(data);
+        const values = Object.values(data);
+
+        if (keys.length === 0) {
+        throw new Error("Aucune donnée à mettre à jour");
+        }
+
+    const setClause = keys.map((key) => `${key} = ?`).join(", ");
+
         return this.database.query(
-        `UPDATE ${this.table} SET nom = ?, prenom = ?, email = ?, role = ?, entreprise = ?, pays = ?, adresse = ?, telephone = ? WHERE id_user = ?`,
-        [data.nom, data.prenom, data.email, data.role, data.entreprise, data.pays, data.adresse, data.telephone, id]
-        );
+            `UPDATE ${this.table} SET ${setClause} WHERE id_user = ?`,
+            [...values, id]
+            );
     }
+
+
 
     create(user) {
         return this.database.query(
