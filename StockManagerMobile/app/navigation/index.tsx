@@ -24,7 +24,7 @@ type Product = {
 
 export type RootStackParamList = {
   Login: undefined;
-  Dashboard: undefined;
+  Acceuil: undefined;
   DétailProduit: { product: Product };
   AjouterProduit: undefined;
 
@@ -39,7 +39,7 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Dashboard" component={DrawerNavigator}
+        <Stack.Screen name="Acceuil" component={DrawerNavigator}
   options={{ headerShown: false }}
 />
         <Stack.Screen name="DétailProduit" component={ProductDetailScreen} />

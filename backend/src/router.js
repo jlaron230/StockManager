@@ -9,12 +9,16 @@ const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 const storeControllers = require("./controllers/storeControllers");
 
+console.log("🧭 Routeurs utilisateurs chargés :", userControllers.updateFcmToken?.toString());//temporaire
+
 const { testNotif } = require("./controllers/notificationTestController");
 
 router.use((req, res, next) => {
-  console.log(`📡 Requête reçue : ${req.method} ${req.url}`);
+  console.log(`📡 Requête reçue : ${req.method} ${req.url}`);   //temporaire
   next();
 });
+
+
 
 //import middleware functions
 const {
@@ -36,13 +40,7 @@ router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
 
 router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
 
-//router.put("/user/token", userControllers.updateFcmToken);
-
-router.put("/user/token", (req, res) => {
-  console.log("✅ TEST MANUEL : route /user/token bien appelée !");
-  res.sendStatus(200);
-});
-
+router.put("/user/token", userControllers.updateFcmToken);
 
 router.post("/register", hashPassword, registerUser);
 router.post("/login", loginUser, verifyPassword);

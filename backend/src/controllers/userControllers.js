@@ -32,24 +32,23 @@ const updateProfile = async (req, res) => {
 };
 
 const updateFcmToken = async (req, res) => {
+  console.log("🟢 Contrôleur updateFcmToken appelé");
+  const userId = req.session.user?.id;
+  const { fcm_token } = req.body;
+
+  console.log("🧾 Body :", req.body);
+  console.log("👤 userId :", userId);
+
   try {
-    console.log("🛬 updateFcmToken appelée"); //temporaire
-
-    const userId = req.session.user?.id;
-    if (!userId) return res.sendStatus(401);
-
-    const { fcm_token } = req.body;
-    if (!fcm_token) return res.status(400).json({ message: "Token manquant" });
-
-    console.log("🔍 Mise à jour du token pour l'utilisateur :", userId, fcm_token);
-
     await tables.user.updateFcmToken(userId, fcm_token);
-    res.sendStatus(204);
+    console.log("✅ Token mis à jour pour", userId);
+    res.status(200).json({ updated: true });
   } catch (err) {
-    console.error("Erreur updateFcmToken :", err);
-    res.sendStatus(500);
+    console.error("❌ Erreur update :", err);
+    res.status(500).json({ error: "fail" });
   }
 };
+
 
 const getAllUsers = async (req, res) => {
   try {

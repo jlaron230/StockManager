@@ -92,7 +92,7 @@ useEffect(() => {
           headers: {
             "Content-Type": "application/json",
           },
-          witchcredentials: "true",
+          credentials: "include",
           body: JSON.stringify({ fcm_token: token }),
         });
 
