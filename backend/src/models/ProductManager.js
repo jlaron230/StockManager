@@ -152,6 +152,13 @@ class ProductManager extends AbstractManager {
     return this.database.query(`DELETE FROM ${this.table} WHERE id_product = ?`, [id]);
   }
 
+  deleteByProvider(idProvider) {
+      return this.database.query(
+          `DELETE FROM product WHERE id_provider = ?`,
+          [idProvider]
+      );
+  }
+
   getProvidersByIds(id) {
     return this.database.query(
       `SELECT id_product, id_provider FROM product WHERE id_product IN (?)`,

@@ -49,24 +49,47 @@ const edit = async (req, res) => {
 };
 
 const destroy = async (req, res) => {
+  const id = req.params.id;
+
   try {
-    const [result] = await tables.provider.delete(req.params.id);
+    // Supprimer les produits liés à ce fournisseur
+    await tables.product.deleteByProvider(id);
+
+    // Ensuite, supprimer le fournisseur
+    const [result] = await tables.provider.delete(id);
+
     if (result.affectedRows === 0) {
       res.sendStatus(404);
     } else {
-      res.sendStatus(204);
+      res.sendStatus(204); // No Content
     }
+
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
   }
 };
 
+const getProviderType = async (req, res) => {
+  try {
+    const [providerType] = await tables.provider.show();
+    const enumValue = providerType[0].Type.match(/enum\((.+)\)/)[1]
+        .split(',')
+        .map(val => val.replace(/'/g, ''));
+
+    res.json(enumValue);
+  }
+  catch (err) {
+    console.error("Erreur lors de la récupération des types de fournisseur :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+}
 module.exports = {
   browse,
   read,
   add,
   edit,
   destroy,
+  getProviderType,
 };
 

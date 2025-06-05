@@ -55,6 +55,12 @@ class ProviderManager extends AbstractManager {
         );
     }
 
+    show() {
+        return this.database.query(
+            `SHOW COLUMNS FROM ${this.table} LIKE 'type'`
+        );
+    }
+
     delete(id) {
         return this.database.query(
             `DELETE FROM ${this.table} WHERE id_provider = ?`,

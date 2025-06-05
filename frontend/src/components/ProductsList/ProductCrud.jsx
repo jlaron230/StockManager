@@ -39,6 +39,14 @@ const ProductCrud = () => {
     const [sale, setSale] = useState("");
     const [IsClicked, setIsClicked] = useState(true);
 
+    const validators = {
+        threshold: (val) => typeof val === "number" && val > 0,
+        description: (val) => val.trim().length >= 10,
+        category: (val) => typeof val === "number" && val > 0,
+        MaxPrice: (val) => typeof val === "number" && val > 0,
+        SaleOption: (val) => val.trim().length >= 5,
+    };
+
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
@@ -118,43 +126,54 @@ const ProductCrud = () => {
 
     const handlePut = async (field) => {
         try {
-            setLoading(true);
-            const updatedData = {...product};
+            const updatedData = { ...product };
+            let newValue;
 
             switch (field) {
                 case "threshold":
-                    updatedData.seuil_minimal = value;
+                    newValue = value;
+                    if (!validators.threshold(newValue)) return alert("Valeur de seuil invalide");
+                    updatedData.seuil_minimal = newValue;
                     break;
                 case "description":
-                    updatedData.description = desc;
+                    newValue = desc;
+                    if (!validators.description(newValue)) return alert("Description invalide");
+                    updatedData.description = newValue;
                     break;
                 case "category":
-                    updatedData.id_category = selectedCategory;
+                    newValue = selectedCategory;
+                    if (!validators.category(newValue)) return alert("Catégorie invalide");
+                    updatedData.id_category = newValue;
                     break;
                 case "quantityNow":
-                    updatedData.quantité_en_stock = QuantityNow;
+                    newValue = QuantityNow;
+                    updatedData.quantité_en_stock = newValue;
                     break;
                 case "MaxPrice":
-                    updatedData.prix_unitaire = MaxPrice;
+                    newValue = MaxPrice;
+                    if (!validators.MaxPrice(newValue)) return alert("Prix invalide");
+                    updatedData.prix_unitaire = newValue;
                     break;
                 case "SaleOption":
-                    updatedData.condition_achat = sale;
+                    newValue = sale;
+                    if (!validators.SaleOption(newValue)) return alert("Condition d'achat invalide");
+                    updatedData.condition_achat = newValue;
                     break;
                 default:
-                    setLoading(false);
                     return;
             }
+
+            setLoading(true);
             const productPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, updatedData, {
                 withCredentials: true,
-            })
-
+            });
             console.log(productPut.data);
         } catch (error) {
-        console.error("Erreur lors de la modification du produit :", error);
-    } finally {
+            console.error("Erreur lors de la modification du produit :", error);
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleEdit = (field) => {
         setEditMode((prev) => ({ ...prev, [field]: true }));
@@ -272,7 +291,7 @@ const ProductCrud = () => {
                     </div>
                     <div>
                         <p className="text-base">Fournisseur</p>
-                        <p className="text-blue-500 font-bold">{provider.nom}</p>
+                        <p className="text-blue-500 font-bold">{provider ? provider.nom : ""}</p>
                     </div>
                     <div>
                         <p className="text-base">Localisation</p>

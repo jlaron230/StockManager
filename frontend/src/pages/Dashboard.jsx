@@ -5,6 +5,7 @@ import StockChartSection from "../components/Dashboard/StockChartSection";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import LogoutUser from "@components/Login/LogoutUser";
+import CategorySection from "@components/Dashboard/CategorySection";
 
 const Dashboard = () => {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -42,6 +43,7 @@ const Dashboard = () => {
       <LogoutUser ButtonName="Déconnexion"/>
       <AdminInfoSection/>
       <UserSection/>
+      <CategorySection />
       <StockAlertSection/>
       <StockChartSection />
     </div>

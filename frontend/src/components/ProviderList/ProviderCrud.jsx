@@ -40,10 +40,29 @@ const ProviderCrud = () => {
     const [codePostal, setcodePostal] = useState("");
     const [commentaire, setCommentaire] = useState("");
     const [IsClicked, setIsClicked] = useState(true);
+    const [providerTypes, setProviderTypes] = useState([]);
+
+    const validators = {
+        email: (val) => /\S+@\S+\.\S+/.test(val),
+        telephone: (val) => /^0\d{9}$/.test(val),
+        type: (val) => val && val.trim().length > 0,
+    };
 
     const HandleClick = () => {
         setIsClicked(!IsClicked);
     }
+
+    useEffect(() => {
+        const fetchProviderTypes = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/provider-types`, { withCredentials: true });
+                setProviderTypes(res.data);
+            } catch (error) {
+                console.error("Erreur en récupérant les types de fournisseur :", error);
+            }
+        };
+        fetchProviderTypes();
+    }, []);
 
     const HandleSupp = async (e) => {
         try {
@@ -112,36 +131,47 @@ const ProviderCrud = () => {
     const handlePut = async (field) => {
         try {
             setLoading(true);
-            const updatedData = {...provider};
+            const updatedData = { ...provider };
+            let newValue;
 
             switch (field) {
                 case "email":
-                    updatedData.email = email;
+                    newValue = email;
+                    if (!validators.email(newValue)) return alert("Email invalide, exemple : johndoe@mail.com");
+                    updatedData.email = newValue;
                     break;
                 case "telephone":
-                    updatedData.telephone = telephone;
+                    newValue = telephone;
+                    if (!validators.telephone(newValue)) return alert("Téléphone invalide, exemple : +09 21 34 54 45");
+                    updatedData.telephone = newValue;
                     break;
                 case "commentaire":
-                    updatedData.id_category = commentaire;
+                    newValue = commentaire;
+                    updatedData.commentaire = newValue;
                     break;
                 case "type":
-                    updatedData.type = selectedProvider;
+                    newValue = selectedProvider;
+                    if (!validators.type(newValue)) return alert("Type de fournisseur invalide");
+                    updatedData.type = newValue;
                     break;
                 default:
                     setLoading(false);
                     return;
             }
-            const providerPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/providers/${id}`, updatedData, {
-                withCredentials: true,
-            })
+
+            const providerPut = await axios.put(
+                `${import.meta.env.VITE_BACKEND_URL}/providers/${id}`,
+                updatedData,
+                { withCredentials: true }
+            );
 
             console.log(providerPut.data);
         } catch (error) {
-            console.error("Erreur lors de la modification du produit :", error);
+            console.error("Erreur lors de la modification du fournisseur :", error);
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleEdit = (field) => {
         setEditMode((prev) => ({ ...prev, [field]: true }));
@@ -223,7 +253,7 @@ const ProviderCrud = () => {
                                             className="p-2 border rounded-md"
                                         >
                                             <option value="" disabled>-- Sélectionnez un type --</option>
-                                            {[...new Set(categoryList.map((type) => type.type))].map((typeOption, index) => (
+                                            {providerTypes.map((typeOption, index) => (
                                                 <option key={index} value={typeOption}>{typeOption}</option>
                                             ))}
                                         </select>
@@ -290,7 +320,9 @@ const ProviderCrud = () => {
                         <>
                             {!IsClicked ? (
                                 <div>
-                                    <ModalProduct  nameModal="Supprimer le fournisseur" descriptionModal="Êtes-vous sûr de vouloir supprimer le fournisseur ?" supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
+                                    <ModalProduct  nameModal="Supprimer le fournisseur" descriptionModal={    <>
+                                        Êtes-vous sûr de vouloir supprimer le fournisseur ? Cela supprimera les <strong>produits</strong> associés à celui-ci.
+                                    </>} supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
                                 </div>
                             ) : (
                                 <></>
