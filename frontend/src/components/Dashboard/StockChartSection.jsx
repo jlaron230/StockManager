@@ -13,7 +13,7 @@ const StockChartSection = () => {
   const [selectedProduct, setSelectedProduct] = useState("all");
 
   useEffect(() => {
-    axios.get("http://localhost:5000/categories").then((res) => setCategories(res.data));
+    axios.get("http://localhost:5000/categories", {withCredentials: true}).then((res) => setCategories(res.data));
     axios.get("http://localhost:5000/products", {withCredentials: true}).then((res) => setProducts(res.data));
     axios.get("http://localhost:5000/stock/categorie").then((res) => setCategoryData(res.data));
     axios.get("http://localhost:5000/stock").then((res) => setProductData(res.data));

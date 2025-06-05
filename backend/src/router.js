@@ -33,7 +33,7 @@ router.post("/notify", testNotif);
 router.get("/users", userControllers.getAllUsers);
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
-router.delete("/user/:id", userControllers.deleteUser);
+router.delete("/user/:id", requireAdmin, userControllers.deleteUser);
 router.put("/user/:id", userControllers.updateUser);
 
 router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
@@ -65,6 +65,7 @@ router.get("/providers/:id", requireLogin, providerControllers.read);
 router.post("/providers", requireAdmin, providerControllers.add);
 router.put("/providers/:id", requireAdmin, providerControllers.edit);
 router.delete("/providers/:id", requireAdmin, providerControllers.destroy);
+router.get('/provider-types', requireLogin, providerControllers.getProviderType);
 
 router.get("/stock", stockControllers.browse);
 router.get("/stock/categorie", stockControllers.getStockByCategory);
@@ -83,12 +84,12 @@ router.put("/orders/:id", requireAdmin, orderControllers.update); //requireLogin
 router.get("/orders/:id/full", orderControllers.getFullOrder);
 router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
 
-router.get("/categories", categoryControllers.browse);
-router.get("/categories/:id", categoryControllers.read);
-router.get("/categories/:id/providers", categoryControllers.getProvidersByCategory);
-router.post("/categories", categoryControllers.add);
-router.put("/categories/:id", requireLogin, categoryControllers.edit);
-router.delete("/categories/:id", requireLogin, categoryControllers.destroy);
+router.get("/categories", requireLogin, categoryControllers.browse);
+router.get("/categories/:id", requireLogin, categoryControllers.read);
+router.get("/categories/:id/providers", requireLogin, categoryControllers.getProvidersByCategory);
+router.post("/categories", requireAdmin, categoryControllers.add);
+router.put("/categories/:id", requireAdmin, categoryControllers.edit);
+router.delete("/categories/:id", requireAdmin, categoryControllers.destroy);
 
 
 

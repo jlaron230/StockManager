@@ -10,6 +10,7 @@ import ButtonReturn from "@components/Button/ButtonReturn";
 const ProviderAdd = () => {
     const [images, setImages] = useState([]);
     const [provider, setprovider] = useState([]);
+    const [providerTypes, setProviderTypes] = useState([]);
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
@@ -24,6 +25,18 @@ const ProviderAdd = () => {
     console.log(images);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchProviderTypes = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/provider-types`, { withCredentials: true });
+                setProviderTypes(res.data);
+            } catch (error) {
+                console.error("Erreur en récupérant les types de fournisseur :", error);
+            }
+        };
+        fetchProviderTypes();
+    }, []);
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
@@ -89,7 +102,7 @@ const ProviderAdd = () => {
             adresse: Yup.string().required("Adresse requise").min(5, "5 Caractères minimum"),
             codePostal: Yup.string()
                 .required("Code postal requis")
-                .matches(/^\d{4}$/, "Le code postal doit contenir exactement 5 chiffres"),
+                .matches(/^\d{5}$/, "Le code postal doit contenir exactement 5 chiffres"),
         }),
         onSubmit: async (values, { resetForm }) => {
             try {
@@ -165,10 +178,11 @@ const ProviderAdd = () => {
                         <div className="mb-4">
                             <label htmlFor="telephone" className="block font-medium">Téléphone</label>
                             <input
-                                type="number"
+                                type="tel"
                                 id="telephone"
                                 pattern="[0-9]*"
                                 inputMode="numeric"
+                                validation="matches:/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/"
                                 className="input w-full border border-gray-300 rounded p-2"
                                 {...formik.getFieldProps("telephone")}
                             />
@@ -186,8 +200,8 @@ const ProviderAdd = () => {
                                 {...formik.getFieldProps("type")}
                             >
                                 <option value="" disabled>-- Sélectionnez un type --</option>
-                                {provider.map((p, index) => (
-                                    <option key={index} value={p.type}>{p.type}</option>
+                                {providerTypes.map((type, index) => (
+                                    <option key={index} value={type}>{type}</option>
                                 ))}
                             </select>
                             {formik.touched.type && formik.errors.type && (

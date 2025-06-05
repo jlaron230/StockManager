@@ -73,10 +73,29 @@ const deleteUser = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { nom, prenom, email, role } = req.body;
+  const newData = req.body;
 
   try {
-    await tables.user.update(id, { nom, prenom, email, role });
+    const [existingUser] = await tables.user.findById(id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+
+    const updatedUser = {
+      nom: newData.nom ?? existingUser.nom,
+      prenom: newData.prenom ?? existingUser.prenom,
+      email: newData.email ?? existingUser.email,
+      role: newData.role ?? existingUser.role,
+      entreprise: newData.entreprise ?? existingUser.entreprise,
+      pays: newData.pays ?? existingUser.pays,
+      adresse: newData.adresse ?? existingUser.adresse,
+      ville: newData.ville ?? existingUser.ville,
+      postal: newData.postal ?? existingUser.postal,
+      telephone: newData.telephone ?? existingUser.telephone,
+    };
+
+    await tables.user.updateProfile(id, updatedUser);
     res.sendStatus(204);
   } catch (err) {
     console.error("Erreur updateUser :", err);

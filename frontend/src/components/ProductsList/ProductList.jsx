@@ -133,7 +133,7 @@ const ProductList = () => {
         FetchProductData();
 
         const FetchCategory = async () => {
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`)
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true})
             setCategories(response.data);
         }
         FetchCategory();
