@@ -189,9 +189,9 @@ const ProductCrud = () => {
                             <p>Date de création :<span className="text-blue-500 font-bold"> {dateArray[2]}</span></p>
                         </div>
                         <ImageEffect image={images} nom={product.nom}/>
-                        <div className="flex justify-center mt-6">
+                        {/* } <div className="flex justify-center mt-6">
                             <p className="gap-1 flex items-center"><BellIcon className="size-10 text-color-picto" /> être alerter <a href="#" className="text-color">(produit en rupture de stock)</a></p>
-                        </div>
+                        </div> */}
                         <div className="mt-8 flex justify-center">
                             {isAdmin ? (
                                 <>
@@ -325,10 +325,19 @@ const ProductCrud = () => {
                             <span className="text-blue-500 font-bold">{MaxPrice} €</span>
                         )}
                     </div>
-                    <div>
-                        <p className="text-base">Date de péremption</p>
-                        <p className="text-blue-500 font-bold">{dateArray[1]}</p>
-                    </div>
+                    {dateArray && dateArray[1] && new Date(dateArray[1]).getFullYear() >= 2005 ? (
+                        <div>
+                            <p className="text-base">Date de péremption</p>
+                            <span className="text-red-500 font-bold">
+            {new Date(dateArray[1]).toLocaleDateString()}
+        </span>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className="text-base">Date de péremption</p>
+                            <span className="text-gray-400 italic">Non renseignée</span>
+                        </div>
+                    )}
                     <div>
                         <p className="text-base">Condition d'achat</p>
                         {isAdmin ? (

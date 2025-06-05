@@ -40,7 +40,7 @@ const AddProduct = () => {
             .then((user) => {
                 if (user.user.role !== "admin") {
                     // Si connecté mais pas admin, on redirige aussi
-                    navigate("/");
+                    navigate("/connexion");
                 }
                 // Sinon, laisser l'accès à la page
             })
@@ -61,17 +61,17 @@ const AddProduct = () => {
     };
 
     const validationSchema = Yup.object({
-        nom: Yup.string().required("Champ requis"),
-        seuil_minimal: Yup.number().min(0, "Minimum 0").required("Champ requis"),
-        description: Yup.string().required("Champ requis"),
+        nom: Yup.string().required("Champ requis").min(3, "3 Caractères minimum"),
+        seuil_minimal: Yup.number().min(1, "Minimum 1").required("Champ requis"),
+        description: Yup.string().required("Champ requis").min(10, "10 Caractères minimum"),
         id_category: Yup.string().required("Champ requis"),
         id_provider: Yup.string().required("Champ requis"),
-        localisation: Yup.string().required("Champ requis"),
-        code_product: Yup.string().required("Champ requis"),
+        localisation: Yup.string().required("Champ requis").min(3, "3 Caractères minimum"),
+        code_product: Yup.string().required("Champ requis").min(3, "3 Caractères minimum"),
         quantité_en_stock: Yup.number().min(0, "Minimum 0").required("Champ requis"),
-        prix_unitaire: Yup.number().min(0, "Minimum 0").required("Champ requis"),
+        prix_unitaire: Yup.number().min(1, "Minimum 1").required("Champ requis"),
         date_peremption: Yup.date().nullable(),
-        condition_achat: Yup.string().required("Champ requis"),
+        condition_achat: Yup.string().required("Champ requis").min(5, "5 Caractères minimum"),
     });
 
     const handleImageChange = (e) => {
@@ -94,6 +94,7 @@ const AddProduct = () => {
         try {
             const productData = {
                 ...values,
+                date_peremption: values.date_peremption ? values.date_peremption : null,
                 image: null,
                 document: null,
                 image_prev: null,
