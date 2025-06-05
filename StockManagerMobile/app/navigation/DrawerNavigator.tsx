@@ -15,7 +15,7 @@ export default function DrawerNavigator() {
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="Produits" component={ProductListScreen} />
 
-      {/* Tu peux ajouter ici Stock, Produits, etc. */}
+    
     </Drawer.Navigator>
   );
 }

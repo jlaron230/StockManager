@@ -88,6 +88,30 @@ const getByCategory = async (req, res) => {
   }
 };
 
+async function partialUpdate(req, res) {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const allowedFields = ['nom', 'description', 'prix_unitaire', 'quantité_en_stock', 'seuil_minimal', 'id_category'];
+    const safeUpdates = Object.fromEntries(
+      Object.entries(updates).filter(([key]) => allowedFields.includes(key))
+    );
+
+    const result = await tables.product.updatePartial(id, safeUpdates);
+
+    if (result.affectedRows === 0) {
+      return res.sendStatus(404);
+    }
+
+    res.status(200).json({ message: 'Produit mis à jour.', result });
+  } catch (err) {
+    console.error("Erreur PATCH product:", err);
+    res.status(500).json({ error: 'Erreur lors de la mise à jour partielle.' });
+  }
+}
+
+
 
 module.exports = {
   browse,
@@ -95,6 +119,7 @@ module.exports = {
   add,
   edit,
   destroy,
-  getByCategory
+  getByCategory,
+  partialUpdate
 };
 

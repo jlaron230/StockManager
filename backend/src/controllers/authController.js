@@ -83,7 +83,8 @@ function checkSession(req, res) {
   
   async function forgotPassword(req, res) {
     const { email } = req.body;
-  
+    console.log("EMAIL REÇU :", email);
+    
     if (!email) {
       return res.status(400).json({ message: "Email requis." });
     }
@@ -129,7 +130,7 @@ function checkSession(req, res) {
 
   async function resetPassword(req, res) {
     const { email, token, newPassword } = req.body;
-  
+   
     if (!email || !token || !newPassword) {
       return res.status(400).json({ message: "Tous les champs sont requis." });
     }
