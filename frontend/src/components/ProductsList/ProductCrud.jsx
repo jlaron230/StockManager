@@ -211,7 +211,7 @@ const ProductCrud = () => {
                             <>
                                 <InputEdit
                                     type="number"
-                                    value={value}
+                                    value={value ?? ""}
                                     isEditing={editMode.threshold}
                                     onClick={() => handleEdit("threshold")}
                                     onChange={(e) => setValue(Number(e.target.value))}
@@ -353,7 +353,7 @@ const ProductCrud = () => {
                 {isAdmin && !IsClicked ? (
                     <>
                         <div>
-                            <ModalProduct supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked} />
+                            <ModalProduct nameModal="Supprimer le produit" descriptionModal="Êtes-vous sûr de vouloir supprimer le produit ?" supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked} />
                         </div>
                     </>
                 ) : (

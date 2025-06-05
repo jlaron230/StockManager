@@ -3,13 +3,14 @@ import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ServiceSection from "@components/Home/ServiceSection";
 import ProduitSection from "@components/Home/ProduitSection";
 import {Link} from "react-router-dom";
+import ButtonConnexionHome from "@components/Button/ButtonConnexionHome";
 
 const HomeComponent = () => {
     return (
         <>
             <header>
                 <div className="relative bg-cover bg-center bg-no-repeat"
-                     style={{backgroundImage: 'url("/Gestock-Header.png")'}}>
+                     style={{backgroundImage: 'url("/Gestock-Header.jpg")'}}>
 
                     {/* ✅ Overlay sombre (ombrage sur l'image) */}
                     <div className="absolute inset-0 bg-black/50"></div>
@@ -18,7 +19,7 @@ const HomeComponent = () => {
                     <div className="relative z-10">
                         <div className="dark:bg-dark/80">
                             <div
-                                className="container mx-auto flex text-center justify-center max-md:pb-40 max-md:pt-25 md:pt-25 md:pb-40">
+                                className="container mx-auto flex text-center justify-center max-md:pb-25 max-md:pt-20 md:pt-20 md:pb-20">
                                 <div className="flex flex-wrap items-center">
                                     <div className="w-full px-4">
                                         <div className="hero-content">
@@ -30,9 +31,7 @@ const HomeComponent = () => {
                                                 optimisez votre gestion de stocks grâce à nos solutions.
                                             </p>
                                             <div>
-                                                <Link to="/connexion">
-                                                <ButtonConnexion/>
-                                                </Link>
+                                                <ButtonConnexionHome/>
                                             </div>
                                         </div>
                                     </div>
@@ -42,7 +41,7 @@ const HomeComponent = () => {
                     </div>
                 </div>
             </header>
-            <div>
+            <div className="m-5 p-2">
                 <ServiceSection/>
                 <ProduitSection/>
             </div>

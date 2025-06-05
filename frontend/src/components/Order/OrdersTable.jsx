@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
+import ButtonSupp from "@components/Button/ButtonSupp";
+import ModalProduct from "@components/ProductsList/ModalProduct";
 
 const OrdersTable = ({
                          ordersAll,
@@ -13,42 +15,68 @@ const OrdersTable = ({
                          statutOptions,
                          isValidated,
                      }) => {
+    const [selectedOrderToDelete, setSelectedOrderToDelete] = useState(null);
+
+    const handleDeleteClick = (orderId) => {
+        console.log("Suppression demandée pour l’ID :", orderId);
+        setSelectedOrderToDelete(orderId);
+    };
+
+    const handleConfirmDelete = () => {
+        if (selectedOrderToDelete !== null) {
+            deleteOrder(selectedOrderToDelete);
+            setSelectedOrderToDelete(null); // fermer la modal
+        }
+    };
+
+    const handleCloseModal = () => {
+        setSelectedOrderToDelete(null); // fermer la modal sans suppression
+    };
+
+
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Commandes en cours</h1>
+        <div className="p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl font-bold mb-4">Commandes en cours</h1>
 
             <div className="overflow-x-auto rounded-lg border shadow-sm bg-white">
                 <table className="min-w-full text-sm text-left">
-                    <thead className="bg-gray-50 text-xs uppercase text-gray-500 border-b">
+                    <thead className="bg-gray-50 text-xs uppercase text-gray-500 border-b hidden sm:table-header-group">
                     <tr>
-                        <th className="p-4">ID</th>
-                        <th className="p-4">Employé</th>
-                        <th className="p-4">Status commande</th>
-                        <th className="p-4">Montant</th>
-                        <th className="p-4 text-right">Actions</th>
+                        <th className="p-3 sm:p-4">ID</th>
+                        <th className="p-3 sm:p-4">Employé</th>
+                        <th className="p-3 sm:p-4">Status commande</th>
+                        <th className="p-3 sm:p-4">Montant</th>
+                        <th className="p-3 sm:p-4">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {ordersAll.map((order) => {
                         const relatedUser = user.find(u => u.id_user === order.id_user);
                         return (
-                            <tr key={order.id_order} className="border-b hover:bg-gray-50">
-                                <td className="p-4 font-medium text-gray-800">{order.id_order}</td>
-                                <td className="p-4">
-                                    {relatedUser ? relatedUser.nom : 'Unknown'}
+                            <tr
+                                key={order.id_order}
+                                className="border-b hover:bg-gray-50 flex flex-col sm:table-row"
+                            >
+                                <td className="p-3 sm:p-4 font-medium text-gray-800 sm:table-cell">
+                                    <span className="font-semibold sm:hidden">ID : </span>{order.id_order}
                                 </td>
-                                <td className="p-4">
+                                <td className="p-3 sm:p-4 sm:table-cell">
+                                    <span className="font-semibold sm:hidden">Employé : </span>
+                                    {relatedUser ? relatedUser.nom : 'Inconnu'}
+                                </td>
+                                <td className="p-3 sm:p-4 sm:table-cell">
+                                    <span className="font-semibold sm:hidden">Statut : </span>
                                     {editingId === order.id_order ? (
                                         <select
                                             name="statut"
                                             value={editedOrder.statut}
                                             onChange={handleChange}
-                                            className="border px-2 py-1 rounded-md w-32 transition duration-200"
+                                            className="border px-2 py-1 rounded-md w-full sm:w-32"
                                         >
                                             {statutOptions.map((option) => (
                                                 <option key={option} value={option}>
-                                                    {option.replace("_", " ")} {/* lisible */}
+                                                    {option.replace("_", " ")}
                                                 </option>
                                             ))}
                                         </select>
@@ -56,10 +84,11 @@ const OrdersTable = ({
                                         order.statut
                                     )}
                                 </td>
-                                <td className="p-4">
+                                <td className="p-3 sm:p-4 sm:table-cell">
+                                    <span className="font-semibold sm:hidden">Montant : </span>
                                     {order.total_ammount}
                                 </td>
-                                <td className="p-4 text-right flex gap-2 justify-end">
+                                <td className="p-3 sm:p-4 text-right sm:table-cell flex justify-end gap-2">
                                     {editingId === order.id_order ? (
                                         <>
                                             <button
@@ -78,6 +107,7 @@ const OrdersTable = ({
                                         </>
                                     ) : (
                                         <>
+                                            <div className="flex flex-wrap gap-3">
                                             <button
                                                 onClick={() => startEdit(order)}
                                                 className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -86,11 +116,12 @@ const OrdersTable = ({
                                                 Éditer
                                             </button>
                                             <button
-                                                onClick={() => deleteOrder(order.id_order)}
+                                                onClick={() => handleDeleteClick(order.id_order)}
                                                 className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
                                             >
                                                 Supprimer
                                             </button>
+                                            </div>
                                         </>
                                     )}
                                 </td>
@@ -100,15 +131,26 @@ const OrdersTable = ({
                     {ordersAll.length === 0 && (
                         <tr>
                             <td colSpan="5" className="p-4 text-center text-gray-500">
-                                No orders found.
+                                Aucune commande trouvée.
                             </td>
                         </tr>
                     )}
                     </tbody>
                 </table>
             </div>
+
+            {selectedOrderToDelete !== null && (
+                <ModalProduct
+                    nameModal="Supprimer la commande"
+                    descriptionModal="Êtes-vous sûr de vouloir supprimer la commande ?"
+                    modalOpen={false}
+                    setModalOpen={handleCloseModal}
+                    supp={handleConfirmDelete}
+                />
+            )}
         </div>
     );
 };
+
 
 export default OrdersTable;

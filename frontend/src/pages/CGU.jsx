@@ -2,6 +2,11 @@ import React, {useState, useEffect} from "react";
 import Counter from "@components/Counter";
 import {Link} from "react-router-dom";
 const CGU = () => {
+
+    useEffect(() => {
+        window.scrollTo({top, behavior: 'smooth' })
+    }, [])
+
     return (
         <main className="max-w-4xl mx-auto px-4 py-12">
             <section id="cgu">

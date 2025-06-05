@@ -13,36 +13,53 @@ const SignupSchema = Yup.object().shape({
         .required('Requis'),
 });
 
-const InputField = ({label, name, type = "text", placeholder, handleTogglePassword, showPassword, showPasswordField}) => (
+const InputField = ({
+                        label,
+                        name,
+                        type = "text",
+                        placeholder,
+                        handleTogglePassword,
+                        showPassword,
+                        showPasswordField,
+                    }) => (
     <div className="flex flex-col mb-4 relative">
-        <label htmlFor={name} className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+        <label
+            htmlFor={name}
+            className="mb-1 text-sm font-medium text-gray-900 dark:text-white"
+        >
             {label} <span className="text-red-700">*</span>
         </label>
-        <Field
-            id={name}
-            name={name}
-            type={type}
-            placeholder={placeholder}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5
-                 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            required
-        />
-        {showPasswordField ? (
-            <div
-                className="pt-3 pb-3 absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={handleTogglePassword}
-            >
 
-                {showPassword ? ( // Toggle eye icon for password visibility
-                    <EyeSlashIcon className="h-6 w-6"/>
-                ) : (
-                    <EyeIcon className="h-6 w-6"/>
-                )}
-            </div>
-        ):(
-            <div></div>
-        )}
-        <ErrorMessage name={name} component="div" className="text-red-500 text-sm mt-1"/>
+        <div className="relative">
+            <Field
+                id={name}
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10
+          dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+            />
+
+            {showPasswordField && (
+                <div
+                    className="absolute inset-y-0 right-3 flex items-center"
+                    onClick={handleTogglePassword}
+                >
+                    {showPassword ? (
+                        <EyeSlashIcon className="h-5 w-5 text-gray-500 cursor-pointer" />
+                    ) : (
+                        <EyeIcon className="h-5 w-5 text-gray-500 cursor-pointer" />
+                    )}
+                </div>
+            )}
+        </div>
+
+        <ErrorMessage
+            name={name}
+            component="div"
+            className="text-red-500 text-sm mt-1"
+        />
     </div>
 );
 

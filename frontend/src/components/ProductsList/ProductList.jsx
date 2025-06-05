@@ -340,7 +340,7 @@ const ProductFiche = ({productName, productImage, productDesc, productCategory, 
                         </p>
                         <p className="text-gray-400 text-xs italic">Catégorie : {productCategory}</p>
                         <Link to={`/produit/${productId}`}>
-                        <button className="mt-2 bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                        <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                             voir produit
                         </button>
                         </Link>

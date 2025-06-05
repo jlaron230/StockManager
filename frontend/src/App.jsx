@@ -33,6 +33,7 @@ import ResetPassword from "@pages/ResetPassword";
 import Dashboard from "@pages/Dashboard";
 import { messaging, getToken } from "./firebase";
 import About from "@pages/About";
+import ScrollToTopBar from "@components/Button/ScrollToTopBar";
 
 function App() {
 const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -102,6 +103,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
     return (
         <>
         <Navbar/>
+            <ScrollToTopBar />
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/a-propos" element={<About />} />

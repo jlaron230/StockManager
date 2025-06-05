@@ -5,7 +5,7 @@ import HomeComponent from "@components/Home/HomeComponent";
 
 const Home = () => {
     return (
-        <div className="max-lg:flex max-lg:justify-center contents">
+        <div className="contents">
          <HomeComponent />
         </div>
     )

@@ -3,8 +3,9 @@ import axios from "axios";
 import {number} from "yup";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonOrder from "@components/Button/ButtonOrder";
+import ButtonReturn from "@components/Button/ButtonReturn";
 
 const ProviderAdd = () => {
     const [images, setImages] = useState([]);
@@ -60,6 +61,10 @@ const ProviderAdd = () => {
         getProvider();
     }, []);
 
+    useEffect(() => {
+        window.scrollTo({top, behavior: 'smooth' })
+    }, [])
+
 
     const formik = useFormik({
         initialValues: {
@@ -99,6 +104,8 @@ const ProviderAdd = () => {
 
                 if (response.status === 200 || response.status === 201) {
                     alert("Fournisseur ajouté !");
+                    const newProvider = response.data;
+                    navigate(`/fournisseur/${newProvider.id_provider}`);
                     resetForm();
                     setImages([]);
                 } else {
@@ -112,8 +119,11 @@ const ProviderAdd = () => {
 
     return (
         <div className="flex justify-center">
-            <main className="flex flex-wrap gap-8">
-                <form className="w-full flex flex-wrap" onSubmit={formik.handleSubmit}>
+            <main className="flex flex-wrap gap-8 justify-center m-10">
+                <Link to="/fournisseur">
+                    <ButtonReturn className="flex flex-wrap"/>
+                </Link>
+                <form className="w-full flex flex-wrap justify-center gap-10" onSubmit={formik.handleSubmit}>
                     <div className="max-w-3xl p-6 bg-white rounded-2xl shadow">
                         <h1 className="text-2xl font-bold mb-4">Ajouter un fournisseur</h1>
 
@@ -216,26 +226,6 @@ const ProviderAdd = () => {
                             {formik.touched.commentaire && formik.errors.commentaire && (
                                 <p className="text-red-500 text-sm">{formik.errors.commentaire}</p>
                             )}
-                        </div>
-
-                        {/* Images (hors Formik) */}
-                        <div className="mb-4">
-                            <label className="block font-medium">Images (max 3)</label>
-                            <input type="file" multiple onChange={handleImageChange} />
-                            <div className="mt-2 flex gap-2">
-                                {images.map((img, index) => (
-                                    <div key={index} className="relative">
-                                        <img src={URL.createObjectURL(img)} alt="" className="w-16 h-16 object-cover rounded" />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeImage(index)}
-                                            className="absolute top-0 right-0 text-red-500"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
 
                         {/* Submit */}

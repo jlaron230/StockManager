@@ -135,7 +135,7 @@ const ProviderList = () => {
                     {/* Filtres */}
                     {/* Fournisseurs + Recherche */}
                     <main className=" space-y-6">
-                        <div className="flex justify-center items-end gap-5">
+                        <div className="flex justify-center items-end gap-5 max-md:flex-wrap">
                             {/* Recherche */}
                             <div className="relative w-1/2">
                                 <input
@@ -258,12 +258,7 @@ const ProviderFiche = ({providerName, providerImage, providerDesc, providerType,
         <>
             {/* Liste fournisseurs */}
             <div className="justify-center space-y-4 md:w-125 flex flex-wrap gap-2">
-                <div className="flex items-center md:w-110 max-md:full p-4 bg-white rounded-lg shadow-md">
-                    <img
-                        src={providerImage}
-                        alt="Fournisseur"
-                        className="w-40 h-40 object-contain rounded"
-                    />
+                <div className="flex items-center md:w-90 max-md:full p-4 bg-white rounded-lg shadow-md">
                     <div className="ml-4 flex-1">
                         <h4 className="text-lg font-bold">{providerName}</h4>
                         <p className="text-gray-500 text-sm">
@@ -271,7 +266,7 @@ const ProviderFiche = ({providerName, providerImage, providerDesc, providerType,
                         </p>
                         <p className="text-gray-400 text-xs italic">Type : {providerType}</p>
                         <Link to={`/fournisseur/${providerId}`}>
-                            <button className="mt-2 bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                            <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                                 voir fournisseur
                             </button>
                         </Link>
