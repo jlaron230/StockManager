@@ -32,7 +32,7 @@ router.get("/users", userControllers.getAllUsers);
 router.get("/user/profile", requireLogin, userControllers.getProfile);
 router.put("/user/profile", requireLogin, userControllers.updateProfile);
 router.delete("/user/:id", requireAdmin, userControllers.deleteUser);
-router.put("/user/:id", userControllers.updateUser);
+router.patch("/user/:id", userControllers.updateUser);
 
 router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
 

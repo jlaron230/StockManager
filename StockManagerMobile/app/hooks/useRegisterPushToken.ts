@@ -3,9 +3,9 @@ import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 
 /**
- * Enregistre le token Expo push dans la base si l'utilisateur est connecté.
  * @param userId ID de l'utilisateur connecté (ou null)
  */
+
 export function useRegisterPushToken(userId?: number) {
   useEffect(() => {
     if (!userId) return;
@@ -25,13 +25,13 @@ export function useRegisterPushToken(userId?: number) {
           return;
         }
 
-        // ✅ Sans projectId ici (Expo le gère)
+        
         const tokenData = await Notifications.getExpoPushTokenAsync();
         const token = tokenData.data;
 
         console.log("📲 Expo Push Token récupéré :", token);
 
-        // ✅ Envoie au backend
+        
         await axios.put(`http://192.168.1.121:5000/users/${userId}/token-mobil`, {
           fcm_token_mobil: token,
         });
