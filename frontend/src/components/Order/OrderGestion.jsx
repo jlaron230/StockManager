@@ -4,6 +4,8 @@ import axios from "axios";
 import OrdersTable from "@components/Order/OrdersTable";
 import OrderCrud from "@components/Order/OrderCrud";
 import OrderTotals from "@components/Order/OrderTotals";
+import {XMarkIcon} from "@heroicons/react/24/outline";
+import {Bars2Icon} from "@heroicons/react/16/solid";
 
 const initialNavigation = [
     { name: "En cours", current: true },
@@ -25,6 +27,7 @@ const OrderGestion = () => {
     const [product, setProduct] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [editedOrder, setEditedOrder] = useState({});
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const fetchAllData = async () => {
         try {
@@ -232,17 +235,41 @@ const OrderGestion = () => {
     const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
     return (
-        <>
-        {isAdmin ? (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r shadow-sm p-4">
-                <h2 className="text-xl font-bold mb-6">Mes commandes</h2>
+            <div className="flex justify-between items-center lg:hidden bg-white p-4 border-b">
+                <h2 className="text-xl font-bold hidden lg:block">Mes commandes</h2>
+                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-700">
+                    {mobileMenuOpen ? (
+                        <XMarkIcon className="w-6 h-6"/>
+                    ) : (
+                        <Bars2Icon className="w-6 h-6"/>
+                    )}
+                </button>
+            </div>
+
+            {/* Sidebar */}
+            <aside
+                className={classNames(
+                    "bg-white border-r shadow-sm p-4 w-64 z-40 transition-transform duration-300 ease-in-out",
+                    "fixed top-0 left-0 h-full lg:static lg:translate-x-0",
+                    "lg:h-screen lg:flex lg:flex-col",
+                    mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+                )}
+            >
+                <div className="flex justify-between items-center lg:hidden mb-4">
+                    <h2 className="text-xl font-bold">Menu commande</h2>
+                    <button onClick={() => setMobileMenuOpen(false)}><XMarkIcon className="w-6 h-6"/></button>
+                </div>
                 <nav className="space-y-2 flex flex-col">
+                    <h2 className="text-xl font-bold mb-8">Menu commande</h2>
                     {navigation.map((item, index) => (
                         <a
                             key={item.name}
-                            onClick={() => switchTab(index)}
+                            onClick={() => {
+                                switchTab(index);
+                                setMobileMenuOpen(false); // Ferme le menu sur mobile après clic
+                            }}
                             className={classNames(
                                 item.current ? "text-color-picto" : "text-color hover:text-white",
                                 "cursor-pointer rounded-md px-3 py-2 text-lg font-medium"
@@ -253,43 +280,41 @@ const OrderGestion = () => {
                     ))}
                 </nav>
             </aside>
+            {mobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black opacity-50  z-30 lg:hidden"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
 
-            {/* Main Content */}
-            <main className="flex-1 p-4">
+            {/* Main content */}
+            <main className="flex-1 p-4 overflow-auto">
                 {navigation[0].current && (
                     <>
                         {ordersAll.length > 0 ? (
-                            <>
-                                <OrdersTable
-                                    statutOptions={EnumStatut}
-                                    user={user}
-                                    ordersAll={ordersAll}
-                                    editingId={editingId}
-                                    editedOrder={editedOrder}
-                                    handleChange={handleChange}
-                                    startEdit={startEdit}
-                                    cancelEdit={cancelEdit}
-                                    saveEdit={saveEdit}
-                                    deleteOrder={deleteOrder}
-                                    isValidated={ordersAll}
-                                />
-                            </>
+                            <OrdersTable
+                                statutOptions={EnumStatut}
+                                user={user}
+                                ordersAll={ordersAll}
+                                editingId={editingId}
+                                editedOrder={editedOrder}
+                                handleChange={handleChange}
+                                startEdit={startEdit}
+                                cancelEdit={cancelEdit}
+                                saveEdit={saveEdit}
+                                deleteOrder={deleteOrder}
+                                isValidated={ordersAll}
+                            />
                         ) : (
                             <p>Aucune commande trouvée</p>
                         )}
                     </>
                 )}
 
-                {navigation[1].current && <OrderCrud />}
-                {navigation[2].current && <OrderTotals ordersAll={ordersAll} />}
+                {navigation[1].current && <OrderCrud/>}
+                {navigation[2].current && <OrderTotals ordersAll={ordersAll}/>}
             </main>
         </div>
-            ) : (
-                <div>
-                    <p>Chargement</p>
-                </div>
-            )}
-        </>
     );
 };
 

@@ -1,5 +1,6 @@
 import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
 import {BeakerIcon, PaintBrushIcon} from "@heroicons/react/16/solid";
+import {useEffect} from "react";
 
 const features = [
     {
@@ -17,8 +18,12 @@ const features = [
 
 const About = () => {
 
+    useEffect(() => {
+        window.scrollTo({top, behavior: 'smooth' })
+    }, [])
+
         return (
-            <div className="overflow-hidden bg-white py-24 sm:py-32">
+            <div className="overflow-hidden bg-white py-10 sm:py-10">
                 <div className="mx-auto max-w-7xl px-6 lg:px-8">
                     <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-11 lg:max-w-none lg:grid-cols-2">
                         <div className="lg:pt-4 lg:pr-8">
@@ -47,10 +52,10 @@ const About = () => {
                         </div>
                         <img
                             alt="Product screenshot"
-                            src="https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
-                            width={2432}
-                            height={1442}
-                            className="w-3xl max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-228 md:-ml-4 lg:-ml-0"
+                            src="/APropos.png"
+                            width={1600}
+                            height={700}
+                            className="w-3xl max-w-lg rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-228 md:-ml-4 lg:-ml-0"
                         />
                     </div>
                 </div>

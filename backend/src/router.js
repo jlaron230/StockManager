@@ -43,7 +43,7 @@ router.post("/reset-password", resetPassword);
 
 router.get("/store", requireLogin, storeControllers.browse);
 
-router.get("/products", requireLogin, productControllers.browse);
+router.get("/products", productControllers.browse);
 router.get("/products/:id", requireLogin, productControllers.read);
 
 

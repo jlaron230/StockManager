@@ -285,12 +285,12 @@ const ProviderCrud = () => {
                     </div>
                 </div>
                 {isAdmin ? (
-                    <div className="flex flex-wrap justify-center p-6">
+                    <div className="flex flex-wrap justify-center p-6 items-center">
                         <ButtonSupp NameSupp="Supprimer le fournisseur" onClick={HandleClick}/>
                         <>
                             {!IsClicked ? (
                                 <div>
-                                    <ModalProduct supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
+                                    <ModalProduct  nameModal="Supprimer le fournisseur" descriptionModal="Êtes-vous sûr de vouloir supprimer le fournisseur ?" supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
                                 </div>
                             ) : (
                                 <></>
