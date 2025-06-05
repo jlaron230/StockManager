@@ -14,7 +14,8 @@ import { Image } from 'react-native';
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'login'>;
 
 export default function LoginScreen() {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -93,9 +94,10 @@ export default function LoginScreen() {
       Connexion
       </Button>
 
-      <TouchableOpacity>
-        <Text style={styles.link}>Mot de passe oublié ?</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('PasswordResetRequest')}>
+        <Text style={styles.forgotText}>Mot de passe oublié ?</Text>
       </TouchableOpacity>
+
     </KeyboardAvoidingView>
   );
 }
@@ -140,4 +142,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 12,
   },
+  forgotText: {
+  color: '#007bff',
+  fontSize: 14,
+  textAlign: 'right',
+  marginTop: 12,
+},
+
 });

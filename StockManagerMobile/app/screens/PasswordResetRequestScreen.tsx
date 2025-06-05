@@ -20,7 +20,7 @@ export default function PasswordResetRequestScreen() {
 
     try {
       setLoading(true);
-      await axios.post('http://192.168.1.121:5000/reset-password', { email });
+      await axios.post('http://192.168.1.121:5000/forgot-password', { email });
       Alert.alert("✅ Succès", "Lien de réinitialisation envoyé !");
       navigation.navigate('login');
     } catch (err: any) {
