@@ -11,8 +11,8 @@ const testNotif = async (req, res) => {
     // Envoie du token unique dans un tableau
     await sendNotification(
       [token], // on l’envoie sous forme de tableau pour correspondre à la fonction
-      "📣 Test FCM",
-      "Ceci est une notification test depuis le backend."
+      "📣 Etat critique",
+      "LE produit'gateaux' est bientôt en rupture de stock."
     );
 
     res.status(200).json({ message: "Notification envoyée avec succès" });
