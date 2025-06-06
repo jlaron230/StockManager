@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
 
 
 const createUser = async (req, res) => {
-  const { nom, prenom, email, password, role } = req.body;
+  const { nom, prenom, email, password, role = "employe" } = req.body;
 
   if (!nom || !prenom || !email || !password || !role) {
     return res.status(400).json({ message: "Champs requis." });

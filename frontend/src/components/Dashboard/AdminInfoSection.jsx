@@ -98,7 +98,7 @@ const AdminInfoSection = () => {
     }
 
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/user/${admin.id_user}`, values, {
+      await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/user/${admin.id_user}`, values, {
         withCredentials: true,
       });
       setAdmin((prev) => ({ ...prev, ...values }));
