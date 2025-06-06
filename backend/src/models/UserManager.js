@@ -125,7 +125,7 @@ class UserManager extends AbstractManager {
     getAllWithFcmToken() {
         return this.database.query(`
         SELECT id_user, fcm_token, fcm_token_mobil
-        FROM user
+        FROM users
         WHERE fcm_token IS NOT NULL OR fcm_token_mobil IS NOT NULL
         `);
     }
