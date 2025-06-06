@@ -3,10 +3,11 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   ScrollView,
   Animated,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -106,24 +107,58 @@ export default function AjouterProduitScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Ajouter un produit</Text>
 
-      <TextInput placeholder="Nom" style={styles.input} value={nom} onChangeText={setNom} />
-      <TextInput placeholder="Prix unitaire (€)" style={styles.input} keyboardType="decimal-pad" value={prix} onChangeText={setPrix} />
-      <TextInput placeholder="Quantité en stock" style={styles.input} keyboardType="numeric" value={stock} onChangeText={setStock} />
-      <TextInput placeholder="Seuil minimal" style={styles.input} keyboardType="numeric" value={seuil} onChangeText={setSeuil} />
+      <TextInput
+        placeholder="Nom"
+        style={styles.input}
+        value={nom}
+        onChangeText={setNom}
+        placeholderTextColor="#888"
+      />
 
-      <Picker
-        selectedValue={selectedCategory}
-        onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-        style={styles.picker}
-      >
-        {categories.map((cat) => (
-          <Picker.Item
-            label={cat.nom}
-            value={cat.id_category.toString()}
-            key={cat.id_category}
-          />
-        ))}
-      </Picker>
+      <TextInput
+        placeholder="Prix unitaire (€)"
+        style={styles.input}
+        keyboardType="decimal-pad"
+        value={prix}
+        onChangeText={setPrix}
+        placeholderTextColor="#888"
+      />
+
+      <TextInput
+        placeholder="Quantité en stock"
+        style={styles.input}
+        keyboardType="numeric"
+        value={stock}
+        onChangeText={setStock}
+        placeholderTextColor="#888"
+      />
+
+      <TextInput
+        placeholder="Seuil minimal"
+        style={styles.input}
+        keyboardType="numeric"
+        value={seuil}
+        onChangeText={setSeuil}
+        placeholderTextColor="#888"
+      />
+
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedCategory}
+          onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+          style={styles.picker}
+          dropdownIconColor="#333"
+        >
+          {categories.map((cat) => (
+            <Picker.Item
+              label={cat.nom}
+              value={cat.id_category.toString()}
+              key={cat.id_category}
+              color={Platform.OS === 'android' ? '#000' : undefined}
+            />
+          ))}
+        </Picker>
+      </View>
 
       <TextInput
         placeholder="Description (facultative)"
@@ -131,9 +166,12 @@ export default function AjouterProduitScreen() {
         multiline
         value={description}
         onChangeText={setDescription}
+        placeholderTextColor="#888"
       />
 
-      <Button title="Ajouter" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <Text style={styles.submitButtonText}>✅ Ajouter</Text>
+      </TouchableOpacity>
 
       <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>
         <Text style={styles.toastText}>✅ Produit ajouté</Text>
@@ -143,18 +181,54 @@ export default function AjouterProduitScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 20 },
+  container: {
+    padding: 20,
+    backgroundColor: '#f4f4f4',
+    flexGrow: 1,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#222',
+  },
   input: {
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 12,
+    padding: 12,
     borderRadius: 6,
+    marginBottom: 12,
+    color: '#000',
+  },
+  pickerContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 6,
+    marginBottom: 16,
+    overflow: 'hidden',
   },
   picker: {
-    backgroundColor: '#f0f0f0',
-    marginBottom: 16,
+    height: 50,
+    color: '#000',
+  },
+  submitButton: {
+    backgroundColor: '#007bff',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   toast: {
     position: 'absolute',
