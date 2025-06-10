@@ -9,7 +9,6 @@ const OrderCrud = () => {
     const [providers, setProviders] = useState([]);
     const [user, setUser] = useState(null);
     const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
     const [total, setTotal] = useState(0);
 
     const navigate = useNavigate();
@@ -48,162 +47,149 @@ const OrderCrud = () => {
 
     return (
         <>
-        {isAdmin ? (
-        <div className="max-w-3xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Créer une commande</h1>
+            {isAdmin ? (
+                <div className="max-w-3xl mx-auto p-4">
+                    <h1 className="text-2xl font-bold mb-4">Créer une commande</h1>
 
-            <Formik
-                initialValues={{
-                    id_provider: "",
-                    products: [],
-                    date_commande: new Date().toISOString(),
-                    statut: "en cours",
-                    id_user: null,
-                }}
-                onSubmit={async (values, { resetForm }) => {
-                    // Validation côté client (sécurité + UX)
-                    const providerProducts = products.filter(
-                        (p) => p.id_provider === Number(values.id_provider)
-                    );
+                    <Formik
+                        initialValues={{
+                            products: [],
+                            date_commande: new Date().toISOString(),
+                            statut: "en cours",
+                            id_user: null,
+                        }}
+                        onSubmit={async (values, { resetForm }) => {
+                            const selectedProductIds = values.products.map((p) => Number(p.id_product));
+                            const selectedProducts = products.filter((prod) =>
+                                selectedProductIds.includes(prod.id_product)
+                            );
+                            const uniqueProviderIds = [...new Set(selectedProducts.map((prod) => prod.id_provider))];
 
-                    const allMatch = values.products.every((prod) =>
-                        providerProducts.some((p) => p.id_product === Number(prod.id_product))
-                    );
+                            if (uniqueProviderIds.length !== 1) {
+                                alert("Tous les produits doivent appartenir au même fournisseur.");
+                                return;
+                            }
 
-                    if (!allMatch) {
-                        alert("Tous les produits doivent appartenir au même fournisseur.");
-                        return;
-                    }
+                            const id_provider = uniqueProviderIds[0];
 
-                    if (!window.confirm(`Valider cette commande pour un montant total de ${total.toFixed(2)} € ?`)) return;
+                            if (!window.confirm(`Valider cette commande pour un montant total de ${total.toFixed(2)} € ?`)) return;
 
-                    try {
-                        const payload = {
-                            ...values,
-                            id_provider: Number(values.id_provider),
-                            id_user: Number(values.id_user),
-                            products: values.products.map((p) => ({
-                                id_product: Number(p.id_product),
-                                quantité: Number(p.quantité),
-                            })),
-                        };
+                            try {
+                                const payload = {
+                                    ...values,
+                                    id_provider,
+                                    id_user: Number(values.id_user),
+                                    products: values.products.map((p) => ({
+                                        id_product: Number(p.id_product),
+                                        quantité: Number(p.quantité),
+                                    })),
+                                };
 
-                        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/orders`, payload, {
-                            withCredentials: true
-                        });
-                        alert("Commande créée avec succès !");
-                        resetForm();
-                        setTotal(0);
-                    } catch (err) {
-                        console.error("Erreur axios :", err.response?.data || err.message);
-                        alert("Erreur lors de la création de la commande.");
-                    }
-                }}
-            >
-                {({ values, setFieldValue }) => {
-                    useEffect(() => {
-                        const filtered = products.filter(
-                            (p) => p.id_provider === Number(values.id_provider)
-                        );
-                        setFilteredProducts(filtered);
-                        // Réinitialise les produits si le fournisseur change
-                        setFieldValue("products", []);
-                    }, [values.id_provider]);
+                                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/orders`, payload, {
+                                    withCredentials: true
+                                });
+                                alert("Commande créée avec succès !");
+                                resetForm();
+                                setTotal(0);
+                            } catch (err) {
+                                console.error("Erreur axios :", err.response?.data || err.message);
+                                alert("Erreur lors de la création de la commande.");
+                            }
+                        }}
+                    >
+                        {({ values, setFieldValue }) => {
+                            useEffect(() => {
+                                if (user) {
+                                    setFieldValue("id_user", user);
+                                }
+                            }, [user]);
 
-                    useEffect(() => {
-                        if (user) {
-                            setFieldValue("id_user", user);
-                        }
-                    }, [user]);
+                            useEffect(() => {
+                                const t = values.products.reduce((sum, p) => {
+                                    const prod = products.find((fp) => fp.id_product === Number(p.id_product));
+                                    return sum + (prod ? prod.prix_unitaire * p.quantité : 0);
+                                }, 0);
+                                setTotal(t);
+                            }, [values.products, products]);
 
-                    useEffect(() => {
-                        const t = values.products.reduce((sum, p) => {
-                            const prod = filteredProducts.find((fp) => fp.id_product === Number(p.id_product));
-                            return sum + (prod ? prod.prix_unitaire * p.quantité : 0);
-                        }, 0);
-                        setTotal(t);
-                    }, [values.products, filteredProducts]);
+                            const selectedProductIds = values.products.map((p) => Number(p.id_product));
+                            const selectedProducts = products.filter((prod) =>
+                                selectedProductIds.includes(prod.id_product)
+                            );
+                            const uniqueProviderIds = [...new Set(selectedProducts.map((prod) => prod.id_provider))];
 
-                    return (
-                        <Form className="space-y-6">
-                            <div>
-                                <label className="block mb-1">Fournisseur</label>
-                                <Field
-                                    as="select"
-                                    name="id_provider"
-                                    className="w-full border rounded p-2"
-                                >
-                                    <option value="">-- Choisir un fournisseur --</option>
-                                    {providers.map((provider) => (
-                                        <option key={provider.id_provider} value={provider.id_provider}>
-                                            {provider.nom}
-                                        </option>
-                                    ))}
-                                </Field>
-                            </div>
+                            return (
+                                <Form className="space-y-6">
+                                    <FieldArray name="products">
+                                        {({ push, remove }) => (
+                                            <div className="space-y-4">
+                                                <ButtonOrder
+                                                    buttonType="button"
+                                                    onClick={() => push({ id_product: "", quantité: 1 })}
+                                                    ButtonName="+ Ajouter un produit"
+                                                />
 
-                            {values.id_provider && (
-                                <FieldArray name="products">
-                                    {({ push, remove }) => (
-                                        <div className="space-y-4">
-                                            <ButtonOrder
-                                                buttonType="button"
-                                            onClick={() => push({ id_product: "", quantité: 1 })}
-                                            ButtonName="+ Ajouter un produit"/>
-
-                                            {values.products.map((p, index) => (
-                                                <div key={index} className="flex gap-4 items-end">
-                                                    <div className="flex-1">
-                                                        <label className="block mb-1">Produit</label>
-                                                        <Field
-                                                            as="select"
-                                                            name={`products[${index}].id_product`}
-                                                            className="w-full border rounded p-2"
-                                                        >
-                                                            <option value="">-- Choisir --</option>
-                                                            {filteredProducts.map((product) => (
-                                                                <option key={product.id_product} value={product.id_product}>
-                                                                    {product.nom} ({product.prix_unitaire} €)
-                                                                </option>
-                                                            ))}
-                                                        </Field>
-                                                    </div>
-                                                    <div>
-                                                        <label className="block mb-1">Quantité</label>
-                                                        <Field
-                                                            type="number"
-                                                            name={`products[${index}].quantité`}
-                                                            min={1}
-                                                            className="w-24 border rounded p-2"
+                                                {values.products.map((p, index) => (
+                                                    <div key={index} className="flex gap-4 items-end">
+                                                        <div className="flex-1">
+                                                            <label className="block mb-1">Produit</label>
+                                                            <Field
+                                                                as="select"
+                                                                name={`products[${index}].id_product`}
+                                                                className="w-full border rounded p-2"
+                                                            >
+                                                                <option value="">-- Choisir --</option>
+                                                                {products.map((product) => (
+                                                                    <option key={product.id_product} value={product.id_product}>
+                                                                        {product.nom} ({product.prix_unitaire} €)
+                                                                    </option>
+                                                                ))}
+                                                            </Field>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block mb-1">Quantité</label>
+                                                            <Field
+                                                                type="number"
+                                                                name={`products[${index}].quantité`}
+                                                                min={1}
+                                                                className="w-24 border rounded p-2"
+                                                            />
+                                                        </div>
+                                                        <ButtonOrder
+                                                            buttonType="button"
+                                                            onClick={() => remove(index)}
+                                                            ButtonName="✕"
                                                         />
                                                     </div>
-                                                    <ButtonOrder
-                                                        buttonType="button"
-                                                        onClick={() => remove(index)}
-                                                        ButtonName="✕"/>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </FieldArray>
 
-                                                </div>
-                                            ))}
-                                        </div>
+                                    {values.products.length > 0 && uniqueProviderIds.length === 1 && (
+                                        <p className="text-green-600 text-xl">
+                                            Fournisseur sélectionné automatiquement : {providers.find((p) => p.id_provider === uniqueProviderIds[0])?.nom}
+                                        </p>
                                     )}
-                                </FieldArray>
-                            )}
+                                    {uniqueProviderIds.length > 1 && (
+                                        <p className="text-red-600 text-xl">
+                                            Attention : les produits doivent appartenir à un seul fournisseur.
+                                        </p>
+                                    )}
 
-                            <div className="text-xl font-semibold">Total estimé : {total.toFixed(2)} €</div>
-                            <ButtonOrder
-                                         buttonType="submit"
-                                         ButtonName="Valider la commande"/>
-                        </Form>
-                    );
-                }}
-            </Formik>
-        </div>
+                                    <div className="text-xl font-semibold">Total estimé : {total.toFixed(2)} €</div>
+                                    <ButtonOrder buttonType="submit" ButtonName="Valider la commande" />
+                                </Form>
+                            );
+                        }}
+                    </Formik>
+                </div>
             ) : (
                 <div>
                     <p>Chargement</p>
                 </div>
             )}
-            </>
+        </>
     );
 };
 
