@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
@@ -12,6 +12,9 @@ const UserSection = () => {
   const [isConnect, setIsConnect] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const scrollRef = useRef(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [IsActiveNewUser, setIsActiveNewUser] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -102,11 +105,42 @@ const UserSection = () => {
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        const currentScroll = scrollRef.current.scrollTop;
+        setScrollTop(currentScroll);
+
+        if (currentScroll >= 300) {
+          setIsActiveNewUser(true);
+          setTimeout(() => {
+            console.log("Delayed for 5 seconds.");
+            setIsActiveNewUser(false);
+          }, 5000);
+        }
+      }
+    };
+
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (el) {
+        el.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [IsActiveNewUser]);
+
+  console.log(IsActiveNewUser);
+
   return (
     <>
       {isConnect ? (
           <>
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
+      <div   ref={scrollRef}
+             style={{ maxHeight: "400px", overflowY: "auto" }} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className="w-full flex justify-between items-center text-left"
@@ -152,26 +186,52 @@ const UserSection = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((u) => (
-                    <tr
-                      key={u.id_user}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td className="px-4 py-3">{u.nom} {u.prenom}</td>
-                      <td className="px-4 py-3">{u.email}</td>
-                      <td className="px-4 py-3 capitalize">{u.role}</td>
-                      {isAdmin && (
-                      <td className="px-4 py-3 text-center space-x-2">
-                        <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
-                          Modifier
-                        </button>
-                        <button className="text-red-500 hover:underline" onClick={() => handleDelete(u.id_user)}>
-                          Supprimer
-                        </button>
-                      </td>
-                      )}
-                    </tr>
-                  ))}
+                {users
+                    .filter((u) => ["admin", "responsable", "employe"].includes(u.role))
+                    .map((u) => (
+                        <tr
+                            key={u.id_user}
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                        >
+                          <td className="px-4 py-3">{u.nom} {u.prenom}</td>
+                          <td className="px-4 py-3">{u.email}</td>
+                          <td className="px-4 py-3 capitalize">{u.role}</td>
+                          {isAdmin && (
+                              <td className="px-4 py-3 text-center space-x-2">
+                                <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
+                                  Modifier
+                                </button>
+                                <button className="text-red-500 hover:underline" onClick={() => handleDelete(u.id_user)}>
+                                  Supprimer
+                                </button>
+                              </td>
+                          )}
+                        </tr>
+                    ))}
+
+                {users
+                    .filter((u) => !["admin", "responsable", "employe"].includes(u.role))
+                    .map((u) => (
+                            <tr
+                                key={u.id_user}
+                                className={`border-b dark:bg-blue-500 dark:border-black ${IsActiveNewUser ? `bg-blue-300 transition delay-150 duration-300` : `bg-white transition delay-150 duration-300`} `}
+                            >
+                              <td className={`px-4 py-3 ${IsActiveNewUser ? `text-2xl transition delay-150 duration-300` : `text-base transition delay-150 duration-300`}`}>{u.nom} {u.prenom}</td>
+                              <td className="px-4 py-3">{u.email}</td>
+                              <td className="px-4 py-3 capitalize">{u.role}</td>
+                              {isAdmin && (
+                                  <td className="px-4 py-3 text-center space-x-2">
+                                    <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
+                                      Modifier
+                                    </button>
+                                    <button className="text-red-500 hover:underline"
+                                            onClick={() => handleDelete(u.id_user)}>
+                                      Supprimer
+                                    </button>
+                                  </td>
+                              )}
+                            </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -179,21 +239,22 @@ const UserSection = () => {
         )}
       </div>
 
-      {/* MODALE DE MODIFICATION */}
-      {editingUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-all">
-          <form
-            onSubmit={handleUpdate}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-2xl shadow-xl w-full max-w-lg space-y-5 border border-gray-200 dark:border-gray-700"
-          >
-            <h3 className="text-xl font-bold mb-2">Modifier l'utilisateur</h3>
+            {/* MODALE DE MODIFICATION */}
+            {editingUser && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-all">
+                  <form
+                      onSubmit={handleUpdate}
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-2xl shadow-xl w-full max-w-lg space-y-5 border border-gray-200 dark:border-gray-700"
+                  >
+                    <h3 className="text-xl font-bold mb-2">Modifier l'utilisateur</h3>
 
-            <input
-              type="text"
-              value={editingUser.nom}
-              onChange={(e) => setEditingUser({ ...editingUser, nom: e.target.value })}
-              placeholder="Nom"
-              className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <input
+                        type="text"
+                        value={editingUser.nom}
+                        onChange={(e) => setEditingUser({...editingUser, nom: e.target.value})}
+                        placeholder="Nom"
+                        className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
 

@@ -136,7 +136,7 @@ const Inscription = () => {
                             adresse: '',
                             ville: '',
                             postal: '',
-                            role: 'employe',
+                            role: 'undefined',
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting, setFieldError, resetForm }) => {
