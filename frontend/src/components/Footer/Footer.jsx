@@ -7,6 +7,7 @@ import Amazon from '@assets/image/Amazon.png';
 import Meta from '@assets/image/Meta.png';
 import Tesla from '@assets/image/Tesla.png';
 import {Link} from "react-router-dom";
+import {useState} from "react";
 
 
 const SignupSchema = Yup.object().shape({
@@ -30,6 +31,7 @@ const SignupSchema = Yup.object().shape({
 
 
 const Footer = () => {
+    const [receiveMessage, setReceiveMessage] = useState(false);
     return (
         <>
             <footer id="footer">
@@ -44,8 +46,10 @@ const Footer = () => {
                         message: ""
                     }}
                     validationSchema={SignupSchema}
-                    onSubmit={(values) => {
+                    onSubmit={(values, {resetForm}) => {
                         console.log(values)
+                        if (!window.confirm(`Message envoyé`)) return;
+                        resetForm();
                     }}
                 >
                     {({
@@ -132,7 +136,7 @@ const Footer = () => {
                                         politique de confidentialité</label>
                                 </div>
                                 <button type="submit" disabled={isSubmitting}
-                                        className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Envoyer
+                                        className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">Envoyer
                                 </button>
                             </div>
                         </Form>
@@ -149,7 +153,7 @@ const Footer = () => {
                         <div className="flex justify-center">
                             <Link to="/a-propos">
                             <button type="submit"
-                                    className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">A
+                                    className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">A
                                 propos
                             </button>
                             </Link>
@@ -172,20 +176,20 @@ const Footer = () => {
                 <div className="max-sm:text-center">
                     <h2 className="mb-5 text-2xl text-color-default-2">Navigation</h2>
                     <div className="flex gap-2 flex-col">
-                        <Link to="/politique-de-confidentialite">
+                        <Link to="/politique-de-confidentialite" className="hover:text-gray-500">
                             Politique de confidentialité
                         </Link>
-                        <Link to="/condition-general-utilisation">
+                        <Link to="/condition-general-utilisation" className="hover:text-gray-500">
                             Conditions générale d'utilisation
                         </Link>
-                        <Link to="notice-utilisation">Mentions légales
+                        <Link to="notice-utilisation" className="hover:text-gray-500">Mentions légales
                         </Link>
-                        <a href="#">Plan du site</a>
+                        <a href="#" className="hover:text-gray-500">Plan du site</a>
                     </div>
                     <div className="flex gap-4 flex-col mt-5">
                         <h3 className="mb-5 text-lg text-color-default-2">Notre application mobile</h3>
                         <button type="submit"
-                                className="pl-8 pr-8 text-color-default text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Voir plus
+                                className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">Voir plus
                         </button>
                     </div>
                 </div>

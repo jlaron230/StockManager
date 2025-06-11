@@ -1,11 +1,40 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ServiceSection from "@components/Home/ServiceSection";
 import ProduitSection from "@components/Home/ProduitSection";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonConnexionHome from "@components/Button/ButtonConnexionHome";
 
 const HomeComponent = () => {
+    const [Connect, setConnect] = useState(true);
+    const navigate = useNavigate();
+
+    const fetchAllData = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!res.ok) {
+
+                setConnect(false);
+                return;
+            }else {
+
+                setConnect(true);
+            }
+
+        } catch (error) {
+            console.error("Erreur lors de la récupération de la session :", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllData();
+    }, [])
+
+    console.log(Connect)
     return (
         <>
             <header>
@@ -30,11 +59,17 @@ const HomeComponent = () => {
                                                 Découvrez notre application adaptée à vos besoins,
                                                 optimisez votre gestion de stocks grâce à nos solutions.
                                             </p>
-                                            <div>
-                                                <ButtonConnexionHome/>
-                                            </div>
-                                        </div>
+                                            {Connect ? (
+                                                <div>
+                                                    <ButtonConnexionHome ButtonName="Mon profil" Onclick={fetchAllData} connexion="/Dashboard"/>
+                                                </div>
+                                                ): (
+                                                <div>
+                                                <ButtonConnexionHome ButtonName="Connexion" Onclick={fetchAllData} connexion="/connexion"/>
                                     </div>
+                                    )}
+                                </div>
+                            </div>
                                 </div>
                             </div>
                         </div>

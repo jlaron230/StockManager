@@ -84,7 +84,7 @@ router.put("/orders/:id", requireAdmin, orderControllers.update);
 router.get("/orders/:id/full", orderControllers.getFullOrder);
 router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
 
-router.get("/categories", requireLogin, categoryControllers.browse);
+router.get("/categories",  categoryControllers.browse);
 router.get("/categories/:id", requireLogin, categoryControllers.read);
 router.get("/categories/:id/providers", requireLogin, categoryControllers.getProvidersByCategory);
 router.post("/categories", requireAdmin, categoryControllers.add);

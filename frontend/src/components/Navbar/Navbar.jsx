@@ -70,9 +70,15 @@ const navbar = () => {
                         </div>
                     </div>
                     <div className="min-[952px]:hidden p-2">
-                        <Link to="/connexion">
-                        <ButtonLogin />
-                        </Link>
+                        {isConnect ? (
+                            <Link to="/Dashboard">
+                                <ButtonLogin />
+                            </Link>
+                        ) : (
+                            <Link to="/connexion">
+                            <ButtonLogin />
+                            </Link>
+                            )}
                     </div>
                     <div
                         className=" inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0 min-[1000px]:gap-10">

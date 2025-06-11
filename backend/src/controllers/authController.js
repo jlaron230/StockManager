@@ -21,11 +21,12 @@ async function loginUser(req, res, next) {
   const {email} = req.body;
   try {
     const user = await models.user.findUserByEmail(email);
-
     if (user[0] != null) {
       const [firstUser] = user;
-      req.user = firstUser; // Passe l'utilisateur au middleware suivant
+      req.user = firstUser;
       console.log(req.user);
+
+      if (firstUser.role && firstUser.role === "admin" || firstUser.role === "employe" || firstUser.role === "responsable") {
 
       req.session.user = {
         id_user: firstUser.id_user,
@@ -35,8 +36,12 @@ async function loginUser(req, res, next) {
       req.user = firstUser;
       next(); // Passe au middleware suivant (ex: verifyPassword)
     } else {
-      res.status(401).json({ message: "Utilisateur non trouvé." });
+      res.status(401).json({ message: "Utilisateur non valide, role manquant." });
     }
+
+   } else {
+     res.status(401).json({ message: "Utilisateur non trouvé." });
+   }
   } catch (error) {
     console.error("Erreur serveur lors de la connexion :", error);
     res.status(500).json({ message: "Erreur serveur lors de la connexion." });
