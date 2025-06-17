@@ -12,7 +12,7 @@ variables:
 active-job:
   stage: test
   image: node:21
-  script: cd app1 && npm i
+  script: cd frontend && npm i
 
 test-unitaire:
   stage: test
