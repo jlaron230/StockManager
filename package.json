@@ -12,16 +12,21 @@
     "dev-front": "cross-env-shell \"cd ./frontend && $npm_package_config_cli run dev\"",
     "dev-back": "cross-env-shell \"cd ./backend && $npm_package_config_cli run dev\"",
     "lint": "cross-env-shell \"cd ./frontend && $npm_package_config_cli run lint && cd ../backend && $npm_package_config_cli run lint\"",
-    "fix": "cross-env-shell \"cd ./frontend && $npm_package_config_cli run fix && cd ../backend && $npm_package_config_cli run fix\""
+    "fix": "cross-env-shell \"cd ./frontend && $npm_package_config_cli run fix && cd ../backend && $npm_package_config_cli run fix\"",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Team",
   "license": "MIT",
   "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
     "@tailwindcss/vite": "^4.0.12",
+    "babel-jest": "^30.0.0",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
     "husky": "^8.0.3",
+    "jest": "^30.0.0",
     "vite": "^6.2.1"
   },
   "dependencies": {
@@ -30,6 +35,7 @@
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "expo": "^53.0.10",
+    "expo-dev-client": "~5.2.0",
     "express-session": "^1.18.1",
     "firebase": "^11.8.1",
     "formik": "^2.4.6",
@@ -39,7 +45,6 @@
     "react-router-dom": "^7.3.0",
     "recharts": "^2.15.3",
     "tailwindcss": "^4.0.12",
-    "yup": "^1.6.1",
-    "expo-dev-client": "~5.2.0"
+    "yup": "^1.6.1"
   }
 }

@@ -6,6 +6,7 @@ import axios from "axios";
 import {set} from "husky";
 import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProduct from "@components/Button/ButtonAddProduct";
+import {getFilteredProducts} from "@components/ProductsList/getFilteredProducts";
 
 const ProductList = () => {
     let navigate = useNavigate();
@@ -64,24 +65,11 @@ const ProductList = () => {
         }
         }
 
-        const filteredPrice = (minpriceValue, maxpriceValue) => {
-            let filtered;
-
-            if (!minpriceValue && !maxpriceValue) {
-                filtered = products;
-            } else {
-
-                filtered = products.filter((product) => {
-                    const price = product.prix_unitaire;
-                    const minOk = minpriceValue ? price >= minpriceValue : true;
-                    const maxOk = maxpriceValue ? price <= maxpriceValue : true;
-                    return minOk && maxOk;
-
-                })
-            }
-            setFilteredProduct(filtered);
-            setCurrentPage(1)
-        }
+    const filteredPrice = (minpriceValue, maxpriceValue) => {
+        const filtered = getFilteredProducts(products, minpriceValue, maxpriceValue);
+        setFilteredProduct(filtered);
+        setCurrentPage(1);
+    };
 
 
     useEffect(() => {
