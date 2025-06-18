@@ -61,8 +61,9 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
             <div className="flex flex-wrap justify-center mb-15">
                 <h2 className="text-2xl text-color-default-2 font-semibold">Nos produits</h2>
             </div>
+            {products ? (
             <div className=" mx-auto flex justify-center gap-15 flex-wrap">
-            <div className="relative w-full max-w-xs">
+                <div className="relative w-full max-w-xs">
                 <div className="overflow-hidden relative h-72 rounded-4xl">
                     {images.map((image, index) => (
                         <div
@@ -136,6 +137,11 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
                 </div>
             </div>
             </div>
+            ) : (
+                <div className="flex flex-wrap justify-center gap-15">
+                    Aucun produit n'est disponible actuellement.
+                </div>
+            )}
         </section>
     )
 }

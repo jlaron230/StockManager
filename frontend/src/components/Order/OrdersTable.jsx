@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import ButtonSupp from "@components/Button/ButtonSupp";
 import ModalProduct from "@components/ProductsList/ModalProduct";
+import product from "@pages/Product";
 
 const OrdersTable = ({
                          ordersAll,
@@ -14,6 +15,7 @@ const OrdersTable = ({
                          user,
                          statutOptions,
                          isValidated,
+                         products,
                      }) => {
     const [selectedOrderToDelete, setSelectedOrderToDelete] = useState(null);
 
@@ -47,6 +49,7 @@ const OrdersTable = ({
                         <th className="p-3 sm:p-4">Employé</th>
                         <th className="p-3 sm:p-4">Status commande</th>
                         <th className="p-3 sm:p-4">Montant</th>
+                        <th className="p-3 sm:p-4">Produit</th>
                         <th className="p-3 sm:p-4">Actions</th>
                     </tr>
                     </thead>
@@ -88,6 +91,17 @@ const OrdersTable = ({
                                     <span className="font-semibold sm:hidden">Montant : </span>
                                     {order.total_ammount}
                                 </td>
+                                <td className="p-3 sm:p-4 flex flex-wrap gap-2">
+                                    <span className="font-semibold sm:hidden">Produit : </span>
+                                    {order.products?.map((p, idx) => {
+                                        const fullProduct = products.find(prod => prod.id_product === p.id_product);
+                                        return (
+                                            <span key={idx}>
+                                                {fullProduct ? fullProduct.nom : "Produit inconnu"}
+                                            </span>
+                                        );
+                                    })}
+                                </td>
                                 <td className="p-3 sm:p-4 text-right sm:table-cell flex justify-end gap-2">
                                     {editingId === order.id_order ? (
                                         <>
@@ -108,19 +122,19 @@ const OrdersTable = ({
                                     ) : (
                                         <>
                                             <div className="flex flex-wrap gap-3">
-                                            <button
-                                                onClick={() => startEdit(order)}
-                                                className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-                                                disabled={order.is_validated === 1}
-                                            >
-                                                Éditer
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteClick(order.id_order)}
-                                                className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                                            >
-                                                Supprimer
-                                            </button>
+                                                <button
+                                                    onClick={() => startEdit(order)}
+                                                    className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                                                    disabled={order.is_validated === 1}
+                                                >
+                                                    Éditer
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteClick(order.id_order)}
+                                                    className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                                                >
+                                                    Supprimer
+                                                </button>
                                             </div>
                                         </>
                                     )}
@@ -131,7 +145,7 @@ const OrdersTable = ({
                     {ordersAll.length === 0 && (
                         <tr>
                             <td colSpan="5" className="p-4 text-center text-gray-500">
-                                Aucune commande trouvée.
+                            Aucune commande trouvée.
                             </td>
                         </tr>
                     )}

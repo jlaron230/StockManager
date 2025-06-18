@@ -304,6 +304,7 @@ const OrderGestion = () => {
                                 saveEdit={saveEdit}
                                 deleteOrder={deleteOrder}
                                 isValidated={ordersAll}
+                                products={product}
                             />
                         ) : (
                             <p>Aucune commande trouvée</p>

@@ -7,41 +7,43 @@ import axios from "axios"; // Import axios
 
 const SignupSchema = Yup.object().shape({
     prenom: Yup.string()
-        .min(2, 'Trop court!')
+        .min(3, '3 Caractères minimum')
         .max(50, 'Trop long!')
         .required('Requis'),
     nom: Yup.string()
-        .min(2, 'Trop court!')
+        .min(3, '3 Caractères minimum')
         .max(50, 'Trop long!')
         .required('Requis'),
     telephone: Yup.string()
         .matches(/^[0-9]{10}$/, 'Le numéro doit contenir 10 chiffres')
         .required('Le numéro de téléphone est requis'),
     email: Yup.string()
-        .email('Email invalide')
-        .required('Requis'),
+        .required("Email requis")
+        .matches(
+            /^[^\s@]+@[^\s@]{3,}\.[^\s@]{2,}$/,
+            "Format d'email invalide : au moins 3 caractères après @ et 2 pour l'extension"
+        ),
     acceptTerms: Yup.boolean()
         .oneOf([true], 'Vous devez accepter les conditions')
         .required('Requis'),
     entreprise: Yup.string()
-        .min(2, 'Nom trop court')
+        .min(3, '3 Caractères minimum')
         .max(50, 'Nom trop long')
         .required('Requis'),
     pays: Yup.string()
         .required('Requis'),
     adresse: Yup.string()
-        .min(2, 'Adresse trop courte')
+        .min(5, '5 Caractères minimum')
         .max(50, 'Adresse trop longue')
         .required('Requis'),
     ville: Yup.string()
-        .min(2, 'Nom trop court')
+        .min(3, '3 Caractères minimum')
         .max(50, 'Nom trop long')
         .required('Requis'),
-    postal: Yup.number()
+    postal: Yup.string()
         .typeError('Le code postal doit être un nombre')
-        .positive('Le code postal doit être un nombre positif')
-        .integer('Le code postal doit être un entier')
-        .required('Requis'),
+        .matches(/^\d{5}$/, "Le code postal doit contenir exactement 5 chiffres")
+        .required("Code postal requis"),
     password: Yup.string()
         .min(8, 'Le mot de passe doit comporter au moins 8 caractères')
         .max(50, 'Le mot de passe doit comporter moins de 50 caractères')

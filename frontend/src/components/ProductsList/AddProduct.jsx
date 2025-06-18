@@ -13,7 +13,7 @@ const AddProduct = () => {
     const [providers, setProviders] = useState([]);
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`)
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true})
             .then(res => setCategories(res.data))
             .catch(console.error);
 

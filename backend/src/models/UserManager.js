@@ -7,8 +7,8 @@ class UserManager extends AbstractManager {
 
     insert(users) {
         return this.database.query(
-            `INSERT INTO ${this.table} (prenom, nom, telephone, email, password, entreprise, pays, adresse, ville, postal)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO ${this.table} (prenom, nom, telephone, email, password, entreprise, pays, adresse, ville, postal, role)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 users.prenom,
                 users.nom,
@@ -20,6 +20,7 @@ class UserManager extends AbstractManager {
                 users.adresse,
                 users.ville,
                 users.postal,
+                users.role,
             ]
         );
     }
@@ -125,7 +126,7 @@ class UserManager extends AbstractManager {
     getAllWithFcmToken() {
         return this.database.query(`
         SELECT id_user, fcm_token, fcm_token_mobil
-        FROM user
+        FROM users
         WHERE fcm_token IS NOT NULL OR fcm_token_mobil IS NOT NULL
         `);
     }
