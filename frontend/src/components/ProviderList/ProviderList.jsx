@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProvider from "@components/Button/ButtonAddProvider";
+import {GetProviderLocalisationFilter} from "@components/ProviderList/GetProviderLocalisationFilter";
 
 const ProviderList = () => {
     let navigate = useNavigate();
@@ -36,17 +37,10 @@ const ProviderList = () => {
 
     const providerLocalisation = (searchValue) => {
         setCurrentPage(1);
-        if (searchValue.trim() !== "") {
-            const filtered = providers.filter((provider) =>
-                provider.code_postal.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            setFilteredProvider(filtered);
-
-        } else {
-            // Si la recherche est vide, on remet tous les providers
-            setFilteredProvider(providers);
-        }
+        const filtered = GetProviderLocalisationFilter(providers, searchValue)
+        setFilteredProvider(filtered);
     }
+
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {

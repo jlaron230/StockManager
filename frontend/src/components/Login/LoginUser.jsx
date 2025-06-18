@@ -84,7 +84,6 @@ const LoginUser = () => {
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting, setFieldError }) => {
-                            console.log("Valeurs soumises :", values);
                             axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, values, {
                                 withCredentials: true,
                             })

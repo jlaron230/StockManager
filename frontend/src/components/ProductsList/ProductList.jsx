@@ -7,6 +7,7 @@ import {set} from "husky";
 import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProduct from "@components/Button/ButtonAddProduct";
 import {getFilteredProducts} from "@components/ProductsList/getFilteredProducts";
+import {GetFilteredDate} from "@components/ProductsList/GetFilteredDate";
 
 const ProductList = () => {
     let navigate = useNavigate();
@@ -46,23 +47,12 @@ const ProductList = () => {
         }
         }
 
-        const filterDate = (e) => {
-        const newFilteredDate = !filteredDate
-        setfilteredDate(newFilteredDate);
-        if(filteredDate) {
-            const sorted = [...products].sort((a, b) =>
-                newFilteredDate
-                ? new Date(b.date_add) - new Date(a.date_add)
-                : new Date(a.date_add) - new Date(b.date_add)
-            )
-
+        const filterDate = () => {
+            const newFilteredDate = !filteredDate;
+            setfilteredDate(newFilteredDate);
+            const sorted = GetFilteredDate(products, filteredDate);
             setFilteredProduct(sorted);
-        }
-        else {
-            const sorted = [...products].sort((b, a) =>
-                new Date(a.date_add) - new Date(b.date_add))
-            setFilteredProduct(sorted);
-        }
+            setCurrentPage(1);
         }
 
     const filteredPrice = (minpriceValue, maxpriceValue) => {

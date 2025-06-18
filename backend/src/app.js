@@ -7,6 +7,7 @@ const path = require("node:path");
 const express = require("express");
 const app = express();
 const session = require("express-session");
+const { swaggerUi, swaggerDocs } = require("../swaggerConfig");
 
 app.use(express.json());
 
@@ -43,6 +44,9 @@ app.use(
 const router = require("./router");
 
 app.use(router);
+
+// use swagger doc api
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // serve the `backend/public` folder for public resources
 
