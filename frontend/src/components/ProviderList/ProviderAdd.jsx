@@ -8,10 +8,16 @@ import ButtonOrder from "@components/Button/ButtonOrder";
 import ButtonReturn from "@components/Button/ButtonReturn";
 
 const ProviderAdd = () => {
+    // État pour stocker les images sélectionnées (maximum 3)
     const [images, setImages] = useState([]);
+
+    // État pour stocker les fournisseurs déjà existants
     const [provider, setprovider] = useState([]);
+
+    // État pour stocker les types de fournisseurs
     const [providerTypes, setProviderTypes] = useState([]);
 
+    // Gestion du changement d'images (limité à 3 fichiers)
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         const newImages = [...images, ...files];
@@ -22,10 +28,12 @@ const ProviderAdd = () => {
         setImages(newImages);
         e.target.value = null;
     };
+
     console.log(images);
 
     const navigate = useNavigate();
 
+    // 🔁 Récupération des types de fournisseurs au chargement
     useEffect(() => {
         const fetchProviderTypes = async () => {
             try {
@@ -38,47 +46,45 @@ const ProviderAdd = () => {
         fetchProviderTypes();
     }, []);
 
+    // 🔐 Vérifie la session utilisateur (doit être admin)
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
             method: "GET",
-            credentials: "include", // important pour envoyer le cookie
+            credentials: "include",
         })
             .then((res) => {
                 if (!res.ok) {
-                    // Si non connecté, on redirige vers l'accueil
-                    navigate("/");
+                    navigate("/"); // Non connecté → redirection
                 } else {
                     return res.json();
                 }
             })
             .then((user) => {
                 if (user.user.role !== "admin") {
-                    // Si connecté mais pas admin, on redirige aussi
-                    navigate("/");
+                    navigate("/"); // Non admin → redirection
                 }
-                // Sinon, laisser l'accès à la page
-            })
+            });
     }, []);
 
+    // 📦 Récupération des fournisseurs existants
     useEffect(() => {
-
         const getProvider = async () => {
             try {
                 const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 setprovider(res.data);
+            } catch (error) {
+                console.log(error);
             }
-            catch (error) {
-                console.log(error)
-            }
-        }
+        };
         getProvider();
     }, []);
 
+    // ⬆️ Scroll automatique en haut de la page au chargement
     useEffect(() => {
-        window.scrollTo({top, behavior: 'smooth' })
-    }, [])
+        window.scrollTo({top, behavior: 'smooth' });
+    }, []);
 
-
+    // 🧾 Configuration du formulaire avec Formik + validation avec Yup
     const formik = useFormik({
         initialValues: {
             nom: "",
@@ -97,7 +103,9 @@ const ProviderAdd = () => {
                     /^[^\s@]+@[^\s@]{3,}\.[^\s@]{2,}$/,
                     "Format d'email invalide : au moins 3 caractères après @ et 2 pour l'extension"
                 ),
-            telephone: Yup.string().required("Téléphone requis") .matches(/^\d{10}$/, "Le téléphone doit contenir exactement 10 chiffres"),
+            telephone: Yup.string()
+                .required("Téléphone requis")
+                .matches(/^\d{10}$/, "Le téléphone doit contenir exactement 10 chiffres"),
             type: Yup.string().required("Type requis"),
             adresse: Yup.string().required("Adresse requise").min(5, "5 Caractères minimum"),
             codePostal: Yup.string()
@@ -139,10 +147,15 @@ const ProviderAdd = () => {
     return (
         <div className="flex justify-center">
             <main className="flex flex-wrap gap-8 justify-center m-10">
+                {/* Bouton retour */}
                 <Link to="/fournisseur">
                     <ButtonReturn className="flex flex-wrap"/>
                 </Link>
+
+                {/* Formulaire d'ajout de fournisseur */}
                 <form className="w-full flex flex-wrap justify-center gap-10" onSubmit={formik.handleSubmit}>
+
+                    {/* Colonne gauche */}
                     <div className="max-w-3xl p-6 bg-white rounded-2xl shadow">
                         <h1 className="text-2xl font-bold mb-4">Ajouter un fournisseur</h1>
 
@@ -191,7 +204,7 @@ const ProviderAdd = () => {
                             )}
                         </div>
 
-                        {/* Type */}
+                        {/* Sélecteur Type */}
                         <div className="mb-4">
                             <label htmlFor="type" className="block font-medium">Type</label>
                             <select
@@ -223,7 +236,7 @@ const ProviderAdd = () => {
                         </div>
                     </div>
 
-                    {/* Partie droite */}
+                    {/* Colonne droite */}
                     <div className="max-w-3xl p-6 bg-white rounded-2xl shadow">
                         {/* Code Postal */}
                         <div className="mb-4">
@@ -252,7 +265,7 @@ const ProviderAdd = () => {
                             )}
                         </div>
 
-                        {/* Submit */}
+                        {/* Bouton Soumission */}
                         <div className="mt-6">
                             <ButtonOrder  ButtonName="Ajouter le fournisseur" buttonType="submit"/>
                         </div>
@@ -262,4 +275,5 @@ const ProviderAdd = () => {
         </div>
     );
 };
-export default ProviderAdd
+
+export default ProviderAdd;

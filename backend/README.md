@@ -1,43 +1,129 @@
-# MVC Express
 
-## Description
+# Documentation Technique & Fonctionnelle - Backend
 
-This repository is a simple Express MVC structure from scratch.
+---
 
-## Steps
+## 1. Présentation Générale
 
-1. Clone the repo from Github.
-2. Run `npm install`.
-3. Create _.env_ from _.env.sample_ file and add your DB parameters. Don't delete the _.sample_ file, it must be kept.
+Le backend est une application **Node.js** organisée autour de **Express**, avec une architecture modulaire en contrôleurs, routes, middlewares et services.  
+Les points clés :
 
-```
-DB_HOST=your_db_host
-DB_PORT=your_db_port
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=your_db_name
-```
+- Gestion des utilisateurs, produits, fournisseurs, stocks, commandes, catégories, magasins.
+- Authentification et gestion de session via `express-session` avec protection CSRF.
+- Sécurité avec hashage de mot de passe (bcrypt), middleware de contrôle d’accès (roles).
+- Gestion des notifications et alertes (ex : stock faible) en tâche planifiée (cron).
+- Documentation et test des API via **Swagger** (accessible sur `/api-docs`).
+- Intégration avec une base de données MySQL via un client personnalisé.
+- Envoi d’emails (ex : reset mot de passe) via un service mailer.
+- Support pour React en mode production avec fallback sur index.html.
 
-4. Adapt _database.sql_ with your own tables. Import the script in your SQL server. You can do it manually or run _migrate_ script (either using `npm run migrate` or `yarn run migrate`).
-5. Start the server in dev mode with `npm run dev` or `yarn run dev`. This will run `index.js` using _nodemon_.
-6. Go to `localhost:5000` with your favorite browser.
-7. From this starter kit, create your own web application.
+---
 
-### Windows Users
+## 2. Structure des Dossiers et Fichiers
 
-If you develop on Windows, you should edit you git configuration to change your end of line rules with this command :
+### Fichiers et dossiers principaux
 
-`git config --global core.autocrlf true`
+- **app.js**
+    - Point d’entrée de l’application Express.
+    - Configuration CORS, session, statics, intégration Swagger, routes, serve React en production.
 
-## Example
+- **router.js**
+    - Regroupement des routes, middlewares et import des contrôleurs.
 
-An example (a basic list of items) is provided (you can load the _database.sql_ file in a test database). The accessible URLs are :
+- **controllers/**
+    - Regroupe les fichiers de contrôleurs par entité : `userControllers.js`, `productControllers.js`, `orderControllers.js`, etc.
+    - Logique métier : création, lecture, mise à jour, suppression (CRUD) des ressources.
 
-- Home page: [GET localhost:5000/](localhost:5000/)
-- Item browse: [GET localhost:5000/items](localhost:5000/items)
-- Item read: [GET localhost:5000/items/:id](localhost:5000/items/2)
-- Item edit: PUT localhost:5000/items/:id
-- Item add: POST localhost:5000/items
-- Item deletion: DELETE localhost:5000/items/:id
+- **auth.js**
+    - Middleware de hashage de mot de passe (`hashPassword`), vérification (`verifyPassword`), et protection des routes (`requireLogin`, `requireAdmin`).
 
-You can find all these routes declared in the file `src/router.js`. You can add your own new routes, controllers and models.
+- **src/cron/**
+    - Scripts pour tâches planifiées, comme l’envoi d’alertes sur stock faible (`stockAlertCron.js`).
+
+- **src/utils/mailer.js**
+    - Service d’envoi d’emails utilisé notamment pour la réinitialisation de mot de passe.
+
+- **swaggerConfig.js**
+    - Configuration Swagger pour la génération automatique de la documentation API.
+
+- **database/**
+    - Client SQL pour les requêtes MySQL.
+
+---
+
+## 3. Fonctionnalités Fonctionnelles
+
+### Authentification & Gestion des Sessions
+
+- Inscription utilisateur avec hashage sécurisé (bcrypt).
+- Login avec vérification du mot de passe et création de session.
+- Middleware pour sécuriser l’accès aux routes selon le rôle (admin, employé, responsable).
+- Gestion des sessions via cookie sécurisé et politique CORS adaptée.
+- Déconnexion avec destruction de session et nettoyage du cookie.
+
+### Gestion Utilisateurs
+
+- CRUD complet des utilisateurs avec gestion des rôles.
+- Récupération de session active pour maintenir l’état utilisateur frontend.
+- Réinitialisation de mot de passe :
+    - Génération d’un token sécurisé avec expiration.
+    - Envoi d’email avec lien de reset.
+    - Mise à jour sécurisée du mot de passe après validation du token.
+
+### Gestion Produits, Fournisseurs, Stocks et Commandes
+
+- Gestion complète CRUD pour chaque entité avec validations.
+- Pagination, filtres et recherche via paramètres d’API.
+- Gestion des catégories et magasins associés.
+- Surveillance du stock avec alertes envoyées automatiquement.
+- Gestion des commandes avec statuts, ajout/modification dynamique.
+
+### Notifications
+
+- Système d’envoi d’emails pour alertes et notifications diverses.
+- Test de notification via endpoint dédié.
+
+---
+
+## 4. Aspects Techniques
+
+- **Framework :** Express.js avec architecture MVC simplifiée.
+- **Base de données :** MySQL, interaction via client personnalisé (`database/client.js`).
+- **Sécurité :**
+    - Hashage des mots de passe avec bcrypt.
+    - Middleware d’autorisation basé sur session et rôle utilisateur.
+    - Protection CSRF intégrée via middleware `csurf`.
+- **Sessions :** Gestion via `express-session` avec cookie sécurisé et durée configurable.
+- **CORS :** Configuré pour autoriser le frontend (par défaut `http://localhost:5173`).
+- **Documentation :** API documentée avec Swagger accessible sur `/api-docs`.
+- **Emails :** Envoi via Nodemailer configuré avec SMTP.
+- **Tâches planifiées :** Utilisation de scripts cron pour alertes et maintenance.
+- **Serveur statique :** Sert les ressources publiques et l’application React en production.
+
+---
+
+## 5. Exemple de Flux d’Utilisation
+
+1. **Inscription** : L’utilisateur s’inscrit, mot de passe hashé, utilisateur créé en base.
+2. **Connexion** : L’utilisateur se connecte, mot de passe vérifié, session créée.
+3. **Session** : Vérification permanente de la session lors des appels API protégés.
+4. **Utilisation** : Accès aux ressources produits, fournisseurs, commandes selon rôle.
+5. **Mot de passe oublié** : Demande de réinitialisation, email envoyé avec token.
+6. **Réinitialisation** : Nouveau mot de passe validé via token sécurisé.
+7. **Alertes stock** : Cron envoie des emails si le stock est faible.
+8. **Déconnexion** : Session détruite, cookie nettoyé.
+
+---
+
+## 6. À Améliorer / Évolutions Possibles
+
+- Passage à JWT pour authentification sans session côté serveur.
+- Ajout de tests unitaires et d’intégration (Jest, supertest).
+- Amélioration des validations (express-validator).
+- Intégration WebSocket pour notifications temps réel.
+- Gestion multi-langue (i18n) et internationalisation des emails.
+- Optimisation du code avec TypeScript.
+- Documentation Swagger enrichie et exemples d’usage.
+- Mise en place de CI/CD avec tests et déploiement automatisés.
+
+---

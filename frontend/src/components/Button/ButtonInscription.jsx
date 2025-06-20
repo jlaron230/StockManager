@@ -1,5 +1,6 @@
 const ButtonInscription = () => {
     return (
+        //button of inscription user
         <button
             className="hover:scale-105 transition duration-300 relative inline-flex items-center justify-center me-2 overflow-hidden text-sm font-medium text-color rounded-lg group border-2 border-[#154195] hover:border-[#0B275C]  hover:text-white dark:text-white">
         <span

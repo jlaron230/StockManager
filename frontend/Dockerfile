@@ -1,3 +1,4 @@
+#Lancement du serveur nginx
 FROM nginx
 
 #RUN apt update && apt install -

@@ -1,4 +1,5 @@
 const ButtonOrder = ({onClick, ButtonName, buttonType}) => {
+    //button for the order
     return (
         <button
             type={buttonType}

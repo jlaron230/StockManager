@@ -9,19 +9,19 @@ variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
-active-job:
+active-job: #Active a test for install the dependencies
   stage: test
   image: node:21
   script: cd frontend && npm i
 
-test-unitaire:
+test-unitaire: #Active a test for unitary test
   stage: test
   image: node:21
   script:
     - npm install
     - npm run test
 
-build-StockManager:
+build-StockManager: #deploy and build the project
   stage: build
   image: docker:24.0.5
   services:
@@ -35,7 +35,7 @@ build-StockManager:
     - docker build -f frontend/Dockerfile -t $IMAGE_TAG frontend
     - docker push $IMAGE_TAG
 
-sonarcloud-check:
+sonarcloud-check: #For the clean code in the all the project
   stage: analyze
   image:
     name: sonarsource/sonar-scanner-cli:latest

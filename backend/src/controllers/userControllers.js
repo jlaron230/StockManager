@@ -1,36 +1,37 @@
 const tables = require("../models");
 const bcrypt = require("bcrypt");
 
-// GET /user/profile
+// Récupère le profil de l'utilisateur connecté (GET /user/profile)
 const getProfile = async (req, res) => {
   try {
     const userId = req.session.user?.id;
-    if (!userId) return res.sendStatus(401);
+    if (!userId) return res.sendStatus(401); // Non autorisé si pas connecté
 
     const [rows] = await tables.user.findById(userId);
-    if (rows.length === 0) return res.sendStatus(404);
+    if (rows.length === 0) return res.sendStatus(404); // Pas trouvé
 
-    res.status(200).json(rows[0]);
+    res.status(200).json(rows[0]); // Retourne le profil utilisateur
   } catch (err) {
     console.error("Erreur getProfile :", err);
-    res.sendStatus(500);
+    res.sendStatus(500); // Erreur serveur
   }
 };
 
-// PUT /user/profile
+// Met à jour le profil de l'utilisateur connecté (PUT /user/profile)
 const updateProfile = async (req, res) => {
   try {
     const userId = req.session.user?.id;
     if (!userId) return res.status(401).json({ message: "Non autorisé" });
 
     await tables.user.updateProfile(userId, req.body);
-    res.sendStatus(204);
+    res.sendStatus(204); // Mise à jour OK, pas de contenu
   } catch (err) {
     console.error("Erreur updateProfile :", err);
     res.sendStatus(500);
   }
 };
 
+// Met à jour le token FCM pour notifications push
 const updateFcmToken = async (req, res) => {
   console.log("🟢 Contrôleur updateFcmToken appelé");
   const userId = req.session.user?.id;
@@ -49,7 +50,7 @@ const updateFcmToken = async (req, res) => {
   }
 };
 
-
+// Récupère tous les utilisateurs
 const getAllUsers = async (req, res) => {
   try {
     const [users] = await tables.user.findAll();
@@ -60,17 +61,20 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// Supprime un utilisateur par ID
 const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
     await tables.user.delete(id);
-    res.sendStatus(204);
+    res.sendStatus(204); // Suppression OK, pas de contenu
   } catch (error) {
     console.error("Erreur deleteUser :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+// Met à jour un utilisateur par ID
 const updateUser = async (req, res) => {
   const { id } = req.params;
   const fieldsToUpdate = req.body;
@@ -93,8 +97,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-
-
+// Crée un nouvel utilisateur
 const createUser = async (req, res) => {
   const { nom, prenom, email, password, role = "employe" } = req.body;
 
@@ -103,7 +106,6 @@ const createUser = async (req, res) => {
   }
 
   try {
-
     const existing = await tables.user.findUserByEmail(email);
     if (existing.length > 0) {
       return res.status(409).json({ message: "Cet email est déjà utilisé." });
@@ -126,6 +128,7 @@ const createUser = async (req, res) => {
   }
 };
 
+// Met à jour le token mobile pour notifications (différent de FCM classique)
 const updateMobileToken = async (req, res) => {
   try {
     const { fcm_token_mobil } = req.body;
@@ -135,15 +138,14 @@ const updateMobileToken = async (req, res) => {
     }
 
     await tables.user.updateTokenMobil(req.params.id, fcm_token_mobil);
-    res.sendStatus(204); // No Content
+    res.sendStatus(204);
   } catch (err) {
     console.error("Erreur lors de l'enregistrement du token mobile :", err);
     res.sendStatus(500);
   }
 };
 
-console.log("🎯 userControllers.js chargé");   //temporaire
-
+console.log("🎯 userControllers.js chargé");   // message temporaire
 
 module.exports = {
   getProfile,

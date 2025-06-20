@@ -1,5 +1,6 @@
 const tables = require("../models");
 
+// Récupère toutes les catégories
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.category.readAll();
@@ -10,6 +11,7 @@ const browse = async (req, res) => {
   }
 };
 
+// Récupère une catégorie par son id
 const read = async (req, res) => {
   try {
     const [rows] = await tables.category.read(req.params.id);
@@ -24,6 +26,7 @@ const read = async (req, res) => {
   }
 };
 
+// Ajoute une nouvelle catégorie
 const add = async (req, res) => {
   try {
     const [result] = await tables.category.insert(req.body);
@@ -34,6 +37,7 @@ const add = async (req, res) => {
   }
 };
 
+// Modifie une catégorie existante par son id
 const edit = async (req, res) => {
   try {
     const [result] = await tables.category.update(req.params.id, req.body);
@@ -48,6 +52,7 @@ const edit = async (req, res) => {
   }
 };
 
+// Supprime une catégorie par son id
 const destroy = async (req, res) => {
   try {
     const [result] = await tables.category.delete(req.params.id);
@@ -62,16 +67,17 @@ const destroy = async (req, res) => {
   }
 };
 
+// Récupère les fournisseurs associés à une catégorie par son id
 const getProvidersByCategory = async (req, res) => {
-    try {
-      const [rows] = await tables.provider.findByCategoryId(req.params.id);
-      res.status(200).json(rows);
-    } catch (err) {
-      console.error("Erreur getProvidersByCategory :", err);
-      res.sendStatus(500);
-    }
-  };
-  
+  try {
+    const [rows] = await tables.provider.findByCategoryId(req.params.id);
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Erreur getProvidersByCategory :", err);
+    res.sendStatus(500);
+  }
+};
+
 module.exports = {
   browse,
   read,

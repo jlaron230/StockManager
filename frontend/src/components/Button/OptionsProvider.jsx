@@ -6,6 +6,7 @@ const OptionsProvider = ({ value, onChange, isEditing, onClick, onValidate, opti
     return (
         <>
             {isEditing ? (
+                // Mode édition : affichage du select et du bouton valider
                 <div className="flex gap-2 items-center">
                     <select
                         value={value}
@@ -22,6 +23,7 @@ const OptionsProvider = ({ value, onChange, isEditing, onClick, onValidate, opti
                     <button onClick={onValidate} className="text-sm bg-blue-500 text-white px-2 py-1 rounded">Valider</button>
                 </div>
             ) : (
+                // Mode affichage : valeur cliquable pour activer l'édition
                 <div onClick={onClick} className="cursor-pointer text-blue-600">
                     {value || "Non défini"}
                 </div>
@@ -29,4 +31,4 @@ const OptionsProvider = ({ value, onChange, isEditing, onClick, onValidate, opti
         </>
     );
 };
-export default OptionsProvider
+export default OptionsProvider;

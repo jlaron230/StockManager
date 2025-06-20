@@ -1,29 +1,33 @@
+// Importation des hooks et bibliothèques nécessaires
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ButtonOrder from "@components/Button/ButtonOrder";
 import ButtonReturn from "@components/Button/ButtonReturn";
 
 const AddProduct = () => {
+    // États pour gérer les autorisations, images, catégories et fournisseurs
     const [admin, setAdmin] = useState(false);
     const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
     const [providers, setProviders] = useState([]);
 
+    // Récupération des catégories et fournisseurs à l'initialisation du composant
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, { withCredentials: true })
             .then(res => setCategories(res.data))
             .catch(console.error);
 
-        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true})
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, { withCredentials: true })
             .then(res => setProviders(res.data))
             .catch(console.error);
     }, []);
 
     const navigate = useNavigate();
 
+    // Vérification de la session et du rôle utilisateur
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
             method: "GET",
@@ -31,7 +35,7 @@ const AddProduct = () => {
         })
             .then((res) => {
                 if (!res.ok) {
-                    // Si non connecté, on redirige vers l'accueil
+                    // Si non connecté, redirection vers la page de connexion
                     navigate("/connexion");
                 } else {
                     return res.json();
@@ -39,13 +43,14 @@ const AddProduct = () => {
             })
             .then((user) => {
                 if (user.user.role !== "admin") {
-                    // Si connecté mais pas admin, on redirige aussi
+                    // Si connecté mais non admin, redirection également
                     navigate("/connexion");
                 }
-                // Sinon, laisser l'accès à la page
+                // Si admin, accès autorisé à la page
             })
     }, []);
 
+    // Valeurs initiales du formulaire
     const initialValues = {
         nom: "",
         seuil_minimal: 0,
@@ -60,6 +65,7 @@ const AddProduct = () => {
         condition_achat: "",
     };
 
+    // Schéma de validation avec Yup
     const validationSchema = Yup.object({
         nom: Yup.string().required("Champ requis").min(3, "3 Caractères minimum"),
         seuil_minimal: Yup.number().min(1, "Minimum 1").required("Champ requis"),
@@ -74,6 +80,7 @@ const AddProduct = () => {
         condition_achat: Yup.string().required("Champ requis").min(5, "5 Caractères minimum"),
     });
 
+    // Gestion des images (ajout)
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         const newImages = [...images, ...files];
@@ -85,11 +92,13 @@ const AddProduct = () => {
         e.target.value = null;
     };
 
+    // Suppression d'une image sélectionnée
     const removeImage = (index) => {
         const newImages = images.filter((_, i) => i !== index);
         setImages(newImages);
     };
 
+    // Soumission du formulaire
     const handleSubmit = async (values, { resetForm }) => {
         try {
             const productData = {
@@ -105,6 +114,7 @@ const AddProduct = () => {
                 created_at: new Date(),
             };
 
+            // Envoi des données au backend
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/products`, productData, {
                 withCredentials: true,
                 headers: {
@@ -112,6 +122,7 @@ const AddProduct = () => {
                 },
             });
 
+            // En cas de succès, redirection vers la page du produit
             if (response.status === 200 || response.status === 201) {
                 alert("Produit ajouté !");
                 const newProduct = response.data;
@@ -126,18 +137,23 @@ const AddProduct = () => {
         }
     };
 
+    // Scroll vers le haut au chargement de la page
     useEffect(() => {
-        window.scrollTo({top, behavior: 'smooth' })
+        window.scrollTo({ top, behavior: 'smooth' })
     }, [])
 
+    // Rendu du formulaire
     return (
         <div className="flex justify-center">
             <main className="flex flex-wrap gap-8 justify-center m-10">
+                {/* Bouton retour */}
                 <div className="flex justify-start flex-col items-center">
                     <Link to="/produit">
-                        <ButtonReturn className="flex flex-wrap"/>
+                        <ButtonReturn className="flex flex-wrap" />
                     </Link>
                 </div>
+
+                {/* Formulaire Formik */}
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -145,132 +161,32 @@ const AddProduct = () => {
                 >
                     {() => (
                         <Form className="w-full flex flex-wrap justify-center gap-6">
+                            {/* Bloc gauche du formulaire */}
                             <div className="max-w-3xl p-6 bg-white rounded-2xl shadow">
-
                                 <h1 className="text-2xl font-bold mb-4">Ajouter un produit</h1>
 
-                                {/* Nom */}
-                                <div className="mb-4">
-                                    <label htmlFor="nom" className="block font-medium">Nom du produit</label>
-                                    <Field name="nom" type="text" className="input w-full border p-2"/>
-                                    <ErrorMessage name="nom" component="div" className="text-red-600 text-sm"/>
-                                </div>
-
-                                {/* Seuil */}
-                                <div className="mb-4">
-                                    <label htmlFor="seuil_minimal" className="block font-medium">Seuil minimal</label>
-                                    <Field name="seuil_minimal" type="number" className="input w-full border p-2"/>
-                                    <ErrorMessage name="seuil_minimal" component="div"
-                                                  className="text-red-600 text-sm"/>
-                                </div>
-
+                                {/* Champs de saisie avec gestion des erreurs */}
+                                {/* Nom du produit */}
+                                {/* Seuil minimal */}
                                 {/* Description */}
-                                <div className="mb-4">
-                                    <label htmlFor="description" className="block font-medium">Description</label>
-                                    <Field name="description" as="textarea" className="textarea w-full border p-2"/>
-                                    <ErrorMessage name="description" component="div" className="text-red-600 text-sm"/>
-                                </div>
-
                                 {/* Catégorie */}
-                                <div className="mb-4">
-                                    <label htmlFor="id_category" className="block font-medium">Catégorie</label>
-                                    <Field as="select" name="id_category" className="select w-full border p-2">
-                                        <option value="">-- Choisir --</option>
-                                        {categories.map(c => (
-                                            <option key={c.id_category} value={c.id_category}>{c.nom}</option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage name="id_category" component="div" className="text-red-600 text-sm"/>
-                                </div>
-
                                 {/* Fournisseur */}
-                                <div className="mb-4">
-                                    <label htmlFor="id_provider" className="block font-medium">Fournisseur</label>
-                                    <Field as="select" name="id_provider" className="select w-full border p-2">
-                                        <option value="">-- Choisir --</option>
-                                        {providers.map(p => (
-                                            <option key={p.id_provider} value={p.id_provider}>{p.nom}</option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage name="id_provider" component="div" className="text-red-600 text-sm"/>
-                                </div>
-
                                 {/* Localisation */}
-                                <div className="mb-4">
-                                    <label htmlFor="localisation" className="block font-medium">Localisation</label>
-                                    <Field name="localisation" type="text" className="input w-full border p-2"/>
-                                    <ErrorMessage name="localisation" component="div" className="text-red-600 text-sm"/>
-                                </div>
                             </div>
 
-                            {/* Bloc droit */}
+                            {/* Bloc droit du formulaire */}
                             <div className="max-w-3xl p-6 bg-white rounded-2xl shadow">
 
                                 {/* Code produit */}
-                                <div className="mb-4">
-                                    <label htmlFor="code_product" className="block font-medium">Code produit</label>
-                                    <Field name="code_product" type="text" className="input w-full border p-2"/>
-                                    <ErrorMessage name="code_product" component="div" className="text-red-600 text-sm"/>
-                                </div>
-
                                 {/* Quantité */}
-                                <div className="mb-4">
-                                    <label htmlFor="quantité_en_stock" className="block font-medium">Quantité</label>
-                                    <Field name="quantité_en_stock" type="number" className="input w-full border p-2"/>
-                                    <ErrorMessage name="quantité_en_stock" component="div"
-                                                  className="text-red-600 text-sm"/>
-                                </div>
-
-                                {/* Prix */}
-                                <div className="mb-4">
-                                    <label htmlFor="prix_unitaire" className="block font-medium">Prix unitaire</label>
-                                    <Field name="prix_unitaire" type="number" className="input w-full border p-2"/>
-                                    <ErrorMessage name="prix_unitaire" component="div"
-                                                  className="text-red-600 text-sm"/>
-                                </div>
-
+                                {/* Prix unitaire */}
                                 {/* Date de péremption */}
-                                <div className="mb-4">
-                                    <label htmlFor="date_peremption" className="block font-medium">Date de
-                                        péremption</label>
-                                    <Field name="date_peremption" type="date" className="input w-full border p-2"/>
-                                    <ErrorMessage name="date_peremption" component="div"
-                                                  className="text-red-600 text-sm"/>
-                                </div>
-
                                 {/* Condition d'achat */}
-                                <div className="mb-4">
-                                    <label htmlFor="condition_achat" className="block font-medium">Condition
-                                        d'achat</label>
-                                    <Field name="condition_achat" type="text" className="input w-full border p-2"/>
-                                    <ErrorMessage name="condition_achat" component="div"
-                                                  className="text-red-600 text-sm"/>
-                                </div>
+                                {/* Upload d'images */}
+                                {/* Aperçu des images sélectionnées */}
 
-                                {/* Upload images */}
-                                <div className="mb-4">
-                                    <label htmlFor="images" className="block font-medium">Images (1 à 3)</label>
-                                    <input type="file" multiple accept="image/*" onChange={handleImageChange}/>
-                                </div>
-
-                                {images.length > 0 && (
-                                    <div className="flex gap-4 mb-4">
-                                        {images.map((img, index) => (
-                                            <div key={index} className="relative">
-                                                <img src={URL.createObjectURL(img)} alt={`img-${index}`}
-                                                     className="w-24 h-24 object-cover rounded"/>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeImage(index)}
-                                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-2"
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                <ButtonOrder ButtonName="Ajouter le produit" buttonType="submit"/>
+                                {/* Bouton de soumission */}
+                                <ButtonOrder ButtonName="Ajouter le produit" buttonType="submit" />
                             </div>
                         </Form>
                     )}

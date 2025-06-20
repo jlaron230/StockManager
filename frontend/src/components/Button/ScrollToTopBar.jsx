@@ -18,6 +18,7 @@ const ScrollToTopBar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Fonction qui scroll en douceur vers le haut de la page
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -28,9 +29,9 @@ const ScrollToTopBar = () => {
     return (
         <div
             className={`
-        fixed z-50 bottom-6 right-6 transition-all duration-300 transform
-        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}
-      `}
+                fixed z-50 bottom-6 right-6 transition-all duration-300 transform
+                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}
+            `}
         >
             <button
                 onClick={scrollToTop}
@@ -43,4 +44,4 @@ const ScrollToTopBar = () => {
     );
 };
 
-export default ScrollToTopBar
+export default ScrollToTopBar;

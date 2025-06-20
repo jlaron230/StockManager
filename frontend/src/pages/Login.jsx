@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from "react";
 import LoginUser from "@components/Login/LoginUser";
 const Login = () => {
     return (
+        //component LoginUser
         <div><LoginUser /></div>
     )
 }

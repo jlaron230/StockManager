@@ -1,6 +1,7 @@
 import logo from "@assets/image/LogoGestock.png";
 import {Link} from "react-router-dom";
 const Logo = () => {
+    //composant du logo
     return (
         <>
             <Link to="/">

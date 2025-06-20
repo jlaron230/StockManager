@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
 import ResetPassword from "@components/Login/ResetPassword";
 
 const  ResetPasswordPage = () => {
     return (
+        //component ResetPassword
         <div><ResetPassword /></div>
     )
 }

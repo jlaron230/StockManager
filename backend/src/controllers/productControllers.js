@@ -1,6 +1,6 @@
 const tables = require("../models");
 
-
+// Récupérer tous les produits
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.product.readAll();
@@ -11,6 +11,7 @@ const browse = async (req, res) => {
   }
 };
 
+// Récupérer un produit par ID
 const read = async (req, res) => {
   try {
     const [rows] = await tables.product.read(req.params.id);
@@ -25,6 +26,7 @@ const read = async (req, res) => {
   }
 };
 
+// Ajouter un nouveau produit
 const add = async (req, res) => {
   try {
     const product = req.body;
@@ -41,7 +43,7 @@ const add = async (req, res) => {
   }
 };
 
-
+// Modifier un produit existant (PUT complet)
 const edit = async (req, res) => {
   try {
     const product = req.body;
@@ -53,14 +55,13 @@ const edit = async (req, res) => {
     }
 
     res.sendStatus(204);
-    
   } catch (err) {
     console.error("Erreur dans productControllers.edit :", err);
     res.sendStatus(500);
   }
 };
 
-
+// Supprimer un produit
 const destroy = async (req, res) => {
   try {
     const [result] = await tables.product.delete(req.params.id);
@@ -75,11 +76,11 @@ const destroy = async (req, res) => {
   }
 };
 
+// Récupérer les produits d'une catégorie spécifique
 const getByCategory = async (req, res) => {
   try {
     const categoryId = parseInt(req.params.id, 10);
     const products = await tables.product.findByCategory(categoryId);
-
 
     res.json(products);
   } catch (err) {
@@ -88,14 +89,16 @@ const getByCategory = async (req, res) => {
   }
 };
 
+// Mise à jour partielle d'un produit (PATCH)
 async function partialUpdate(req, res) {
   try {
     const { id } = req.params;
     const updates = req.body;
 
+    // Champs autorisés à être modifiés partiellement
     const allowedFields = ['nom', 'description', 'prix_unitaire', 'quantité_en_stock', 'seuil_minimal', 'id_category'];
     const safeUpdates = Object.fromEntries(
-      Object.entries(updates).filter(([key]) => allowedFields.includes(key))
+        Object.entries(updates).filter(([key]) => allowedFields.includes(key))
     );
 
     const result = await tables.product.updatePartial(id, safeUpdates);
@@ -111,8 +114,6 @@ async function partialUpdate(req, res) {
   }
 }
 
-
-
 module.exports = {
   browse,
   read,
@@ -122,4 +123,3 @@ module.exports = {
   getByCategory,
   partialUpdate
 };
-

@@ -13,8 +13,10 @@ const OptionCategory = ({
                         }) => {
     return (
         <div className="mb-4">
+            {/* Si on est en mode édition */}
             {isEditing ? (
                 <div className="mb-4 flex items-center gap-2">
+                    {/* Liste déroulante pour choisir une option */}
                     <select
                         value={value}
                         onChange={onChange}
@@ -26,17 +28,21 @@ const OptionCategory = ({
                             </option>
                         ))}
                     </select>
+                    {/* Bouton pour valider la modification */}
                     <ButtonValidate onClick={onValidate} />
                 </div>
             ) : (
+                // Mode affichage classique
                 <div className="flex flex-wrap gap-2">
-                <div
-                    className="cursor-pointer px-3 py-1 border border-gray-300 rounded hover:bg-gray-100"
-                    onClick={onClick}
-                >
-                    {options.find((cat) => cat.id_category === value)?.nom || "Non défini"}
-                </div>
-                <ButtonEdit onClick={onClick} />
+                    {/* Affiche le nom de la catégorie sélectionnée, ou "Non défini" */}
+                    <div
+                        className="cursor-pointer px-3 py-1 border border-gray-300 rounded hover:bg-gray-100"
+                        onClick={onClick}
+                    >
+                        {options.find((cat) => cat.id_category === value)?.nom || "Non défini"}
+                    </div>
+                    {/* Bouton pour passer en mode édition */}
+                    <ButtonEdit onClick={onClick} />
                 </div>
             )}
         </div>

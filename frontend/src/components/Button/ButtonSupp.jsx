@@ -1,4 +1,5 @@
 const ButtonSupp = ({onClick, NameSupp}) => {
+    //button for the supp empty
     return (
         <button type="button"
                 onClick={onClick}

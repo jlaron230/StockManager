@@ -6,8 +6,10 @@ import ButtonConnexion from "@components/Button/ButtonConnexion";
 import ButtonOrder from "@components/Button/ButtonOrder";
 
 const ServiceSection = () => {
-
+    // Etat local pour stocker la catégorie affichée ("boutique" par défaut)
     const [showCard, setShowCard] = useState("boutique");
+
+    // Fonction pour mettre à jour la catégorie affichée (en minuscules)
     const handleProject = (category) => {
         setShowCard(category.toLowerCase());
     };
@@ -18,7 +20,9 @@ const ServiceSection = () => {
                 <div className="container mx-auto">
                     <div className="w-full flex flex-wrap justify-center">
                         <div className="w-full px-4 flex flex-wrap justify-center items-center">
+                            {/* Liste de boutons pour changer la catégorie visible */}
                             <ul className="flex flex-wrap justify-center mb-12 space-x-1 gap-20 flex-row">
+                                {/* Bouton Produit avec image */}
                                 <li className="mb-1 basis-55 flex flex-wrap justify-center items-start items-center">
                                     <button
                                         onClick={() => handleProject("Produit")}
@@ -41,6 +45,7 @@ const ServiceSection = () => {
                                         </button>
                                     </div>
                                 </li>
+                                {/* Bouton Boutique avec image */}
                                 <li className="mb-1 basis-55 text-center">
                                     <button
                                         onClick={() => handleProject("Boutique")}
@@ -66,6 +71,7 @@ const ServiceSection = () => {
                                         </button>
                                     </div>
                                 </li>
+                                {/* Bouton Fournisseur avec image */}
                                 <li className="mb-1 basis-55 text-center">
                                     <button
                                         onClick={() => handleProject("Fournisseur")}
@@ -91,6 +97,8 @@ const ServiceSection = () => {
                             </ul>
                         </div>
                     </div>
+
+                    {/* Affichage conditionnel des cartes de portfolio selon la catégorie sélectionnée */}
                     <div className="flex flex-wrap justify-center">
                         <PortfolioCard
                             ImageHref="/Boutique.png"
@@ -130,6 +138,7 @@ Gérer vos fournisseurs"
 }
 export default ServiceSection
 
+// Composant affichant une carte portfolio avec animation au chargement
 const PortfolioCard = ({
                            showCard,
                            category,
@@ -139,12 +148,13 @@ const PortfolioCard = ({
                            buttonHref,
                            descriptionService,
                        }) => {
+    // Etat pour gérer la transition d'opacité et flou de l'image au chargement
     const [isLoaded, setIsLoaded] = useState(false);
     return (
         <>
             <div
                 className={`w-full px-4 md:w-1/2 xl:w-2/3 ${
-
+                    // Affiche ou masque la carte selon la catégorie sélectionnée
                     showCard === "all" || showCard === category.toLowerCase()
                         ? "block"
                         : "hidden"
@@ -164,6 +174,7 @@ const PortfolioCard = ({
                     </div>
                 </div>
                 <div className="overflow-hidden rounded-[10px] flex justify-center">
+                    {/* Image avec animation de transition quand elle est chargée */}
                     <img src={ImageHref} alt="portfolio"
                          onLoad={() => setIsLoaded(true)}
                          className={`

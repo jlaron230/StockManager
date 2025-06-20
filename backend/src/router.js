@@ -1,5 +1,11 @@
+// Importe le framework Express et crée un routeur
 const express = require("express");
 const router = express.Router();
+
+// Middleware de protection CSRF (non activé avec cookie ici)
+const csrf = require("csurf");
+
+// Importe les contrôleurs pour chaque entité du projet
 const itemControllers = require("./controllers/itemControllers");
 const productControllers = require("./controllers/productControllers");
 const providerControllers = require("./controllers/providerControllers");
@@ -9,25 +15,97 @@ const userControllers = require("./controllers/userControllers");
 const categoryControllers = require("./controllers/categoryControllers");
 const storeControllers = require("./controllers/storeControllers");
 
+// Contrôleur de test pour les notifications
 const { testNotif } = require("./controllers/notificationTestController");
 
+// Middleware global pour logger chaque requête (temporaire pour debug)
 router.use((req, res, next) => {
-  console.log(`📡 Requête reçue : ${req.method} ${req.url}`);   //temporaire
-  next();
+    console.log(`📡 Requête reçue : ${req.method} ${req.url}`);   //temporaire
+    next();
 });
 
-
-
-//import middleware functions
+// Importe les middlewares liés à l'authentification
 const {
     hashPassword,
     requireLogin,
-    verifyPassword, requireAdmin
+    verifyPassword,
+    requireAdmin
 } = require("./auth");
-  
-const { registerUser, loginUser, checkSession, logoutUser, forgotPassword, resetPassword,} = require("../src/controllers/authController");
 
+// Importe les fonctions de gestion des utilisateurs/authentification
+const {
+    registerUser,
+    loginUser,
+    checkSession,
+    logoutUser,
+    forgotPassword,
+    resetPassword,
+} = require("../src/controllers/authController");
+
+// Initialise la protection CSRF (ici sans cookie)
+const csrfProtection = csrf({ cookie: false });
+
+
+//Token CSRF
+/**
+ * @swagger
+ * /form-token:
+ *   get:
+ *     summary: Récupère un token CSRF
+ *     tags: [Security]
+ *     responses:
+ *       200:
+ *         description: Token CSRF généré
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 csrfToken:
+ *                   type: string
+ *                   example: "A1B2C3D4..."
+
+ *       403:
+ *         description: Session invalide ou token CSRF non généré
+ */
+router.get("/form-token", csrfProtection, (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+});
+
+//Route notification
+/**
+ * @swagger
+ * /notify:
+ *   post:
+ *     summary: Envoie une notification test
+ *     tags: [Notifications]
+ *     responses:
+ *       200:
+ *         description: Notification envoyée
+ *       500:
+ *         description: Erreur serveur lors de l'envoi
+ */
 router.post("/notify", testNotif);
+
+//Routes pour l'utilisateur
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Récupère la liste de tous les utilisateurs
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Liste des utilisateurs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get("/users", userControllers.getAllUsers);
 /**
  * @swagger
@@ -192,6 +270,7 @@ router.put("/users/:id/token-mobil", userControllers.updateMobileToken);
  */
 router.put("/user/token", userControllers.updateFcmToken);
 
+//Route pour l'inscription de l'utilisateur
 /**
  * @swagger
  * /register:
@@ -212,7 +291,8 @@ router.put("/user/token", userControllers.updateFcmToken);
  *       201:
  *         description: Utilisateur enregistré
  */
-router.post("/register", hashPassword, registerUser);
+router.post("/register", csrfProtection, hashPassword, registerUser);
+//Route pour la connexion de l'utilisateur
 /**
  * @swagger
  * /login:
@@ -235,8 +315,9 @@ router.post("/register", hashPassword, registerUser);
  *       401:
  *         description: Identifiants invalides
  */
-router.post("/login", loginUser, verifyPassword);
+router.post("/login", csrfProtection, loginUser,  verifyPassword);
 
+//Route pour la session de l'utilisateur
 /**
  * @swagger
  * /session:
@@ -252,6 +333,7 @@ router.post("/login", loginUser, verifyPassword);
  *         description: Non authentifié
  */
 router.get("/session", requireLogin, checkSession);
+//Route pour la déconnexion de l'utilisateur
 /**
  * @swagger
  * /logout:
@@ -282,6 +364,7 @@ router.post("/logout", logoutUser);
  *       200:
  *         description: Email de réinitialisation envoyé
  */
+//Route pour le mot de passe oublié de l'utilisateur
 router.post("/forgot-password", forgotPassword);
 /**
  * @swagger
@@ -303,7 +386,9 @@ router.post("/forgot-password", forgotPassword);
  *       200:
  *         description: Mot de passe réinitialisé
  */
+//Route pour réinitialiser le mot de passe de l'utilisateur
 router.post("/reset-password", resetPassword);
+//Route pour obtenir les produits du magasin
 /**
  * @swagger
  * /store:
@@ -317,6 +402,8 @@ router.post("/reset-password", resetPassword);
  *         description: Liste des magasins
  */
 router.get("/store", requireLogin, storeControllers.browse);
+
+//Routes pour les produits
 /**
  * @swagger
  * /products:
@@ -350,7 +437,6 @@ router.get("/products", productControllers.browse);
  *         description: Non authentifié
  */
 router.get("/products/:id", requireLogin, productControllers.read);
-
 /**
  * @swagger
  * /products:
@@ -495,6 +581,7 @@ router.delete("/products/:id", requireAdmin,productControllers.destroy);
  */
 router.get("/products/category/:id", requireLogin, productControllers.getByCategory);
 
+//Routes pour les fournisseurs
 /**
  * @swagger
  * /providers:
@@ -548,7 +635,6 @@ router.get("/providers/:id", requireLogin, providerControllers.read);
  *         description: Fournisseur ajouté
  */
 router.post("/providers", requireAdmin, providerControllers.add);
-
 /**
  * @swagger
  * /providers/{id}:
@@ -609,6 +695,7 @@ router.delete("/providers/:id", requireAdmin, providerControllers.destroy);
  */
 router.get('/provider-types', requireLogin, providerControllers.getProviderType);
 
+//Routes pour les stocks
 /**
  * @swagger
  * /stock:
@@ -642,7 +729,6 @@ router.get("/stock/categorie", stockControllers.getStockByCategory);
  *         description: Liste des stocks faibles
  */
 router.get("/stock/low", stockControllers.getLowStock);
-
 /**
  * @swagger
  * /stock/{productId}:
@@ -661,7 +747,7 @@ router.get("/stock/low", stockControllers.getLowStock);
  */
 router.get("/stock/:productId", stockControllers.read);
 
-
+//Routes pour le passage des commandes
 /**
  * @swagger
  * /orders:
@@ -720,7 +806,6 @@ router.get("/orders/:id/products", orderControllers.getProductsFromOrder);
  *         description: Totaux de commandes
  */
 router.get("/orders-total", orderControllers.getOrderTotals);
-
 /**
  * @swagger
  * /orders/{id}:
@@ -749,7 +834,6 @@ router.get("/orders/:id", orderControllers.read);
  *         description: Liste des commandes
  */
 router.get("/orders", orderControllers.readAll);
-
 /**
  * @swagger
  * /orders/{id}:
@@ -806,6 +890,7 @@ router.get("/orders/:id/full", orderControllers.getFullOrder);
  */
 router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
 
+//Routes pour les catégories de produits
 /**
  * @swagger
  * /categories:
@@ -878,7 +963,6 @@ router.get("/categories/:id/providers", requireLogin, categoryControllers.getPro
  *         description: Catégorie créée
  */
 router.post("/categories", requireAdmin, categoryControllers.add);
-
 /**
  * @swagger
  * /categories/{id}:
@@ -926,9 +1010,7 @@ router.put("/categories/:id", requireAdmin, categoryControllers.edit);
  */
 router.delete("/categories/:id", requireAdmin, categoryControllers.destroy);
 
-
-
-
+//Routes de tests
 router.get("/items", itemControllers.browse);
 router.get("/items/:id", itemControllers.read);
 router.put("/items/:id", itemControllers.edit);

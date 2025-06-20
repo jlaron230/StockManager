@@ -1,4 +1,5 @@
 const ButtonValidate = ({onClick}) => {
+    //button for validate
     return (
         <button
             type="button"

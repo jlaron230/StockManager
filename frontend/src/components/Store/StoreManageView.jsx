@@ -1,16 +1,18 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import ButtonOrder from "@components/Button/ButtonOrder";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StoreManageView = () => {
+    // 🟢 États pour stocker les données
     const [products, setProducts] = useState([]);
     const [providers, setProviders] = useState([]);
     const [categorys, setCategorys] = useState([]);
     const [stores, setStores] = useState([]);
-    const [connect, setConnect] = useState(false);
-    console.log(providers)
 
+    console.log(providers); // Debug
+
+    // 🔁 Chargement des données à l'initialisation
     useEffect(() => {
         fetchProducts();
         fetchProvider();
@@ -18,6 +20,7 @@ const StoreManageView = () => {
         fetchStores();
     }, []);
 
+    // 🔽 Récupère la liste des produits
     const fetchProducts = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
@@ -29,6 +32,7 @@ const StoreManageView = () => {
         }
     };
 
+    // 🔽 Récupère les fournisseurs
     const fetchProvider = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {
@@ -40,6 +44,7 @@ const StoreManageView = () => {
         }
     };
 
+    // 🔽 Récupère les catégories
     const fetchCategory = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
@@ -51,6 +56,7 @@ const StoreManageView = () => {
         }
     };
 
+    // 🔽 Récupère les magasins
     const fetchStores = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/store`, {
@@ -62,22 +68,25 @@ const StoreManageView = () => {
         }
     };
 
-
+    // 🔍 Trouve le nom d'un fournisseur via son ID
     const getProviderName = (providerId) => {
-    const providerActif = providers.find((provider) => provider.id_provider === providerId);
-    return providerActif ? providerActif.nom : providerId;
-    }
+        const providerActif = providers.find((provider) => provider.id_provider === providerId);
+        return providerActif ? providerActif.nom : providerId;
+    };
 
+    // 🔍 Trouve le nom d'une catégorie via son ID
     const getCategoryName = (categoryId) => {
         const categoryActif = categorys.find((category) => category.id_category === categoryId);
         return categoryActif ? categoryActif.nom : categoryId;
-    }
+    };
 
+    // 🔍 Trouve le nom d'un magasin via son ID (⚠️ attention : id_category dans store ?)
     const getStoreName = (storeId) => {
         const storeActif = stores.find((store) => store.id_category === storeId);
         return storeActif ? storeActif.nom : storeId;
-    }
+    };
 
+    // 🔢 Statistiques calculées
     const totalProduits = products.length;
     const totalFournisseurs = providers.length;
     const totalCategories = categorys.length;
@@ -87,24 +96,24 @@ const StoreManageView = () => {
 
     const navigate = useNavigate();
 
+    // 🔐 Vérifie si l'utilisateur est connecté, sinon redirige
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
             method: "GET",
-            credentials: "include", // important pour envoyer le cookie
+            credentials: "include",
         })
             .then((res) => {
                 if (!res.ok) {
-                    navigate("/connexion")
-                    // Si non connecté, on redirige vers l'accueil
+                    navigate("/connexion");
                 } else {
                     return res.json();
                 }
-            })
+            });
     }, []);
 
     return (
         <div className="p-8">
-            {/* Présentation générale */}
+            {/* 🛍️ Introduction */}
             <section className="mb-12 text-center">
                 <h1 className="text-4xl font-bold mb-4">Bienvenue dans notre Boutique</h1>
                 <p className="text-lg text-gray-700 max-w-2xl mx-auto">
@@ -113,6 +122,8 @@ const StoreManageView = () => {
                     Consultez les informations de stock, les prix, et accédez à la fiche détaillée de chaque article.
                 </p>
             </section>
+
+            {/* 📊 Statistiques */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div className="bg-white shadow rounded-xl p-4">
                     <p className="text-sm text-gray-500">Total produits</p>
@@ -131,6 +142,8 @@ const StoreManageView = () => {
                     <p className="text-xl font-bold text-green-600">{valeurTotaleStock.toFixed(2)}</p>
                 </div>
             </div>
+
+            {/* 🧾 Affichage des produits (si moins de 10) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {products.length < 10 && (
                     <>
@@ -161,9 +174,12 @@ const StoreManageView = () => {
                                     </div>
                                     <div className="mt-auto gap-3 flex flex-col flex-wrap items-start">
                                         <p className="text-lg font-bold text-blue-600">{product.prix_unitaire} €</p>
-
-                                        <ButtonOrder ButtonName="Voir le produit"
-                                                     onClick={() => window.location.href = `/produit/${product.id_product}`}/>
+                                        <ButtonOrder
+                                            ButtonName="Voir le produit"
+                                            onClick={() =>
+                                                window.location.href = `/produit/${product.id_product}`
+                                            }
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -174,4 +190,5 @@ const StoreManageView = () => {
         </div>
     );
 };
-export default StoreManageView
+
+export default StoreManageView;
