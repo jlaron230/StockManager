@@ -22,6 +22,7 @@ const ProviderCrud = () => {
     const [isAdmin, setIsAdmin] = useState(true);
     const [provider, setProvider] = useState([]);
     const [providerTypeList, setProviderTypeList] = useState([]);
+    const [dateArray, setDateArray] = useState([]);
     const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState({
         email: false,
@@ -33,6 +34,7 @@ const ProviderCrud = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [telephone, setTelephone] = useState("");
+    const [type, setType] = useState([]);
     const [selectedProvider, setSelectedProvider] = useState([]);
     const [adresse, setAdresse] = useState("");
     const [codePostal, setcodePostal] = useState("");
@@ -185,154 +187,154 @@ const ProviderCrud = () => {
     return (
         <div className="flex justify-center">
             {isConnect && (
-                <main className="">
-                    <div className="flex justify-start flex-col items-center">
-                        <Link to="/fournisseur">
-                            <ButtonReturn className="flex flex-wrap"/>
-                        </Link>
-                    </div>
-                    <div className="flex justify-center flex-wrap m-4 gap-5">
-                        <div className="max-w-3xl mx-auto p-6 gap-2.5 flex flex-wrap flex-col">
-                            <h1 className="text-2xl font-bold">{provider.nom}</h1>
-                            <div className="gap-2.5 flex flex-wrap flex-col">
-                                <p className="text-base">Email</p>
+            <main className="">
+                <div className="flex justify-start flex-col items-center">
+                <Link to="/fournisseur">
+                    <ButtonReturn className="flex flex-wrap"/>
+                </Link>
+                </div>
+                <div className="flex justify-center flex-wrap m-4 gap-5">
+                    <div className="max-w-3xl mx-auto p-6 gap-2.5 flex flex-wrap flex-col">
+                        <h1 className="text-2xl font-bold">{provider.nom}</h1>
+                        <div className="gap-2.5 flex flex-wrap flex-col">
+                            <p className="text-base">Email</p>
+                            {isAdmin ? (
+                                <div className="flex gap-2">
+                                    <>
+                                        <InputEditText
+                                            type="text"
+                                            value={email}
+                                            isEditing={editMode.email}
+                                            onClick={() => handleEdit("email")}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            onValidate={() => {
+                                                handlePut("email");
+                                                handleValidate("email");
+                                            }}
+                                        />
+                                    </>
+                                </div>
+                            ) : (
+                                <span className="text-blue-500 font-bold">{email}</span>
+                            )}
+                            <div>
+                                <p className="text-base">Téléphone</p>
                                 {isAdmin ? (
                                     <div className="flex gap-2">
-                                        <>
-                                            <InputEditText
-                                                type="text"
-                                                value={email}
-                                                isEditing={editMode.email}
-                                                onClick={() => handleEdit("email")}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                onValidate={() => {
-                                                    handlePut("email");
-                                                    handleValidate("email");
-                                                }}
-                                            />
-                                        </>
+                                    <>
+                                        <InputEdit
+                                            type="text"
+                                            value={telephone}
+                                            isEditing={editMode.telephone}
+                                            onClick={() => handleEdit("telephone")}
+                                            onChange={(e) => setTelephone(e.target.value)}
+                                            onValidate={() => {
+                                                handlePut("telephone");
+                                                handleValidate("telephone");
+                                            }}
+                                        />
+                                    </>
                                     </div>
                                 ) : (
-                                    <span className="text-blue-500 font-bold">{email}</span>
+                                    <span className="text-blue-500 font-bold">{commentaire}</span>
                                 )}
-                                <div>
-                                    <p className="text-base">Téléphone</p>
-                                    {isAdmin ? (
-                                        <div className="flex gap-2">
-                                            <>
-                                                <InputEdit
-                                                    type="text"
-                                                    value={telephone}
-                                                    isEditing={editMode.telephone}
-                                                    onClick={() => handleEdit("telephone")}
-                                                    onChange={(e) => setTelephone(e.target.value)}
-                                                    onValidate={() => {
-                                                        handlePut("telephone");
-                                                        handleValidate("telephone");
-                                                    }}
-                                                />
-                                            </>
-                                        </div>
-                                    ) : (
-                                        <span className="text-blue-500 font-bold">{commentaire}</span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="max-w-3xl mx-auto p-6 gap-2.5 flex flex-wrap flex-col">
-                            <div>
-                                <p className="text-base">Type</p>
-                                {isAdmin ? (
-                                    editMode.type ? (
-                                        <>
-                                            <select
-                                                value={selectedProvider}
-                                                onChange={(e) => setSelectedProvider(e.target.value)}
-                                                className="p-2 border rounded-md"
-                                            >
-                                                <option value="" disabled>-- Sélectionnez un type --</option>
-                                                {providerTypes.map((typeOption, index) => (
-                                                    <option key={index} value={typeOption}>{typeOption}</option>
-                                                ))}
-                                            </select>
-                                            <button
-                                                className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
-                                                onClick={() => {
-                                                    handlePut("type");
-                                                    handleValidate("type");
-                                                }}
-                                            >
-                                                Valider
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <div className="flex items-center gap-2">
-                                            <span>{selectedProvider}</span>
-                                            <button
-                                                className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
-                                                onClick={() => handleEdit("type")}
-                                            >
-                                                Modifier
-                                            </button>
-                                        </div>
-                                    )
-                                ) : (
-                                    <span className="text-blue-500 font-bold">{selectedProvider}</span>
-                                )}
-                            </div>
-                            <div>
-                                <p className="text-base">Adresse</p>
-                                <p className="text-blue-500 font-bold">{provider.adresse}</p>
-                            </div>
-                            <div>
-                                <p className="text-base">Localisation</p>
-                                <p className="text-blue-500 font-bold">{provider.code_postal}</p>
-                            </div>
-                            <div className="max-w-3xl">
-                                <div>
-                                    <p className="text-base">Commentaire</p>
-                                    {isAdmin ? (
-                                        <div className="content-start max-w-3xl mx-auto gap-2.5 flex flex-wrap flex-col">
-                                            <>
-                                                <TextEdit type="text"
-                                                          value={commentaire}
-                                                          isEditing={editMode.commentaire}
-                                                          onClick={() => handleEdit("commentaire")}
-                                                          onChange={(e) => setCommentaire(e.target.value)}
-                                                          onValidate={() => {
-                                                              handlePut("commentaire");
-                                                              handleValidate("commentaire");
-                                                          }}/>
-                                            </>
-                                        </div>
-                                    ) : (
-                                        <span className="text-blue-500 font-bold">{commentaire}</span>
-                                    )}
-                                </div>
                             </div>
                         </div>
                     </div>
-                    {isAdmin ? (
-                        <div className="flex flex-wrap justify-center p-6 items-center">
-                            <ButtonSupp NameSupp="Supprimer le fournisseur" onClick={HandleClick}/>
-                            <>
-                                {!IsClicked ? (
-                                    <div>
-                                        <ModalProduct  nameModal="Supprimer le fournisseur" descriptionModal={    <>
-                                            Êtes-vous sûr de vouloir supprimer le fournisseur ? Cela supprimera les <strong>produits</strong> associés à celui-ci.
-                                        </>} supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
+                    <div className="max-w-3xl mx-auto p-6 gap-2.5 flex flex-wrap flex-col">
+                        <div>
+                            <p className="text-base">Type</p>
+                            {isAdmin ? (
+                                editMode.type ? (
+                                    <>
+                                        <select
+                                            value={selectedProvider}
+                                            onChange={(e) => setSelectedProvider(e.target.value)}
+                                            className="p-2 border rounded-md"
+                                        >
+                                            <option value="" disabled>-- Sélectionnez un type --</option>
+                                            {providerTypes.map((typeOption, index) => (
+                                                <option key={index} value={typeOption}>{typeOption}</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
+                                            onClick={() => {
+                                                handlePut("type");
+                                                handleValidate("type");
+                                            }}
+                                        >
+                                            Valider
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <span>{selectedProvider}</span>
+                                        <button
+                                            className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
+                                            onClick={() => handleEdit("type")}
+                                        >
+                                            Modifier
+                                        </button>
+                                    </div>
+                                )
+                            ) : (
+                                <span className="text-blue-500 font-bold">{selectedProvider}</span>
+                            )}
+                        </div>
+                        <div>
+                            <p className="text-base">Adresse</p>
+                            <p className="text-blue-500 font-bold">{provider.adresse}</p>
+                        </div>
+                        <div>
+                            <p className="text-base">Localisation</p>
+                            <p className="text-blue-500 font-bold">{provider.code_postal}</p>
+                        </div>
+                        <div className="max-w-3xl">
+                            <div>
+                                <p className="text-base">Commentaire</p>
+                                {isAdmin ? (
+                                    <div className="content-start max-w-3xl mx-auto gap-2.5 flex flex-wrap flex-col">
+                                    <>
+                                        <TextEdit type="text"
+                                                  value={commentaire}
+                                                  isEditing={editMode.commentaire}
+                                                  onClick={() => handleEdit("commentaire")}
+                                                  onChange={(e) => setCommentaire(e.target.value)}
+                                                  onValidate={() => {
+                                                      handlePut("commentaire");
+                                                      handleValidate("commentaire");
+                                                  }}/>
+                                    </>
                                     </div>
                                 ) : (
-                                    <></>
+                                    <span className="text-blue-500 font-bold">{commentaire}</span>
                                 )}
-                            </>
+                            </div>
                         </div>
-                    ) : (
-                        <></>
-                    )}
-                </main>
+                    </div>
+                </div>
+                {isAdmin ? (
+                    <div className="flex flex-wrap justify-center p-6 items-center">
+                        <ButtonSupp NameSupp="Supprimer le fournisseur" onClick={HandleClick}/>
+                        <>
+                            {!IsClicked ? (
+                                <div>
+                                    <ModalProduct  nameModal="Supprimer le fournisseur" descriptionModal={    <>
+                                        Êtes-vous sûr de vouloir supprimer le fournisseur ? Cela supprimera les <strong>produits</strong> associés à celui-ci.
+                                    </>} supp={HandleSupp} modalOpen={IsClicked} setModalOpen={setIsClicked}/>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    </div>
+                ) : (
+                    <></>
+                )}
+            </main>
             )}
         </div>
     );
 };
-export default ProviderCrud;
+export default ProviderCrud
