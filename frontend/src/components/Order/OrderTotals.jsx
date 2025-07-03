@@ -20,8 +20,8 @@ const OrderTotals = () => {
 
         fetchTotals();
     }, []);
-console.log(orderProducts);
-    // Calcul du montant total
+
+    // Calcul du montant total de toutes les commandes
     const totalAmount = orderProducts.reduce((total, item) => {
         const quantity = item.quantité_commandée ?? 0;
         const unitPrice = item.unit_price ?? 0;
@@ -43,30 +43,45 @@ console.log(orderProducts);
                     </p>
 
                     <div className="space-y-4">
-                        {orderProducts.map((product, index) => (
-                            <div
-                                key={index}
-                                className="border border-gray-200 rounded-xl p-4 bg-gray-50 hover:shadow transition"
-                            >
-                                <div className="flex flex-col sm:flex-row justify-between gap-4">
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-gray-700">Nom du produit</h3>
-                                        <p className="text-base text-gray-900">{product.nom}</p>
-                                    </div>
+                        {orderProducts.map((product, index) => {
+                            const quantity = parseInt(product.quantité_commandée) || 0;
+                            const unitPrice = parseFloat(product.unit_price) || 0;
+                            const subtotal = quantity * unitPrice;
 
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-gray-700">Quantité commandée</h3>
-                                        <p className="text-base text-gray-900">{product.quantité_commandée}</p>
+                            return (
+                                <div
+                                    key={index}
+                                    className="border border-gray-200 rounded-xl p-4 bg-gray-50 hover:shadow transition"
+                                >
+                                    <div className="flex flex-col sm:flex-row justify-between gap-4">
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-700">Nom du produit</h3>
+                                            <p className="text-base text-gray-900">{product.nom}</p>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-700">Quantité commandée</h3>
+                                            <p className="text-base text-gray-900">{quantity}</p>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-700">Prix unitaire</h3>
+                                            <p className="text-base text-gray-900">{unitPrice.toFixed(2)} €</p>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-700">Sous-total</h3>
+                                            <p className="text-base text-green-700 font-bold">{subtotal.toFixed(2)} €</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             )}
         </div>
     );
 };
-
 
 export default OrderTotals;

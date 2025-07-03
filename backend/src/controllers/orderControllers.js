@@ -1,17 +1,15 @@
 const tables = require("../models");
-const { tr } = require("@faker-js/faker");
+const {tr} = require("@faker-js/faker");
 
-// Ajouter une commande
 const add = async (req, res) => {
   const order = req.body;
 
   try {
-    // Vérifie que tous les produits appartiennent au fournisseur choisi
     const productIds = order.products.map((p) => p.id_product);
     const [products] = await tables.product.getProvidersByIds(productIds);
 
     const produitsInvalides = products.filter(
-        (p) => p.id_provider !== order.id_provider
+      (p) => p.id_provider !== order.id_provider
     );
 
     if (produitsInvalides.length > 0) {
@@ -21,43 +19,38 @@ const add = async (req, res) => {
       });
     }
 
-    // Crée la commande avec un total à 0
     const orderResult = await tables.order.insert({
       ...order,
       total_ammount: 0,
     });
 
-    // Met à jour le stock pour chaque produit commandé
     const stockUpdatePromises = order.products
-        .filter((p) => p.id_product && p.quantité != null)
-        .map((p) => tables.product.incrementStock(p.id_product, p.quantité));
+        .filter(p => p.id_product && p.quantité != null)
+        .map(p =>
+            tables.product.incrementStock(p.id_product, p.quantité)
+        );
     await Promise.all(stockUpdatePromises);
 
     const id_order = orderResult.insertId;
 
-    // Insère les produits liés à la commande
     const insertPromises = order.products.map((p) =>
-        tables.order_product.insert({
-          id_order,
-          id_product: p.id_product,
-          quantité_commandée: p.quantité,
-        })
+      tables.order_product.insert({
+        id_order,
+        id_product: p.id_product,
+        quantité_commandée: p.quantité,
+      })
     );
     await Promise.all(insertPromises);
 
-    // Calcule le total de la commande
-    const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(
-        id_order
-    );
+
+    const [detailedProducts] = await tables.order_product.findFullDetailsByOrderId(id_order);
     const total = detailedProducts.reduce(
-        (sum, product) => sum + product.prix_unitaire * product.quantité_commandée,
-        0
+      (sum, product) => sum + product.prix_unitaire * product.quantité_commandée,
+      0
     );
 
-    // Met à jour le total dans la commande
     await tables.order.updateTotal(id_order, total);
 
-    // Répond avec la commande créée et son total
     res.status(201).json({
       id_order,
       total_ammount: total,
@@ -70,18 +63,17 @@ const add = async (req, res) => {
   }
 };
 
-// Met à jour une commande (quand elle est "terminée")
 const update = async (req, res) => {
   const order = req.body;
   const id_order = req.params.id;
 
-  // Ne traite que les commandes terminées
+  // Ne traiter que les commandes "terminées"
   if (order.statut !== "terminée") {
     return res.sendStatus(204);
   }
 
   try {
-    // Vérifie que la commande existe et n'est pas validée
+    // Vérifier que la commande existe et n'est pas déjà validée
     const [existingOrder] = await tables.order.read(id_order);
     if (!existingOrder) {
       return res.status(404).json({ message: "Commande introuvable." });
@@ -91,8 +83,8 @@ const update = async (req, res) => {
       return res.status(400).json({ message: "La commande est déjà validée." });
     }
 
-    // Vérifie que tous les produits correspondent au fournisseur
-    const productIds = order.products.map((p) => p.id_product);
+    // Vérification de la cohérence des fournisseurs
+    const productIds = order.products.map(p => p.id_product);
     const [products] = await tables.product.getProvidersByIds(productIds);
 
     const produitsInvalides = products.filter(
@@ -106,13 +98,13 @@ const update = async (req, res) => {
       });
     }
 
-    // Met à jour les infos principales de la commande
+    // Mise à jour des infos de base de la commande
     await tables.order.update(id_order, order);
 
-    // Supprime les anciens produits liés à la commande
+    // Suppression des anciens produits liés à la commande
     await tables.order_product.deleteByOrderId(id_order);
 
-    // Insère les nouveaux produits liés à la commande
+    // Insertion des nouveaux produits liés à la commande
     const insertions = order.products.map((p) =>
         tables.order_product.insert({
           id_order,
@@ -122,10 +114,10 @@ const update = async (req, res) => {
     );
     await Promise.all(insertions);
 
-    // Récupère les prix unitaires pour calculer le total
-    const [productDetails] = await tables.product.getDetailsByIds(productIds);
+    // Récupération des prix unitaires pour calcul du total
+    const [productDetails] = await tables.product.getDetailsByIds(productIds); // méthode à implémenter
 
-    // Calcule le total
+    // Calcul du total
     let totalAmount = 0;
     order.products.forEach((p) => {
       const product = productDetails.find((pd) => pd.id_product === p.id_product);
@@ -134,7 +126,7 @@ const update = async (req, res) => {
       }
     });
 
-    // Met à jour le total dans la commande
+    // Mise à jour du total dans la commande
     await tables.order.update(id_order, {
       ...order,
       total_ammount: totalAmount,
@@ -149,7 +141,6 @@ const update = async (req, res) => {
   }
 };
 
-// Lire une commande par ID
 const read = async (req, res) => {
   try {
     const [rows] = await tables.order.read(req.params.id);
@@ -164,7 +155,6 @@ const read = async (req, res) => {
   }
 };
 
-// Lire toutes les commandes
 const readAll = async (req, res) => {
   try {
     const [rows] = await tables.order.readAll();
@@ -175,7 +165,6 @@ const readAll = async (req, res) => {
   }
 };
 
-// Lire le statut d’une commande par ID
 const readStatus = async (req, res) => {
   try {
     const [rows] = await tables.order.readStatus(req.params.id);
@@ -188,9 +177,11 @@ const readStatus = async (req, res) => {
     console.error("Erreur dans orderControllers.readStatus :", err);
     res.sendStatus(500);
   }
+
 };
 
-// Obtenir les produits d’une commande
+
+
 const getProductsFromOrder = async (req, res) => {
   try {
     const [rows] = await tables.order_product.findByOrderId(req.params.id);
@@ -201,15 +192,12 @@ const getProductsFromOrder = async (req, res) => {
   }
 };
 
-// Obtenir les détails complets d’une commande
 const getFullOrder = async (req, res) => {
   try {
     const [orderRows] = await tables.order.read(req.params.id);
     if (orderRows.length === 0) return res.sendStatus(404);
 
-    const [productRows] = await tables.order_product.findFullDetailsByOrderId(
-        req.params.id
-    );
+    const [productRows] = await tables.order_product.findFullDetailsByOrderId(req.params.id);
 
     res.status(200).json({
       order: orderRows[0],
@@ -221,7 +209,6 @@ const getFullOrder = async (req, res) => {
   }
 };
 
-// Obtenir les totaux de toutes les commandes
 const getOrderTotals = async (req, res) => {
   try {
     const [rows] = await tables.order_product.findAllWithDetails();
@@ -232,7 +219,6 @@ const getOrderTotals = async (req, res) => {
   }
 };
 
-// Supprimer une commande
 const destroy = async (req, res) => {
   try {
     const [result] = await tables.order.delete(req.params.id);

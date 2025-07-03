@@ -258,7 +258,6 @@ const OrderGestion = () => {
                 )}
             >
                 <div className="flex justify-between items-center lg:hidden mb-4">
-                    <h2 className="text-xl font-bold">Menu commande</h2>
                     <button onClick={() => setMobileMenuOpen(false)}><XMarkIcon className="w-6 h-6"/></button>
                 </div>
                 <nav className="space-y-2 flex flex-col">

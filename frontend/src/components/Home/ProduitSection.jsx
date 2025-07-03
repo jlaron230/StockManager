@@ -11,7 +11,7 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
     // Etat local pour stocker les données du produit (ici un seul produit)
     const [products, setProducts] = useState([]);
     // Etat local pour stocker la catégorie du produit
-    const [category, setCategory] = useState([]);
+    const [category, setCategory] = useState(null);
     // Etat local pour le nom du produit en majuscules
     const [ProductNom, setProductNom] = useState([]);
 
@@ -25,22 +25,24 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
     // Fonction asynchrone pour récupérer les données produit et catégorie via API
     const fetchData = async () => {
         try {
-            // Requête pour récupérer la liste des produits (ici on prend le premier)
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, )
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`);
             const res = response.data;
-            setProducts(res[0]);
+            const firstProduct = res[0];
 
-            // Si le produit existe, mettre son nom en majuscules dans l'état
-            if (res[0] && res[0].nom) {
-                const name = res[0].nom.toUpperCase();
-                setProductNom(name)
+            setProducts(firstProduct);
+
+            if (firstProduct && firstProduct.nom) {
+                const name = firstProduct.nom.toUpperCase();
+                setProductNom(name);
             }
 
-            // Requête pour récupérer la liste des catégories (ici on prend la première)
-            const categoryRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true});
-            setCategory(categoryRes.data[0]);
+            const categoryRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, { withCredentials: true });
+            const allCategories = categoryRes.data;
+
+            // Corrigé : utiliser firstProduct et pas products
+            const matchedCategory = allCategories.find(cat => cat.id_category === firstProduct.id_category);
+            setCategory(matchedCategory);
         } catch (error) {
-            // En cas d'erreur, affichage en console
             console.log(error);
         }
     }
@@ -128,7 +130,7 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
                                 <p className="bg-gray-200 px-4 py-2 rounded items-center sm:w-auto text-center sm:text-left">
                                     Catégorie
                                 </p>
-                                <p className="text-sm sm:text-base max-sm:text-center">{category.nom}</p>
+                                <p className="text-sm sm:text-base max-sm:text-center">{category ? category.nom : "Catégorie inconnue"}</p>
 
                                 <p className="bg-gray-200 px-4 py-2 rounded items-center sm:w-auto text-center sm:text-left">
                                     Prix
