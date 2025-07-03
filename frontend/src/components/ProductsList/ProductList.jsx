@@ -232,7 +232,6 @@ const ProductList = () => {
                                     </div>
                                 </div>
                             </div>
-
                             {/* Affichage des produits filtrés */}
                             {currentItems.length > 0 ? (
                                 <div className="space-y-4">
@@ -304,6 +303,7 @@ const ProductList = () => {
                                         {">"}
                                     </button>
                                 </div>
+
                             </div>
                         </main>
                     </div>
