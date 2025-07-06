@@ -23,7 +23,7 @@ export default function UserProfileScreen() {
 
       <View style={styles.card}>
         <Image
-          source={require('../../assets/images/profil.png')}
+          source={require('../../assets/images/icon.png')}
           style={styles.avatar}
         />
 
