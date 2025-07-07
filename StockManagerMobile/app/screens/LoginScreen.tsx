@@ -87,7 +87,7 @@ export default function LoginScreen() {
 
       <Button
         mode="contained"
-        onPress={handleLogin}
+        onPress={() => navigation.navigate('Acceuil')}
         style={styles.button}
         buttonColor="#007BFF" 
       >
