@@ -1,6 +1,6 @@
 // Importation de la bibliothèque bcrypt pour le hachage et la vérification de mots de passe
 const bcrypt = require("bcrypt");
-
+const { validationResult } = require('express-validator');
 // Définition du nombre de "rounds" de sel utilisé pour le hashage (sécurité)
 const SALT_ROUNDS = 10;
 
@@ -62,10 +62,19 @@ const requireAdmin = (req, res, next) => {
     next(); // L'utilisateur est admin, on continue
 };
 
+const handleValidationErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+};
+
 // Exportation des middlewares pour pouvoir les utiliser dans d'autres fichiers
 module.exports = {
     hashPassword,
     requireLogin,
     verifyPassword,
     requireAdmin,
+   handleValidationErrors,
 };

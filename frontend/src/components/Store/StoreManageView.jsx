@@ -175,6 +175,7 @@ const StoreManageView = () => {
                                     <div className="mt-auto gap-3 flex flex-col flex-wrap items-start">
                                         <p className="text-lg font-bold text-blue-600">{product.prix_unitaire} €</p>
                                         <ButtonOrder
+                                            aria-label="Bouton pour voir le produit"
                                             ButtonName="Voir le produit"
                                             onClick={() =>
                                                 window.location.href = `/produit/${product.id_product}`

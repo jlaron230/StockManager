@@ -239,7 +239,7 @@ const OrderGestion = () => {
             {/* Sidebar */}
             <div className="flex justify-between items-center lg:hidden bg-white p-4 border-b">
                 <h2 className="text-xl font-bold hidden lg:block">Mes commandes</h2>
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-700">
+                <button aria-label="menu des commandes" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-700">
                     {mobileMenuOpen ? (
                         <XMarkIcon className="w-6 h-6"/>
                     ) : (
@@ -258,7 +258,7 @@ const OrderGestion = () => {
                 )}
             >
                 <div className="flex justify-between items-center lg:hidden mb-4">
-                    <button onClick={() => setMobileMenuOpen(false)}><XMarkIcon className="w-6 h-6"/></button>
+                    <button aria-label="menu des commandes" onClick={() => setMobileMenuOpen(false)}><XMarkIcon className="w-6 h-6"/></button>
                 </div>
                 <nav className="space-y-2 flex flex-col">
                     <h2 className="text-xl font-bold mb-8">Menu commande</h2>

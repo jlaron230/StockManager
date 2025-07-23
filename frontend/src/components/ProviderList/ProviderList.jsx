@@ -209,6 +209,7 @@ const ProviderList = () => {
                             )}
                             <div>
                                 <button
+                                    aria-label="Bouton de pagination a gauche"
                                     className="px-3 py-1 border rounded hover:bg-gray-200"
                                     disabled={currentPage === 1}
                                     onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -218,6 +219,7 @@ const ProviderList = () => {
                                 {Array.from({length: totalPages}, (_, i) => i + 1).map(
                                     (page) => (
                                         <button
+                                            aria-label="Bouton de numéro de page"
                                             key={page}
                                             onClick={() => setCurrentPage(page)}
                                             className={`px-3 py-1 border rounded hover:bg-gray-200 ${
@@ -231,6 +233,7 @@ const ProviderList = () => {
                                     )
                                 )}
                                 <button
+                                    aria-label="Bouton de pagination a droite"
                                     className="px-3 py-1 border rounded hover:bg-gray-200"
                                     disabled={currentPage === totalPages}
                                     onClick={() => setCurrentPage((prev) => prev + 1)}
@@ -260,7 +263,9 @@ const ProviderFiche = ({providerName, providerImage, providerDesc, providerType,
                         </p>
                         <p className="text-gray-400 text-xs italic">Type : {providerType}</p>
                         <Link to={`/fournisseur/${providerId}`}>
-                            <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                            <button
+                                aria-label="Bouton voir le fournisseur"
+                                className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                                 voir fournisseur
                             </button>
                         </Link>

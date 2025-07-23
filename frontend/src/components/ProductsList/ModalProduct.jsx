@@ -57,12 +57,14 @@ const ModalProduct = ({setModalOpen, modalOpen, supp, nameModal, descriptionModa
                         <div className="-mx-3 flex flex-wrap justify-center">
                             <div className="px-3 flex gap-6">
                                 <button
+                                    aria-label="Modal de suppression"
                                     onClick={() => supp(true)}
                                     className="block bg-red-500 w-full rounded-md border border-stroke p-3 text-center text-base font-medium text-white transition hover:border-red-600 hover:bg-red-600 hover:text-white dark:text-white"
                                 >
                                     Supprimer
                                 </button>
                                 <button
+                                    aria-label="Modal d'annulation"
                                     onClick={() => setModalOpen(true)}
                                     className="block w-full rounded-md border border-gray-500 border-stroke p-3 text-center text-base font-medium text-dark transition hover:border-black hover:bg-gray-300 hover:text-black dark:text-white"
                                 >

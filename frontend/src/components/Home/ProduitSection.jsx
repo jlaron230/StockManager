@@ -100,14 +100,18 @@ const ProduitSection =({ autoSlide = true, autoSlideInterval = 8000 }) => {
                         </div>
 
                         {/* Bouton précédent */}
-                        <button type="button"
+                        <button
+                            aria-label="Bouton précédent"
+                            type="button"
                                 className="shadow-md hover:scale-110 transition duration-300 rounded-3xl absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-white p-2"
                                 onClick={prevSlide}
                         >
                             <ArrowLeftIcon className="w-5 text-color-dotted"/>
                         </button>
                         {/* Bouton suivant */}
-                        <button type="button"
+                        <button
+                            aria-label="Bouton suivant"
+                            type="button"
                                 className="shadow-md rounded-3xl hover:scale-110 transition duration-300 absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-white p-2"
                                 onClick={nextSlide}
                         >

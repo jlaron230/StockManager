@@ -167,6 +167,7 @@ const AdminInfoSection = () => {
                     </ul>
                     {/* Bouton pour passer en mode édition */}
                     <button
+                        aria-label="Bouton pour passer en édition"
                         onClick={() => setIsEditing(true)}
                         className="mt-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
                     >
@@ -262,10 +263,11 @@ const AdminInfoSection = () => {
 
                           {/* Boutons sauvegarder et annuler */}
                           <div className="flex gap-4">
-                            <button type="submit" className="px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+                            <button aria-label="Bouton de sauvegarde" type="submit" className="px-4 py-2 bg-green-600 rounded hover:bg-green-700">
                               Sauvegarder
                             </button>
                             <button
+                                aria-label="Bouton d'annulation de l'opération"
                                 type="button"
                                 onClick={() => setIsEditing(false)}
                                 className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700"

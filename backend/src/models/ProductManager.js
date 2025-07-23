@@ -6,34 +6,57 @@ class ProductManager extends AbstractManager {
         super({ table: "product" }); // Initialise la table "product"
     }
 
-    // Insère un nouveau produit dans la base
-    insert(product) {
-        return this.database.query(
-            `INSERT INTO ${this.table} 
-        (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal, id_provider, id_category, created_at, image_prev, image_prev_two)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                product.nom,
-                product.description,
-                product.prix_unitaire,
-                product.quantité_en_stock,
-                product.localisation,
-                product.date_add || null,
-                product.code_product,
-                product.date_peremption,
-                product.last_updated,
-                product.id_admin,
-                product.image,
-                product.document || null,
-                product.condition_achat,
-                product.seuil_minimal,
-                product.id_provider,
-                product.id_category,
-                product.created_at,
-                product.image_prev || null,
-                product.image_prev_two || null
-            ]
-        );
+    async insert(product) {
+        const connection = this.database;
+
+        try {
+            const [result] = await connection.query(
+                `INSERT INTO ${this.table}
+                 (nom, description, prix_unitaire, quantité_en_stock, localisation, date_add, code_product, date_peremption, last_updated, id_admin, image, document, condition_achat, seuil_minimal, id_provider, id_category, created_at, image_prev, image_prev_two)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    product.nom,
+                    product.description,
+                    product.prix_unitaire,
+                    product.quantité_en_stock,
+                    product.localisation,
+                    product.date_add || null,
+                    product.code_product,
+                    product.date_peremption,
+                    product.last_updated,
+                    product.id_admin,
+                    product.image,
+                    product.document || null,
+                    product.condition_achat,
+                    product.seuil_minimal,
+                    product.id_provider,
+                    product.id_category,
+                    product.created_at,
+                    product.image_prev || null,
+                    product.image_prev_two || null,
+                ]
+            );
+
+            const productId = result.insertId;
+
+            // Récupérer tous les magasins existants
+            const [stores] = await connection.query(`SELECT id_store FROM store`);
+
+            if (stores.length > 0) {
+                const storeProductPairs = stores.map(store => [productId, store.id_store]);
+
+                // Insérer toutes les associations produit-magasin dans product_store
+                await connection.query(
+                    `INSERT INTO product_store (id_product, id_store) VALUES ?`,
+                    [storeProductPairs]
+                );
+            }
+
+            return productId;
+        } catch (error) {
+            console.error("Erreur lors de l’insertion du produit avec magasins :", error);
+            throw error;
+        }
     }
 
     // Met à jour un produit existant par son id
@@ -133,6 +156,38 @@ class ProductManager extends AbstractManager {
        WHERE p.id_product = ?`,
             [id]
         );
+    }
+
+    // Récupère tous les produits d’un fournisseur spécifique
+    findByProvider(id_provider) {
+        return this.database.query(
+            `SELECT 
+            p.id_product,
+            p.nom,
+            p.description,
+            p.prix_unitaire,
+            p.quantité_en_stock,
+            p.localisation,
+            p.date_add,
+            p.code_product,
+            p.date_peremption,
+            p.last_updated,
+            p.id_admin,
+            p.image,
+            p.document,
+            p.condition_achat,
+            p.seuil_minimal,
+            p.id_category,
+            p.id_provider,
+            p.created_at,
+            p.image_prev,
+            p.image_prev_two,
+            pr.nom AS nom_fournisseur
+         FROM product p
+         LEFT JOIN provider pr ON p.id_provider = pr.id_provider
+         WHERE p.id_provider = ?`,
+            [id_provider]
+        ).then(([rows]) => rows);
     }
 
     // Diminue la quantité en stock d’un produit

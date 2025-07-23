@@ -5,8 +5,8 @@ const browse = async (req, res) => {
   try {
     const [rows] = await tables.product.readAll();
     res.json(rows);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error('Database error:', error);
     res.sendStatus(500);
   }
 };
@@ -26,16 +26,35 @@ const read = async (req, res) => {
   }
 };
 
+//lire les produits lié a un fournisseur id
+const readProvider = async (req, res) => {
+  try {
+    const products = await tables.product.findByProvider(req.params.id);
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits du fournisseur :", error);
+    res.status(500).send("Erreur serveur");
+  }
+}
+
 // Ajouter un nouveau produit
 const add = async (req, res) => {
   try {
     const product = req.body;
 
-    const [result] = await tables.product.insert(product);
+    // Ici, tu peux récupérer storeIds depuis le body
+    const storeIds = Array.isArray(product.storeIds) ? product.storeIds : [];
+
+    // Supprime storeIds du produit pour l'insert (sinon champ non reconnu dans ta table product)
+    delete product.storeIds;
+
+    // Insert produit, avec storeIds en paramètre
+    const productId = await tables.product.insert({ ...product, storeIds });
 
     res.status(201).json({
-      id_product: result.insertId,
+      id_product: productId,
       ...product,
+      storeIds
     });
   } catch (err) {
     console.error("Erreur dans productControllers.add :", err);
@@ -121,5 +140,6 @@ module.exports = {
   edit,
   destroy,
   getByCategory,
-  partialUpdate
+  partialUpdate,
+  readProvider,
 };

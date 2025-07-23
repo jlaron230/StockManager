@@ -262,6 +262,7 @@ const ProductList = () => {
                         )}
                         <div>
                         <button
+                            aria-label="Bouton de slide gauche"
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -271,6 +272,7 @@ const ProductList = () => {
                         {Array.from({length: totalPages}, (_, i) => i + 1).map(
                             (page) => (
                                 <button
+                                    aria-label="numéro de page"
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
                                     className={`px-3 py-1 border rounded hover:bg-gray-200 ${
@@ -284,6 +286,7 @@ const ProductList = () => {
                             )
                         )}
                         <button
+                            aria-label="Bouton de pagination à droite"
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === totalPages}
                             onClick={() => setCurrentPage((prev) => prev + 1)}
@@ -318,7 +321,9 @@ const ProductFiche = ({productName, productImage, productDesc, productCategory, 
                         </p>
                         <p className="text-gray-400 text-xs italic">Catégorie : {productCategory}</p>
                         <Link to={`/produit/${productId}`}>
-                        <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                        <button
+                            aria-label="Bouton voir le produit"
+                            className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                             voir produit
                         </button>
                         </Link>

@@ -151,6 +151,7 @@ const UserSection = () => {
               {/* Section principale affichant les utilisateurs */}
               <div ref={scrollRef} style={{ maxHeight: "400px", overflowY: "auto" }} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
                 <button
+                    aria-label="Affichage utilisateur"
                     onClick={() => setIsOpen((prev) => !prev)}
                     className="w-full flex justify-between items-center text-left"
                 >
@@ -169,6 +170,7 @@ const UserSection = () => {
                         {/* Bouton création visible seulement aux admins */}
                         {isAdmin && (
                             <button
+                                aria-label="Bouton de création"
                                 onClick={() => {
                                   setCreationError("");
                                   setNewUser({
@@ -211,10 +213,10 @@ const UserSection = () => {
                                     <td className="px-4 py-3 capitalize">{u.role}</td>
                                     {isAdmin && (
                                         <td className="px-4 py-3 text-center space-x-2">
-                                          <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
+                                          <button  aria-label="Bouton de modification d'un user" className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
                                             Modifier
                                           </button>
-                                          <button className="text-red-500 hover:underline" onClick={() => handleDelete(u.id_user)}>
+                                          <button aria-label="Bouton de suppression d'un user" className="text-red-500 hover:underline" onClick={() => handleDelete(u.id_user)}>
                                             Supprimer
                                           </button>
                                         </td>
@@ -235,10 +237,14 @@ const UserSection = () => {
                                     <td className="px-4 py-3 capitalize">{u.role}</td>
                                     {isAdmin && (
                                         <td className="px-4 py-3 text-center space-x-2">
-                                          <button className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
+                                          <button
+                                              aria-label="Bouton de modification"
+                                              className="text-blue-500 hover:underline" onClick={() => setEditingUser(u)}>
                                             Modifier
                                           </button>
-                                          <button className="text-red-500 hover:underline"
+                                          <button
+                                              aria-label="Bouton de suppression"
+                                              className="text-red-500 hover:underline"
                                                   onClick={() => handleDelete(u.id_user)}>
                                             Supprimer
                                           </button>
@@ -308,6 +314,7 @@ const UserSection = () => {
 
                       <div className="flex justify-end space-x-4">
                         <button
+                            aria-label="Bouton d'annulation"
                             type="button"
                             onClick={() => setEditingUser(null)}
                             className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-700"
@@ -315,6 +322,7 @@ const UserSection = () => {
                           Annuler
                         </button>
                         <button
+                            aria-label="bouton de sauvegarde"
                             type="submit"
                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                         >

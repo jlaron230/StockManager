@@ -19,6 +19,7 @@ const ImageEffect = ({ image = [], nom }) => {
             <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-4">
                 {image.map((img, index) => (
                     <button
+                        aria-label="Bouton cliquables pour les miniatures d'images"
                         key={index}
                         type="button"
                         onClick={() => setSelectedImage(img)} // Met à jour l'image affichée

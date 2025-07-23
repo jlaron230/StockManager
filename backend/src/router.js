@@ -5,6 +5,21 @@ const router = express.Router();
 // Middleware de protection CSRF (non activé avec cookie ici)
 const csrf = require("csurf");
 
+// Middleware de vérification des données entrantes
+const { validateUserProfile } = require('../src/validators/userValidator');
+const {
+    validateProduct,
+    validateProductEdit,
+    validateProductPartialUpdate
+} = require("../src/validators/productValidator");
+const providerValidator = require("../src/validators/providerValidator");
+const orderValidator = require("../src/validators/orderValidator");
+const {
+    validateCategoryCreation,
+    validateCategoryUpdate,
+    validateCategoryIdParam,
+} = require("../src/validators/categoryValidator");
+
 // Importe les contrôleurs pour chaque entité du projet
 const itemControllers = require("./controllers/itemControllers");
 const productControllers = require("./controllers/productControllers");
@@ -146,7 +161,8 @@ router.get("/user/profile", requireLogin, userControllers.getProfile);
  *       401:
  *         description: Non authentifié
  */
-router.put("/user/profile", requireLogin, userControllers.updateProfile);
+router.put("/user/profile", requireLogin,validateUserProfile,
+    userControllers.updateProfile);
 /**
  * @swagger
  * /user/{id}:
@@ -221,7 +237,7 @@ router.patch("/user/:id", userControllers.updateUser);
  *       403:
  *         description: Accès refusé
  */
-router.post("/user", requireAdmin, requireLogin, userControllers.createUser);
+router.post("/user",validateUserProfile, requireAdmin, requireLogin, userControllers.createUser);
 /**
  * @swagger
  * /users/{id}/token-mobil:
@@ -461,7 +477,7 @@ router.get("/products/:id", requireLogin, productControllers.read);
  *       403:
  *         description: Accès refusé
  */
-router.post("/products", requireAdmin,productControllers.add);
+router.post("/products", validateProduct,requireAdmin,productControllers.add);
 /**
  * @swagger
  * /products/{id}:
@@ -515,7 +531,7 @@ router.post("/products", requireAdmin,productControllers.add);
  *       404:
  *         description: Produit non trouvé
  */
-router.put("/products/:id", requireAdmin,productControllers.edit);
+router.put("/products/:id",validateProductEdit, requireAdmin,productControllers.edit);
 /**
  * @swagger
  * /products/{id}:
@@ -541,7 +557,7 @@ router.put("/products/:id", requireAdmin,productControllers.edit);
  *       200:
  *         description: Produit mis à jour partiellement
  */
-router.patch("/products/:id", productControllers.partialUpdate);
+router.patch("/products/:id",validateProductPartialUpdate, productControllers.partialUpdate);
 /**
  * @swagger
  * /products/{id}:
@@ -580,6 +596,8 @@ router.delete("/products/:id", requireAdmin,productControllers.destroy);
  *         description: Liste des produits de la catégorie
  */
 router.get("/products/category/:id", requireLogin, productControllers.getByCategory);
+
+router.get("/products/provider/:id", requireLogin, productControllers.readProvider)
 
 //Routes pour les fournisseurs
 /**
@@ -634,7 +652,7 @@ router.get("/providers/:id", requireLogin, providerControllers.read);
  *       201:
  *         description: Fournisseur ajouté
  */
-router.post("/providers", requireAdmin, providerControllers.add);
+router.post("/providers", providerValidator, requireAdmin, providerControllers.add);
 /**
  * @swagger
  * /providers/{id}:
@@ -661,7 +679,7 @@ router.post("/providers", requireAdmin, providerControllers.add);
  *       200:
  *         description: Fournisseur mis à jour
  */
-router.put("/providers/:id", requireAdmin, providerControllers.edit);
+router.put("/providers/:id", providerValidator,  requireAdmin, providerControllers.edit);
 /**
  * @swagger
  * /providers/{id}:
@@ -760,7 +778,7 @@ router.get("/stock/:productId", stockControllers.read);
  *       201:
  *         description: Commande créée
  */
-router.post("/orders",requireAdmin, orderControllers.add);
+router.post("/orders", orderValidator, requireAdmin, orderControllers.add);
 /**
  * @swagger
  * /orders/{id}/status:
@@ -852,7 +870,7 @@ router.get("/orders", orderControllers.readAll);
  *       200:
  *         description: Commande mise à jour
  */
-router.put("/orders/:id", requireAdmin, orderControllers.update);
+router.put("/orders/:id", orderValidator, requireAdmin, orderControllers.update);
 /**
  * @swagger
  * /orders/{id}/full:
@@ -903,7 +921,7 @@ router.delete("/orders/:id", requireAdmin, orderControllers.destroy);
  *       200:
  *         description: Liste des catégories
  */
-router.get("/categories", requireLogin, categoryControllers.browse);
+router.get("/categories", validateCategoryIdParam,requireLogin, categoryControllers.browse);
 /**
  * @swagger
  * /categories/{id}:
@@ -922,7 +940,7 @@ router.get("/categories", requireLogin, categoryControllers.browse);
  *       200:
  *         description: Détail de la catégorie
  */
-router.get("/categories/:id", requireLogin, categoryControllers.read);
+router.get("/categories/:id", validateCategoryIdParam,requireLogin, categoryControllers.read);
 /**
  * @swagger
  * /categories/{id}/providers:
@@ -941,7 +959,7 @@ router.get("/categories/:id", requireLogin, categoryControllers.read);
  *       200:
  *         description: Liste des fournisseurs
  */
-router.get("/categories/:id/providers", requireLogin, categoryControllers.getProvidersByCategory);
+router.get("/categories/:id/providers", validateCategoryIdParam,requireLogin, categoryControllers.getProvidersByCategory);
 /**
  * @swagger
  * /categories:
@@ -962,7 +980,7 @@ router.get("/categories/:id/providers", requireLogin, categoryControllers.getPro
  *       201:
  *         description: Catégorie créée
  */
-router.post("/categories", requireAdmin, categoryControllers.add);
+router.post("/categories", validateCategoryCreation, requireAdmin, categoryControllers.add);
 /**
  * @swagger
  * /categories/{id}:
@@ -989,7 +1007,7 @@ router.post("/categories", requireAdmin, categoryControllers.add);
  *       200:
  *         description: Catégorie mise à jour
  */
-router.put("/categories/:id", requireAdmin, categoryControllers.edit);
+router.put("/categories/:id", validateCategoryUpdate, requireAdmin, categoryControllers.edit);
 /**
  * @swagger
  * /categories/{id}:

@@ -144,7 +144,9 @@ const Footer = () => {
                                     </div>
 
                                     {/* Bouton d'envoi du formulaire */}
-                                    <button type="submit" disabled={isSubmitting}
+                                    <button
+                                        aria-label="Bouton d'envoi du formulaire"
+                                        type="submit" disabled={isSubmitting}
                                             className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">
                                         Envoyer
                                     </button>
@@ -158,13 +160,15 @@ const Footer = () => {
                         <h2 className="mb-5 text-2xl text-color-default-2">Réseaux sociaux</h2>
                         <div className="">
                             <div className="flex justify-center items-center">
-                                <a href="#"><img className="m-5 w-10" src={X} alt="f"></img></a>
-                                <a href="#"><img className="w-20" src={Linkedin} alt="f"></img></a>
-                                <a href="#"><img className="w-20" src={Instagram} alt="f"></img></a>
+                                <a href="#"><img className="m-5 w-10" src={X} alt="Réseaux social X"></img></a>
+                                <a href="#"><img className="w-20" src={Linkedin} alt="Réseaux social Linkedin"></img></a>
+                                <a href="#"><img className="w-20" src={Instagram} alt="Réseaux social Instagram"></img></a>
                             </div>
                             <div className="flex justify-center">
                                 <Link to="/a-propos">
-                                    <button type="submit"
+                                    <button
+                                        aria-label="Bouton a propos"
+                                        type="submit"
                                             className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">
                                         A propos
                                     </button>
@@ -207,7 +211,9 @@ const Footer = () => {
                         {/* Section application mobile */}
                         <div className="flex gap-4 flex-col mt-5">
                             <h3 className="mb-5 text-lg text-color-default-2">Notre application mobile</h3>
-                            <button type="submit"
+                            <button
+                                aria-label="Bouton en voir plus"
+                                type="submit"
                                     className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center">
                                 Voir plus
                             </button>

@@ -240,6 +240,7 @@ const Inscription = () => {
 
                             {/* Bouton soumission */}
                             <button
+                                aria-label="d'inscription"
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="w-full md:w-1/2 m-auto block text-white Primary-Color hover:bg-blue-700 rounded-lg px-5 py-2.5 font-medium"

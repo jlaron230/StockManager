@@ -32,6 +32,7 @@ const StockAlertSection = () => {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-8">
         {/* Bouton qui permet d'ouvrir ou fermer la section */}
         <button
+            aria-label="Bouton de fermeture où d'ouverture"
             onClick={() => setIsOpen((prev) => !prev)}
             className="w-full flex justify-between items-center text-left"
         >

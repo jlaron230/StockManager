@@ -124,6 +124,7 @@ const OrderCrud = () => {
                                         {({ push, remove }) => (
                                             <div className="space-y-4">
                                                 <ButtonOrder
+                                                    aria-label="ajout d'un produit"
                                                     buttonType="button"
                                                     onClick={() => push({ id_product: "", quantité: 1 })}
                                                     ButtonName="+ Ajouter un produit"

@@ -22,6 +22,7 @@ const ProviderCrud = () => {
     const [isAdmin, setIsAdmin] = useState(true);
     const [provider, setProvider] = useState([]);
     const [providerTypeList, setProviderTypeList] = useState([]);
+    const [productList, setproductList] = useState([]);
     const [dateArray, setDateArray] = useState([]);
     const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState({
@@ -41,7 +42,7 @@ const ProviderCrud = () => {
     const [commentaire, setCommentaire] = useState("");
     const [IsClicked, setIsClicked] = useState(true);
     const [providerTypes, setProviderTypes] = useState([]);
-
+console.log(productList)
     const validators = {
         email: (val) => /\S+@\S+\.\S+/.test(val),
         telephone: (val) => /^0\d{9}$/.test(val),
@@ -57,6 +58,9 @@ const ProviderCrud = () => {
             try {
                 const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/provider-types`, { withCredentials: true });
                 setProviderTypes(res.data);
+
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/provider/${id}`, { withCredentials: true });
+                setproductList(response.data);
             } catch (error) {
                 console.error("Erreur en récupérant les types de fournisseur :", error);
             }
@@ -239,6 +243,19 @@ const ProviderCrud = () => {
                                     <span className="text-blue-500 font-bold">{commentaire}</span>
                                 )}
                             </div>
+                            {productList.length > 0 ? (
+                            <div>
+                                <p className="text-base">Produit disponible</p>
+                                {productList.map((product, index) => (
+                                    <div className="flex justify-between">
+                                        <p className="text-blue-500 font-bold">{product.nom}</p>
+                                        <p className="text-red-500 font-bold">{product.prix_unitaire} €</p>
+                                    </div>
+                                ))}
+                            </div>
+                            ) : (
+                                <span className="text-base">Aucun produit associé</span>
+                            )}
                         </div>
                     </div>
                     <div className="max-w-3xl mx-auto p-6 gap-2.5 flex flex-wrap flex-col">
@@ -258,6 +275,7 @@ const ProviderCrud = () => {
                                             ))}
                                         </select>
                                         <button
+                                            aria-label="Bouton de validation de fournisseur"
                                             className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
                                             onClick={() => {
                                                 handlePut("type");
@@ -271,6 +289,7 @@ const ProviderCrud = () => {
                                     <div className="flex items-center gap-2">
                                         <span>{selectedProvider}</span>
                                         <button
+                                            aria-label="Bouton de modification de fournisseur"
                                             className="text-white Primary-Color from-purple-600 to-blue-500 hover:Primary-Color focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2"
                                             onClick={() => handleEdit("type")}
                                         >

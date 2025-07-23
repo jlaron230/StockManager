@@ -27,6 +27,7 @@
     "cross-env": "^7.0.3",
     "husky": "^8.0.3",
     "jest": "^30.0.0",
+    "supertest": "^7.1.4",
     "vite": "^6.2.1"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
     "expo": "^53.0.10",
     "expo-dev-client": "~5.2.0",
     "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
     "firebase": "^11.8.1",
     "formik": "^2.4.6",
     "nodemailer": "^6.10.1",

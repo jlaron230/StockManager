@@ -20,7 +20,7 @@ const OptionsProvider = ({ value, onChange, isEditing, onClick, onValidate, opti
                             </option>
                         ))}
                     </select>
-                    <button onClick={onValidate} className="text-sm bg-blue-500 text-white px-2 py-1 rounded">Valider</button>
+                    <button aria-label="Bouton de validation" onClick={onValidate} className="text-sm bg-blue-500 text-white px-2 py-1 rounded">Valider</button>
                 </div>
             ) : (
                 // Mode affichage : valeur cliquable pour activer l'édition
