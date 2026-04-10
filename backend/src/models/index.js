@@ -1,9 +1,10 @@
-require("dotenv").config();
+require("dotenv").config(); // Charge les variables d'environnement depuis le fichier .env
 
 const mysql = require("mysql2/promise");
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
+// Création du pool de connexions MySQL
 const pool = mysql.createPool({
   host: DB_HOST,
   port: DB_PORT,
@@ -12,17 +13,17 @@ const pool = mysql.createPool({
   database: DB_NAME,
 });
 
-// Vérifie la connexion
+// Vérifie la connexion à la base de données et affiche un avertissement si échec
 pool.getConnection().catch(() => {
   console.warn(
-    "Warning:",
-    "Failed to get a DB connection.",
-    "Did you create a .env file with valid credentials?",
-    "Routes using models won't work as intended"
+      "Warning:",
+      "Failed to get a DB connection.",
+      "Did you create a .env file with valid credentials?",
+      "Routes using models won't work as intended"
   );
 });
 
-// Déclaration des managers
+// Initialisation des managers pour chaque entité
 const models = {};
 
 const ItemManager = require("./ItemManager");
@@ -61,7 +62,6 @@ const StoreManager = require("./StoreManager");
 models.store = new StoreManager();
 models.store.setDatabase(pool);
 
-
 const NotificationManager = require("./NotificationManager");
 models.notification = new NotificationManager();
 models.notification.setDatabase(pool);
@@ -70,7 +70,7 @@ const Notification_productManager = require("./Notification_productManager");
 models.notification_product = new Notification_productManager();
 models.notification_product.setDatabase(pool);
 
-// Proxy pour erreurs personnalisées
+// Proxy pour gérer les erreurs si un manager est appelé mais non défini
 const handler = {
   get(obj, prop) {
     if (prop in obj) {
@@ -78,12 +78,12 @@ const handler = {
     }
 
     const pascalize = (string) =>
-      string.slice(0, 1).toUpperCase() + string.slice(1);
+        string.slice(0, 1).toUpperCase() + string.slice(1);
 
     throw new ReferenceError(
-      `models.${prop} is not defined. Did you create ${pascalize(
-        prop
-      )}Manager.js, and did you register it in backend/src/models/index.js?`
+        `models.${prop} is not defined. Did you create ${pascalize(
+            prop
+        )}Manager.js, and did you register it in backend/src/models/index.js?`
     );
   },
 };

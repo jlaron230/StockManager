@@ -30,7 +30,7 @@ const CategorySection = () => {
     };
 
     const deleteCategory = async (id) => {
-        if (!window.confirm("Supprimer cet utilisateur ?")) return;
+        if (!window.confirm("Supprimer cette catégorie ?")) return;
         try {
             const deleteCategorieId = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/categories/${id}`, {withCredentials: true});
             fetchCategories();
@@ -103,6 +103,7 @@ const CategorySection = () => {
                 values,
                 {
                     headers: {"Content-Type": "application/json"},
+                    withCredentials: true,
                 }
             );
 
@@ -121,6 +122,7 @@ const CategorySection = () => {
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
             <button
+                aria-label="Bouton ajout d'une catégorie'"
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="w-full flex justify-between items-center text-left"
             >
@@ -165,6 +167,7 @@ const CategorySection = () => {
 
                                     <div className="flex justify-end">
                                         <button
+                                            aria-label="Bouton ajout d'une catégorie'"
                                             type="submit"
                                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                                         >
@@ -215,12 +218,14 @@ const CategorySection = () => {
                                                 {editingCategory === cat.id_category ? (
                                                     <>
                                                         <button
+                                                            aria-label="Bouton de mise a jour d'une catégorie"
                                                             onClick={() => handleUpdate(cat.id_category)}
                                                             className="text-blue-500 hover:underline"
                                                         >
                                                             Sauvegarder
                                                         </button>
                                                         <button
+                                                            aria-label="Annulation de l'édition"
                                                             onClick={cancelEditing}
                                                             className="text-gray-500 hover:underline"
                                                         >
@@ -230,6 +235,7 @@ const CategorySection = () => {
                                                 ) : (
                                                     <>
                                                         <button
+                                                            aria-label="Bouton de modification"
                                                             onClick={() => startEditing(cat.id_category, cat.nom)}
                                                             className="text-blue-600 hover:underline"
                                                         >

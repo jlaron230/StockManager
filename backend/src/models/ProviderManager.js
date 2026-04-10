@@ -1,10 +1,12 @@
 const AbstractManager = require("./AbstractManager");
 
+// Classe ProviderManager pour gérer la table "provider"
 class ProviderManager extends AbstractManager {
     constructor() {
-        super({ table: "provider" });
+        super({ table: "provider" }); // Initialise la table "provider"
     }
 
+    // Insère un nouveau fournisseur dans la base de données
     insert(provider) {
         return this.database.query(
             `INSERT INTO ${this.table}
@@ -23,6 +25,7 @@ class ProviderManager extends AbstractManager {
         );
     }
 
+    // Met à jour un fournisseur existant par son id
     update(id, provider) {
         return this.database.query(
             `UPDATE ${this.table} SET
@@ -42,12 +45,14 @@ class ProviderManager extends AbstractManager {
         );
     }
 
+    // Récupère tous les fournisseurs
     readAll() {
         return this.database.query(
             `SELECT * FROM ${this.table}`
         );
     }
 
+    // Récupère un fournisseur spécifique par son id
     read(id) {
         return this.database.query(
             `SELECT * FROM ${this.table} WHERE id_provider = ?`,
@@ -55,12 +60,14 @@ class ProviderManager extends AbstractManager {
         );
     }
 
+    // Montre la structure de la colonne 'type' dans la table
     show() {
         return this.database.query(
             `SHOW COLUMNS FROM ${this.table} LIKE 'type'`
         );
     }
 
+    // Supprime un fournisseur par son id
     delete(id) {
         return this.database.query(
             `DELETE FROM ${this.table} WHERE id_provider = ?`,

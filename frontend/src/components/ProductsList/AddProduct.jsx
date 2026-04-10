@@ -260,6 +260,7 @@ const AddProduct = () => {
                                                 <img src={URL.createObjectURL(img)} alt={`img-${index}`}
                                                      className="w-24 h-24 object-cover rounded"/>
                                                 <button
+                                                    aria-label="Bouton ajout de produit"
                                                     type="button"
                                                     onClick={() => removeImage(index)}
                                                     className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-2"

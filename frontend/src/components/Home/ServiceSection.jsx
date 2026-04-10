@@ -2,12 +2,12 @@ import React, {useEffect, useState} from "react";
 import imageBoutique from "@assets/image/Boutique-home.png";
 import imageFournisseur from "@assets/image/Fournisseur-home.png";
 import imageProduit from "@assets/image/produit-home.png";
-import ButtonConnexion from "@components/Button/ButtonConnexion";
-import ButtonOrder from "@components/Button/ButtonOrder";
 
 const ServiceSection = () => {
-
+    // Etat local pour stocker la catégorie affichée ("boutique" par défaut)
     const [showCard, setShowCard] = useState("boutique");
+
+    // Fonction pour mettre à jour la catégorie affichée (en minuscules)
     const handleProject = (category) => {
         setShowCard(category.toLowerCase());
     };
@@ -18,9 +18,12 @@ const ServiceSection = () => {
                 <div className="container mx-auto">
                     <div className="w-full flex flex-wrap justify-center">
                         <div className="w-full px-4 flex flex-wrap justify-center items-center">
+                            {/* Liste de boutons pour changer la catégorie visible */}
                             <ul className="flex flex-wrap justify-center mb-12 space-x-1 gap-20 flex-row">
+                                {/* Bouton Produit avec image */}
                                 <li className="mb-1 basis-55 flex flex-wrap justify-center items-start items-center">
                                     <button
+                                        aria-label="Bouton de produit"
                                         onClick={() => handleProject("Produit")}
                                         className={`inline-block rounded-lg py-2 px-5 text-center text-2xl font-bold text-color-default-2 transition md:py-3 lg:px-8 ${
                                             showCard === "Produit"
@@ -31,18 +34,20 @@ const ServiceSection = () => {
                                         Produit
                                     </button>
                                     <div>
-                                        <button type="button" onClick={() => handleProject("Produit")}
+                                        <button aria-label="Bouton de produit" type="button" onClick={() => handleProject("Produit")}
                                                 className={`${
                                                     showCard === "produit"
                                                         ? "activeClasses bg-primary border-b-4 border-dotted text-color-dotted w-65 p-2"
                                                         : "inactiveClasses text-body-color dark:text-dark-6 hover:bg-primary hover:text-white "
                                                 }`}>
-                                            <img className="hover:scale-110 transition duration-300 active:scale-0" src={imageProduit} alt=""/>
+                                            <img className="hover:scale-110 transition duration-300 active:scale-0" src={imageProduit} alt="image de présentation des services pour les produits"/>
                                         </button>
                                     </div>
                                 </li>
+                                {/* Bouton Boutique avec image */}
                                 <li className="mb-1 basis-55 text-center">
                                     <button
+                                        aria-label="Bouton de la boutique"
                                         onClick={() => handleProject("Boutique")}
                                         className={`inline-block rounded-lg py-2 px-5 text-2xl font-bold text-center transition md:py-3 lg:px-8 text-color-default-2  ${
                                             showCard === "Boutique"
@@ -53,7 +58,9 @@ const ServiceSection = () => {
                                         Boutique
                                     </button>
                                     <div>
-                                        <button type="button" onClick={() => handleProject("boutique")} className={`${
+                                        <button
+                                            aria-label="Bouton de la boutique"
+                                            type="button" onClick={() => handleProject("boutique")} className={`${
                                             showCard === "boutique"
                                                 ? "activeClasses bg-primary border-b-4 border-dotted text-color-dotted w-58"
                                                 : "inactiveClasses text-body-color dark:text-dark-6 hover:bg-primary hover:text-white"
@@ -62,12 +69,14 @@ const ServiceSection = () => {
                                                 showCard === "boutique"
                                                     ? "activeClasses bg-primary"
                                                     : "inactiveClasses text-body-color hover:scale-110 transition dark:text-dark-6 hover:bg-primary hover:text-white"
-                                            }`} src={imageBoutique} alt=""/>
+                                            }`} src={imageBoutique} alt="image de la présentation du service pour des boutiques"/>
                                         </button>
                                     </div>
                                 </li>
+                                {/* Bouton Fournisseur avec image */}
                                 <li className="mb-1 basis-55 text-center">
                                     <button
+                                        aria-label="Bouton du fournisseur"
                                         onClick={() => handleProject("Fournisseur")}
                                         className={`inline-block rounded-lg py-2 px-5 text-center text-2xl font-bold text-color-default-2 transition md:py-3 lg:px-8 ${
                                             showCard === "Fournisseur"
@@ -78,19 +87,23 @@ const ServiceSection = () => {
                                         Fournisseur
                                     </button>
                                     <div>
-                                        <button type="button" onClick={() => handleProject("Fournisseur")}
+                                        <button
+                                            aria-label="Bouton de la carte fournisseur"
+                                            type="button" onClick={() => handleProject("Fournisseur")}
                                                 className={`${
                                                     showCard === "fournisseur"
                                                         ? "activeClasses bg-primary border-b-4 border-dotted text-color-dotted w-57"
                                                         : "inactiveClasses text-body-color dark:text-dark-6 hover:bg-primary hover:text-white"
                                                 }`}>
-                                            <img className="hover:scale-110 active:scale-0 transition duration-300" src={imageFournisseur} alt=""/>
+                                            <img className="hover:scale-110 active:scale-0 transition duration-300" src={imageFournisseur} alt="image de présentation des services de fournisseurs"/>
                                         </button>
                                     </div>
                                 </li>
                             </ul>
                         </div>
                     </div>
+
+                    {/* Affichage conditionnel des cartes de portfolio selon la catégorie sélectionnée */}
                     <div className="flex flex-wrap justify-center">
                         <PortfolioCard
                             ImageHref="/Boutique.png"
@@ -130,6 +143,7 @@ Gérer vos fournisseurs"
 }
 export default ServiceSection
 
+// Composant affichant une carte portfolio avec animation au chargement
 const PortfolioCard = ({
                            showCard,
                            category,
@@ -139,12 +153,13 @@ const PortfolioCard = ({
                            buttonHref,
                            descriptionService,
                        }) => {
+    // Etat pour gérer la transition d'opacité et flou de l'image au chargement
     const [isLoaded, setIsLoaded] = useState(false);
     return (
         <>
             <div
                 className={`w-full px-4 md:w-1/2 xl:w-2/3 ${
-
+                    // Affiche ou masque la carte selon la catégorie sélectionnée
                     showCard === "all" || showCard === category.toLowerCase()
                         ? "block"
                         : "hidden"
@@ -164,6 +179,7 @@ const PortfolioCard = ({
                     </div>
                 </div>
                 <div className="overflow-hidden rounded-[10px] flex justify-center">
+                    {/* Image avec animation de transition quand elle est chargée */}
                     <img src={ImageHref} alt="portfolio"
                          onLoad={() => setIsLoaded(true)}
                          className={`

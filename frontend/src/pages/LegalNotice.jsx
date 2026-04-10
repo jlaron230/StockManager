@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
-import Counter from "@components/Counter";
+import React, {useEffect} from "react";
 import {Link} from "react-router-dom";
+//Page notice d'utilisation
 const LegalNotice = () => {
-
+    //Scroll to top
     useEffect(() => {
         window.scrollTo({top, behavior: 'smooth' })
     }, [])

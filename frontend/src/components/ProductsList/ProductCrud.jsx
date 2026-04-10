@@ -82,7 +82,7 @@ const ProductCrud = () => {
             const productRes = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, {
                 withCredentials: true,
             });
-            console.log(productRes);
+          //  console.log(productRes);
             navigate('/produit');
         }catch(err) {
             console.log(err);
@@ -110,7 +110,7 @@ const ProductCrud = () => {
                 const formatArrayCreated = formatDate(productRes.data.created_at)
                 setDateArray([formatArray, formatArrayPer, formatArrayCreated]);
 
-                console.log(productRes.data)
+              //  console.log(productRes.data)
                 const categoryRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {withCredentials: true});
                 setCategoryList(categoryRes.data);
                 const foundCat = categoryRes.data.find(cat => cat.id_category === productRes.data.id_category);
@@ -167,7 +167,7 @@ const ProductCrud = () => {
             const productPut = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`, updatedData, {
                 withCredentials: true,
             });
-            console.log(productPut.data);
+          //  console.log(productPut.data);
         } catch (error) {
             console.error("Erreur lors de la modification du produit :", error);
         } finally {

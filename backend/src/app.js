@@ -1,81 +1,78 @@
-require("dotenv").config(); // charge les variables d'environnement
+require("dotenv").config(); // Charge les variables d'environnement depuis le fichier .env
 
-
-
-// import some node modules for later
-
+// Importe des modules Node.js pour le système de fichiers et les chemins
 const fs = require("node:fs");
 const path = require("node:path");
+
+// Importe express et initialise l'application
 const express = require("express");
 const app = express();
+
+// Importe le module de gestion de session
 const session = require("express-session");
 
+// Importe la configuration Swagger pour la documentation API
+const { swaggerUi, swaggerDocs } = require("../swaggerConfig");
+
+// Active le parsing JSON des requêtes
 app.use(express.json());
 
+// Importe et configure CORS pour permettre les requêtes cross-origin depuis le frontend
 const cors = require("cors");
-
 app.use(
-  cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
-    optionsSuccessStatus: 200,
-    credentials: true,
-  })
+    cors({
+        origin: process.env.FRONTEND_URL ?? "http://localhost:5173", // Autorise le frontend
+        optionsSuccessStatus: 200,
+        credentials: true, // Autorise les cookies de session
+    })
 );
 
+app.use(express.json()); // Active le parsing JSON (déjà fait plus haut, redondant)
 
-app.use(express.json()); 
-
-// Configuration de la session
+// Configuration de la session (stockée côté serveur)
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET, 
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      secure: false, 
-      sameSite: "lax",
-      maxAge: 1000 * 60 * 60 * 24, 
-    },
-  })
+    session({
+        secret: process.env.SESSION_SECRET, // Clé secrète pour signer les cookies
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            httpOnly: true,       // Empêche l'accès JS côté client
+            secure: false,        // Doit être true en production avec HTTPS
+            sameSite: "lax",      // Protection contre CSRF
+            maxAge: 1000 * 60 * 60 * 24, // Expiration : 1 jour
+        },
+    })
 );
 
-// import and mount the API routes
-
+// Importe et monte les routes de l'API
 const router = require("./router");
-
 app.use(router);
 
-// serve the `backend/public` folder for public resources
+// Monte la documentation Swagger à l'URL /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Sert les fichiers statiques depuis le dossier public
 app.use(express.static(path.join(__dirname, "../public")));
 
-// serve REACT APP
-
+// Chemin vers le fichier index.html du frontend (build React)
 const reactIndexFile = path.join(
-  __dirname,
-  "..",
-  "..",
-  "frontend",
-  "dist",
-  "index.html"
+    __dirname,
+    "..",
+    "..",
+    "frontend",
+    "dist",
+    "index.html"
 );
 
+// Si le build React existe, on le sert comme site statique
 if (fs.existsSync(reactIndexFile)) {
-  // serve REACT resources
+    app.use(express.static(path.join(__dirname, "..", "..", "frontend", "dist")));
 
-  app.use(express.static(path.join(__dirname, "..", "..", "frontend", "dist")));
-
-  // redirect all requests to the REACT index file
-
-  app.get("*", (req, res) => {
-    res.sendFile(reactIndexFile);
-  });
+    // Toutes les routes (non API) redirigent vers l'app React
+    app.get("*", (req, res) => {
+        res.sendFile(reactIndexFile);
+    });
 }
 
-// ready to export
-
+// Exporte l'application pour qu'elle puisse être utilisée dans server.js
 module.exports = app;
-
-
-

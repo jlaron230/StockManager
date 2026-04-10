@@ -1,7 +1,7 @@
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
 import {BeakerIcon, PaintBrushIcon} from "@heroicons/react/16/solid";
 import {useEffect} from "react";
 
+//Array of presentation participants
 const features = [
     {
         name: 'Partie design : ',
@@ -17,7 +17,7 @@ const features = [
 ]
 
 const About = () => {
-
+    //Scroll to top
     useEffect(() => {
         window.scrollTo({top, behavior: 'smooth' })
     }, [])

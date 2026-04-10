@@ -8,6 +8,7 @@ import {Link, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
+// Définition des liens de navigation
 const navigation = [
     { name: 'A propos', href: '/a-propos', current: true },
     { name: 'Produit', href: '/produit', current: false },
@@ -16,20 +17,23 @@ const navigation = [
     { name: 'Commande', href: '/commande-gestion', current: false },
 ]
 
+// Fonction utilitaire pour concaténer les classes CSS conditionnellement
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
+// Composant navbar principal
 const navbar = () => {
-    const location = useLocation();
-    const [isAdmin, setIsAdmin] = useState(true);
-    const [isConnect, setIsConnect] = useState(false);
+    const location = useLocation(); // Pour suivre le chemin actuel
+    const [isAdmin, setIsAdmin] = useState(true); // Etat admin (non utilisé dans ce code)
+    const [isConnect, setIsConnect] = useState(false); // Etat connexion utilisateur
 
+    // Fonction pour récupérer la session utilisateur depuis le backend
     const fetchAllData = async () => {
         try {
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
                 method: "GET",
-                credentials: "include", // important pour envoyer le cookie
+                credentials: "include", // Envoi des cookies pour la session
             });
 
             if (!res.ok) {
@@ -41,7 +45,7 @@ const navbar = () => {
             const user = await res.json();
 
             if (user?.user) {
-                setIsConnect(true);
+                setIsConnect(true); // Utilisateur connecté
             } else {
                 setIsConnect(false);
             }
@@ -52,10 +56,12 @@ const navbar = () => {
         }
     };
 
+    // Récupère les infos utilisateur au premier rendu
     useEffect(() => {
-        fetchAllData(); // au premier chargement
+        fetchAllData();
     }, []);
 
+    // Met à jour la connexion quand le chemin change
     useEffect(() => {
         fetchAllData();
     }, [location.pathname]);
@@ -64,11 +70,14 @@ const navbar = () => {
         <Disclosure as="nav" className="bg-white">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
                 <div className="relative flex h-16 items-center justify-between ">
+                    {/* Logo */}
                     <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="flex shrink-0 items-center">
                             <Logo/>
                         </div>
                     </div>
+
+                    {/* Bouton login affiché en version mobile */}
                     <div className="min-[952px]:hidden p-2">
                         {isConnect ? (
                             <Link to="/Dashboard">
@@ -76,32 +85,36 @@ const navbar = () => {
                             </Link>
                         ) : (
                             <Link to="/connexion">
-                            <ButtonLogin />
+                                <ButtonLogin />
                             </Link>
-                            )}
+                        )}
                     </div>
+
+                    {/* Menu principal et dropdown profil */}
                     <div
                         className=" inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0 min-[1000px]:gap-10">
                         <div className="max-[952px]:hidden">
-                        <div className=" sm:ml-6 sm:block">
-                            <div className="flex space-x-4">
-                                {navigation.map((item) => (
-                                    <a
-                                        key={item.name}
-                                        href={item.href}
-                                        aria-current={item.current ? 'page' : undefined}
-                                        className={classNames(
-                                            item.current ? ' text-color-picto' : 'text-color hover:text-white',
-                                            'rounded-md px-3 py-2 text-sm font-medium',
-                                        )}
-                                    >
-                                        {item.name}
-                                    </a>
-                                ))}
+                            <div className=" sm:ml-6 sm:block">
+                                <div className="flex space-x-4">
+                                    {/* Liens de navigation */}
+                                    {navigation.map((item) => (
+                                        <a
+                                            key={item.name}
+                                            href={item.href}
+                                            aria-current={item.current ? 'page' : undefined}
+                                            className={classNames(
+                                                item.current ? ' text-color-picto' : 'text-color hover:text-white',
+                                                'rounded-md px-3 py-2 text-sm font-medium',
+                                            )}
+                                        >
+                                            {item.name}
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                        </div>
-                        {/* Profile dropdown */}
+
+                        {/* Menu profil */}
                         <Menu as="div" className="relative">
                             <div>
                                 <div className="max-[952px]:hidden">
@@ -109,19 +122,20 @@ const navbar = () => {
                                         <Link to="/dashboard">
                                             <ButtonLogin />
                                         </Link>
-                                        ) : (
-                                            <>
-                                    <Link to="/connexion">
-                                <ButtonConnexion/>
-                                    </Link>
-                                    <Link to="/Inscription">
-                                <ButtonInscription/>
-                                    </Link>
-                                            </>
-                                        )}
+                                    ) : (
+                                        <>
+                                            <Link to="/connexion">
+                                                <ButtonConnexion/>
+                                            </Link>
+                                            <Link to="/Inscription">
+                                                <ButtonInscription/>
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
+
+                                {/* Bouton menu mobile */}
                                 <div className=" inset-y-0 left-0 flex items-center min-[952px]:hidden">
-                                    {/* Mobile menu button*/}
                                     <DisclosureButton
                                         className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
                                         <span className="absolute -inset-0.5"/>
@@ -131,6 +145,8 @@ const navbar = () => {
                                     </DisclosureButton>
                                 </div>
                             </div>
+
+                            {/* Contenu dropdown menu profil */}
                             <MenuItems
                                 transition
                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
@@ -165,6 +181,7 @@ const navbar = () => {
                 </div>
             </div>
 
+            {/* Menu mobile déroulant */}
             <DisclosurePanel className="min-[952px]:hidden">
                 <div className="space-y-1 px-2 pt-2 pb-3">
                     {navigation.map((item) => (

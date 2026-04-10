@@ -6,6 +6,8 @@ import axios from "axios";
 import {set} from "husky";
 import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProduct from "@components/Button/ButtonAddProduct";
+import {getFilteredProducts} from "@components/ProductsList/getFilteredProducts";
+import {GetFilteredDate} from "@components/ProductsList/GetFilteredDate";
 
 const ProductList = () => {
     let navigate = useNavigate();
@@ -38,50 +40,26 @@ const ProductList = () => {
                 return category && category.nom.toLowerCase() === searchValue.toLowerCase();
             });
             setFilteredProduct(filtered);
-          console.log(filtered);
+         // console.log(filtered);
         } else {
             // Si la recherche est vide, on remet tous les produits
             setFilteredProduct(products);
         }
         }
 
-        const filterDate = (e) => {
-        const newFilteredDate = !filteredDate
-        setfilteredDate(newFilteredDate);
-        if(filteredDate) {
-            const sorted = [...products].sort((a, b) =>
-                newFilteredDate
-                ? new Date(b.date_add) - new Date(a.date_add)
-                : new Date(a.date_add) - new Date(b.date_add)
-            )
-
+        const filterDate = () => {
+            const newFilteredDate = !filteredDate;
+            setfilteredDate(newFilteredDate);
+            const sorted = GetFilteredDate(products, filteredDate);
             setFilteredProduct(sorted);
-        }
-        else {
-            const sorted = [...products].sort((b, a) =>
-                new Date(a.date_add) - new Date(b.date_add))
-            setFilteredProduct(sorted);
-        }
+            setCurrentPage(1);
         }
 
-        const filteredPrice = (minpriceValue, maxpriceValue) => {
-            let filtered;
-
-            if (!minpriceValue && !maxpriceValue) {
-                filtered = products;
-            } else {
-
-                filtered = products.filter((product) => {
-                    const price = product.prix_unitaire;
-                    const minOk = minpriceValue ? price >= minpriceValue : true;
-                    const maxOk = maxpriceValue ? price <= maxpriceValue : true;
-                    return minOk && maxOk;
-
-                })
-            }
-            setFilteredProduct(filtered);
-            setCurrentPage(1)
-        }
+    const filteredPrice = (minpriceValue, maxpriceValue) => {
+        const filtered = getFilteredProducts(products, minpriceValue, maxpriceValue);
+        setFilteredProduct(filtered);
+        setCurrentPage(1);
+    };
 
 
     useEffect(() => {
@@ -121,7 +99,7 @@ const ProductList = () => {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
                     withCredentials: true,
                 })
-                console.log(response)
+               // console.log(response)
                 setProducts(response.data);
                 setFilteredProduct(response.data);
                 setError(null);
@@ -168,7 +146,7 @@ const ProductList = () => {
         const value = e.target.value;
         setSearchTerm(value);
         handleSearch(value);
-        console.log(searchTerm)
+      //  console.log(searchTerm)
     }
 
     return (
@@ -284,6 +262,7 @@ const ProductList = () => {
                         )}
                         <div>
                         <button
+                            aria-label="Bouton de slide gauche"
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -293,6 +272,7 @@ const ProductList = () => {
                         {Array.from({length: totalPages}, (_, i) => i + 1).map(
                             (page) => (
                                 <button
+                                    aria-label="numéro de page"
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
                                     className={`px-3 py-1 border rounded hover:bg-gray-200 ${
@@ -306,6 +286,7 @@ const ProductList = () => {
                             )
                         )}
                         <button
+                            aria-label="Bouton de pagination à droite"
                             className="px-3 py-1 border rounded hover:bg-gray-200"
                             disabled={currentPage === totalPages}
                             onClick={() => setCurrentPage((prev) => prev + 1)}
@@ -340,7 +321,9 @@ const ProductFiche = ({productName, productImage, productDesc, productCategory, 
                         </p>
                         <p className="text-gray-400 text-xs italic">Catégorie : {productCategory}</p>
                         <Link to={`/produit/${productId}`}>
-                        <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                        <button
+                            aria-label="Bouton voir le produit"
+                            className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                             voir produit
                         </button>
                         </Link>

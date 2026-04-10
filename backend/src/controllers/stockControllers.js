@@ -1,5 +1,6 @@
 const tables = require("../models");
 
+// Récupérer tout le stock
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.stock.readAllStock();
@@ -10,6 +11,7 @@ const browse = async (req, res) => {
   }
 };
 
+// Récupérer le stock pour un produit donné par son ID
 const read = async (req, res) => {
   try {
     const [rows] = await tables.stock.readStockByProductId(req.params.productId);
@@ -24,17 +26,18 @@ const read = async (req, res) => {
   }
 };
 
-
+// Récupérer la liste des produits en stock faible (seuil minimal atteint)
 const getLowStock = async (req, res) => {
-    try {
-      const [rows] = await tables.stock.getLowStockProducts();
-      res.status(200).json(rows);
-    } catch (err) {
-      console.error(err);
-      res.sendStatus(500);
-    }
+  try {
+    const [rows] = await tables.stock.getLowStockProducts();
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 };
 
+// Récupérer le stock total par catégorie
 const getStockByCategory = async (req, res) => {
   try {
     const [rows] = await tables.stock.getTotalStockByCategory();
@@ -45,11 +48,9 @@ const getStockByCategory = async (req, res) => {
   }
 };
 
-  
 module.exports = {
-    browse,
-    read,
-    getLowStock,
-    getStockByCategory
-  };
-  
+  browse,
+  read,
+  getLowStock,
+  getStockByCategory
+};

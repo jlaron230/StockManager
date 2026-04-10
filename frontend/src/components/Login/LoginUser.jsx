@@ -2,9 +2,10 @@ import * as Yup from "yup";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Link, useNavigate} from "react-router-dom";
 import {EyeIcon, EyeSlashIcon} from "@heroicons/react/16/solid";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
+// Schéma de validation avec Yup
 const SignupSchema = Yup.object().shape({
     email: Yup.string()
         .email('Email invalide')
@@ -13,6 +14,7 @@ const SignupSchema = Yup.object().shape({
         .required('Requis'),
 });
 
+// Composant réutilisable pour un champ de formulaire avec label, erreur et toggle visibilité mot de passe
 const InputField = ({
                         label,
                         name,
@@ -41,6 +43,7 @@ const InputField = ({
                 required
             />
 
+            {/* Icone pour afficher/cacher le mot de passe */}
             {showPasswordField && (
                 <div
                     className="absolute inset-y-0 right-3 flex items-center"
@@ -63,12 +66,34 @@ const InputField = ({
     </div>
 );
 
+// Composant principal LoginUser
 const LoginUser = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [token, setToken] = useState("");
     const navigate = useNavigate();
+
+    // Toggle affichage du mot de passe
     const handleTogglePassword = () => {
         setShowPassword(!showPassword);
     };
+
+    // useEffect pour récupérer le token CSRF au chargement
+    useEffect(() => {
+        const fetchToken = async () => {
+            try {
+                const tokenResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/form-token`, {
+                    withCredentials: true,
+                });
+               // console.log("✅ Token reçu :", tokenResponse.data.csrfToken);
+                setToken(tokenResponse.data.csrfToken);
+            } catch (error) {
+                console.error("❌ Erreur récupération CSRF:", error);
+            }
+        };
+
+        fetchToken();
+    }, []);
+
     return (
         <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center px-6 py-8">
             <div
@@ -84,22 +109,22 @@ const LoginUser = () => {
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting, setFieldError }) => {
-                            console.log("Valeurs soumises :", values);
                             axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, values, {
+                                headers: { "x-csrf-token": token },
                                 withCredentials: true,
                             })
                                 .then(res => {
                                     const data = res.data;
-                                    console.log(data);
+                                  //  console.log(data);
                                     navigate('/');
                                 })
                                 .catch(error => {
                                     console.error('Erreur lors de la connexion:', error);
-                                    // Handle specific errors
+                                    // Gestion des erreurs personnalisée
                                     setFieldError('general', 'Échec de la connexion, vérifiez vos identifiants');
                                 })
                                 .finally(() => {
-                                    setSubmitting(false); // Stop form submission
+                                    setSubmitting(false); // Fin de la soumission
                                 });
                         }}
                     >
@@ -114,14 +139,16 @@ const LoginUser = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="Taper un mot de passe"/>
                                     <div className="flex justify-start mb-3">
-                                            <Link className="text-color" to="/password-forgot" onClick={() => window.scrollTo({
-                                             top: 0, behavior: 'smooth'
-                                              })}
-                                        >Mot de passe oublié ?</Link>
+                                        <Link className="text-color" to="/password-forgot" onClick={() => window.scrollTo({
+                                            top: 0, behavior: 'smooth'
+                                        })}>
+                                            Mot de passe oublié ?
+                                        </Link>
                                         <ErrorMessage name="general" component="div" className="text-red-500 text-sm mt-1 text-center" />
                                     </div>
                                 </div>
                                 <button
+                                    aria-label="Bouton d'envoi"
                                     type="submit"
                                     disabled={isSubmitting}
                                     className="max-md:w-full md:w-1/2 flex justify-center m-auto text-white Primary-Color hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-700"

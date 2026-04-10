@@ -1,5 +1,6 @@
 const tables = require("../models");
 
+// Récupérer tous les fournisseurs
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.provider.readAll();
@@ -10,6 +11,7 @@ const browse = async (req, res) => {
   }
 };
 
+// Récupérer un fournisseur par ID
 const read = async (req, res) => {
   try {
     const [rows] = await tables.provider.read(req.params.id);
@@ -24,6 +26,7 @@ const read = async (req, res) => {
   }
 };
 
+// Ajouter un nouveau fournisseur
 const add = async (req, res) => {
   try {
     const [result] = await tables.provider.insert(req.body);
@@ -34,6 +37,7 @@ const add = async (req, res) => {
   }
 };
 
+// Modifier un fournisseur existant
 const edit = async (req, res) => {
   try {
     const [result] = await tables.provider.update(req.params.id, req.body);
@@ -48,6 +52,7 @@ const edit = async (req, res) => {
   }
 };
 
+// Supprimer un fournisseur et ses produits liés
 const destroy = async (req, res) => {
   const id = req.params.id;
 
@@ -70,6 +75,7 @@ const destroy = async (req, res) => {
   }
 };
 
+// Récupérer les valeurs de l'énumération du type de fournisseur
 const getProviderType = async (req, res) => {
   try {
     const [providerType] = await tables.provider.show();
@@ -84,6 +90,7 @@ const getProviderType = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 }
+
 module.exports = {
   browse,
   read,
@@ -92,4 +99,3 @@ module.exports = {
   destroy,
   getProviderType,
 };
-

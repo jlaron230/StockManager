@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
-import Counter from "@components/Counter";
+import React, {useEffect} from "react";
+//Page politique de confidentialité
 const PrivacyPolicy = () => {
+    //Scroll to top
     useEffect(() => {
         window.scrollTo({top, behavior: 'smooth' })
     }, [])

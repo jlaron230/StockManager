@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import {Link, useNavigate} from "react-router-dom";
 import ButtonAddProvider from "@components/Button/ButtonAddProvider";
+import {GetProviderLocalisationFilter} from "@components/ProviderList/GetProviderLocalisationFilter";
 
 const ProviderList = () => {
     let navigate = useNavigate();
@@ -36,17 +37,10 @@ const ProviderList = () => {
 
     const providerLocalisation = (searchValue) => {
         setCurrentPage(1);
-        if (searchValue.trim() !== "") {
-            const filtered = providers.filter((provider) =>
-                provider.code_postal.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            setFilteredProvider(filtered);
-
-        } else {
-            // Si la recherche est vide, on remet tous les providers
-            setFilteredProvider(providers);
-        }
+        const filtered = GetProviderLocalisationFilter(providers, searchValue)
+        setFilteredProvider(filtered);
     }
+
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_BACKEND_URL}/session`, {
@@ -83,7 +77,7 @@ const ProviderList = () => {
         const FetchProviderData = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
-                console.log(response)
+              //  console.log(response)
                 setProviders(response.data);
                 setFilteredProvider(response.data);
                 setError(null);
@@ -124,7 +118,7 @@ const ProviderList = () => {
         const value = e.target.value;
         setSearchTerm(value);
         handleSearch(value);
-        console.log(searchTerm)
+       // console.log(searchTerm)
     }
 
     return (
@@ -215,6 +209,7 @@ const ProviderList = () => {
                             )}
                             <div>
                                 <button
+                                    aria-label="Bouton de pagination a gauche"
                                     className="px-3 py-1 border rounded hover:bg-gray-200"
                                     disabled={currentPage === 1}
                                     onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -224,6 +219,7 @@ const ProviderList = () => {
                                 {Array.from({length: totalPages}, (_, i) => i + 1).map(
                                     (page) => (
                                         <button
+                                            aria-label="Bouton de numéro de page"
                                             key={page}
                                             onClick={() => setCurrentPage(page)}
                                             className={`px-3 py-1 border rounded hover:bg-gray-200 ${
@@ -237,6 +233,7 @@ const ProviderList = () => {
                                     )
                                 )}
                                 <button
+                                    aria-label="Bouton de pagination a droite"
                                     className="px-3 py-1 border rounded hover:bg-gray-200"
                                     disabled={currentPage === totalPages}
                                     onClick={() => setCurrentPage((prev) => prev + 1)}
@@ -266,7 +263,9 @@ const ProviderFiche = ({providerName, providerImage, providerDesc, providerType,
                         </p>
                         <p className="text-gray-400 text-xs italic">Type : {providerType}</p>
                         <Link to={`/fournisseur/${providerId}`}>
-                            <button className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                            <button
+                                aria-label="Bouton voir le fournisseur"
+                                className="mt-2 Primary-Color bg-blue-700 text-white text-sm px-3 py-1 rounded">
                                 voir fournisseur
                             </button>
                         </Link>

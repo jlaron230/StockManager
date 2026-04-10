@@ -1,16 +1,17 @@
 const tables = require("../models");
 
-
+// Récupérer tous les produits
 const browse = async (req, res) => {
   try {
     const [rows] = await tables.product.readAll();
     res.json(rows);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error('Database error:', error);
     res.sendStatus(500);
   }
 };
 
+// Récupérer un produit par ID
 const read = async (req, res) => {
   try {
     const [rows] = await tables.product.read(req.params.id);
@@ -25,15 +26,35 @@ const read = async (req, res) => {
   }
 };
 
+//lire les produits lié a un fournisseur id
+const readProvider = async (req, res) => {
+  try {
+    const products = await tables.product.findByProvider(req.params.id);
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits du fournisseur :", error);
+    res.status(500).send("Erreur serveur");
+  }
+}
+
+// Ajouter un nouveau produit
 const add = async (req, res) => {
   try {
     const product = req.body;
 
-    const [result] = await tables.product.insert(product);
+    // Ici, tu peux récupérer storeIds depuis le body
+    const storeIds = Array.isArray(product.storeIds) ? product.storeIds : [];
+
+    // Supprime storeIds du produit pour l'insert (sinon champ non reconnu dans ta table product)
+    delete product.storeIds;
+
+    // Insert produit, avec storeIds en paramètre
+    const productId = await tables.product.insert({ ...product, storeIds });
 
     res.status(201).json({
-      id_product: result.insertId,
+      id_product: productId,
       ...product,
+      storeIds
     });
   } catch (err) {
     console.error("Erreur dans productControllers.add :", err);
@@ -41,7 +62,7 @@ const add = async (req, res) => {
   }
 };
 
-
+// Modifier un produit existant (PUT complet)
 const edit = async (req, res) => {
   try {
     const product = req.body;
@@ -53,14 +74,13 @@ const edit = async (req, res) => {
     }
 
     res.sendStatus(204);
-    
   } catch (err) {
     console.error("Erreur dans productControllers.edit :", err);
     res.sendStatus(500);
   }
 };
 
-
+// Supprimer un produit
 const destroy = async (req, res) => {
   try {
     const [result] = await tables.product.delete(req.params.id);
@@ -75,11 +95,11 @@ const destroy = async (req, res) => {
   }
 };
 
+// Récupérer les produits d'une catégorie spécifique
 const getByCategory = async (req, res) => {
   try {
     const categoryId = parseInt(req.params.id, 10);
     const products = await tables.product.findByCategory(categoryId);
-
 
     res.json(products);
   } catch (err) {
@@ -88,14 +108,16 @@ const getByCategory = async (req, res) => {
   }
 };
 
+// Mise à jour partielle d'un produit (PATCH)
 async function partialUpdate(req, res) {
   try {
     const { id } = req.params;
     const updates = req.body;
 
+    // Champs autorisés à être modifiés partiellement
     const allowedFields = ['nom', 'description', 'prix_unitaire', 'quantité_en_stock', 'seuil_minimal', 'id_category'];
     const safeUpdates = Object.fromEntries(
-      Object.entries(updates).filter(([key]) => allowedFields.includes(key))
+        Object.entries(updates).filter(([key]) => allowedFields.includes(key))
     );
 
     const result = await tables.product.updatePartial(id, safeUpdates);
@@ -111,8 +133,6 @@ async function partialUpdate(req, res) {
   }
 }
 
-
-
 module.exports = {
   browse,
   read,
@@ -120,6 +140,6 @@ module.exports = {
   edit,
   destroy,
   getByCategory,
-  partialUpdate
+  partialUpdate,
+  readProvider,
 };
-
