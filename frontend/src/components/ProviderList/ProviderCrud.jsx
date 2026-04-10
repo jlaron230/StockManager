@@ -42,7 +42,7 @@ const ProviderCrud = () => {
     const [commentaire, setCommentaire] = useState("");
     const [IsClicked, setIsClicked] = useState(true);
     const [providerTypes, setProviderTypes] = useState([]);
-console.log(productList)
+//console.log(productList)
     const validators = {
         email: (val) => /\S+@\S+\.\S+/.test(val),
         telephone: (val) => /^0\d{9}$/.test(val),
@@ -72,7 +72,7 @@ console.log(productList)
         try {
             const providerRes = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/providers/${id}`,
                 {withCredentials: true,});
-            console.log(providerRes);
+          //  console.log(providerRes);
             navigate('/fournisseur');
         }catch(err) {
             console.log(err);
@@ -93,7 +93,7 @@ console.log(productList)
                 setCommentaire(providerRes.data.commentaire);
 
                 setSelectedProvider(providerRes.data.type || "");
-                console.log(providerRes.data)
+               // console.log(providerRes.data)
 
                 const providerTypeListRes =  await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
                 setCategoryList(providerTypeListRes.data);
@@ -169,7 +169,7 @@ console.log(productList)
                 { withCredentials: true }
             );
 
-            console.log(providerPut.data);
+         //   console.log(providerPut.data);
         } catch (error) {
             console.error("Erreur lors de la modification du fournisseur :", error);
         } finally {

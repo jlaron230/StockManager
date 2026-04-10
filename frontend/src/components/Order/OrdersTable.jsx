@@ -26,7 +26,7 @@ const OrdersTable = ({
     const totalPages = Math.ceil(ordersAll.length / ordersPerPage);
 
     const handleDeleteClick = (orderId) => {
-        console.log("Suppression demandée pour l’ID :", orderId);
+       // console.log("Suppression demandée pour l’ID :", orderId);
         setSelectedOrderToDelete(orderId);
     };
 

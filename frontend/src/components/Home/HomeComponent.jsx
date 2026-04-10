@@ -40,7 +40,7 @@ const HomeComponent = () => {
     }, [])
 
     // Affichage de l'état de connexion dans la console (pour debug)
-    console.log(Connect)
+ //   console.log(Connect)
 
     return (
         <>

@@ -47,7 +47,7 @@ function App() {
             .then((res) => res.json())
             .then((data) => {
                 if (data?.user) {
-                    console.log("🔐 Session active :", data.user);
+                   // console.log("🔐 Session active :", data.user);
                     setIsLoggedIn(true);
                 }
             })
@@ -65,7 +65,7 @@ function App() {
                         "BEdkve1KYu7rlujHqphLkZBmIZ8q3ou46FXu2SiJkmnhNflZUwuZpx7O6WLg9xZZa5aYpeZ4ONo2yD2U6488pD8",
                 });
                 if (token) {
-                    console.log("✅ Token FCM récupéré :", token);
+                 //   console.log("✅ Token FCM récupéré :", token);
                     localStorage.setItem("fcm_token", token);
                 }
             } catch (err) {
@@ -100,7 +100,7 @@ function App() {
                     });
 
                     if (res.ok) {
-                        console.log("✅ Token FCM envoyé au backend");
+                      //  console.log("✅ Token FCM envoyé au backend");
                         localStorage.removeItem("fcm_token");
                     } else {
                         console.error("❌ Échec lors de l'envoi du token FCM");

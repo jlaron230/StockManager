@@ -40,7 +40,7 @@ const ProductList = () => {
                 return category && category.nom.toLowerCase() === searchValue.toLowerCase();
             });
             setFilteredProduct(filtered);
-          console.log(filtered);
+         // console.log(filtered);
         } else {
             // Si la recherche est vide, on remet tous les produits
             setFilteredProduct(products);
@@ -99,7 +99,7 @@ const ProductList = () => {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
                     withCredentials: true,
                 })
-                console.log(response)
+               // console.log(response)
                 setProducts(response.data);
                 setFilteredProduct(response.data);
                 setError(null);
@@ -146,7 +146,7 @@ const ProductList = () => {
         const value = e.target.value;
         setSearchTerm(value);
         handleSearch(value);
-        console.log(searchTerm)
+      //  console.log(searchTerm)
     }
 
     return (

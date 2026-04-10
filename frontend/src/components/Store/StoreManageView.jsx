@@ -10,7 +10,7 @@ const StoreManageView = () => {
     const [categorys, setCategorys] = useState([]);
     const [stores, setStores] = useState([]);
 
-    console.log(providers); // Debug
+  //  console.log(providers); // Debug
 
     // 🔁 Chargement des données à l'initialisation
     useEffect(() => {

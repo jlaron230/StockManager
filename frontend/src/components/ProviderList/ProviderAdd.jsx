@@ -29,7 +29,7 @@ const ProviderAdd = () => {
         e.target.value = null;
     };
 
-    console.log(images);
+   // console.log(images);
 
     const navigate = useNavigate();
 

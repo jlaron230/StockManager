@@ -76,7 +76,6 @@ const NewPassword = () => {
                         initialValues={{ password: "", confirmPassword: "" }}
                         validationSchema={SignupSchema}
                         onSubmit={(values, { setSubmitting }) => {
-                            console.log(values); // Affiche les valeurs dans la console
                             setSubmitting(false); // Termine l'état de soumission
                             navigate('/'); // Redirige vers la page d'accueil
                         }}

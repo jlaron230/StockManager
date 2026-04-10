@@ -77,7 +77,7 @@ const ProviderList = () => {
         const FetchProviderData = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/providers`, {withCredentials: true});
-                console.log(response)
+              //  console.log(response)
                 setProviders(response.data);
                 setFilteredProvider(response.data);
                 setError(null);
@@ -118,7 +118,7 @@ const ProviderList = () => {
         const value = e.target.value;
         setSearchTerm(value);
         handleSearch(value);
-        console.log(searchTerm)
+       // console.log(searchTerm)
     }
 
     return (

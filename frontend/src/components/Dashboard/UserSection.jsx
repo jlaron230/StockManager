@@ -142,7 +142,7 @@ const UserSection = () => {
     };
   }, [IsActiveNewUser]);
 
-  console.log(IsActiveNewUser);
+ // console.log(IsActiveNewUser);
 
   return (
       <>

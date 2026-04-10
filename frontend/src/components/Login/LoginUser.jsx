@@ -84,7 +84,7 @@ const LoginUser = () => {
                 const tokenResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/form-token`, {
                     withCredentials: true,
                 });
-                console.log("✅ Token reçu :", tokenResponse.data.csrfToken);
+               // console.log("✅ Token reçu :", tokenResponse.data.csrfToken);
                 setToken(tokenResponse.data.csrfToken);
             } catch (error) {
                 console.error("❌ Erreur récupération CSRF:", error);
@@ -115,7 +115,7 @@ const LoginUser = () => {
                             })
                                 .then(res => {
                                     const data = res.data;
-                                    console.log(data);
+                                  //  console.log(data);
                                     navigate('/');
                                 })
                                 .catch(error => {
